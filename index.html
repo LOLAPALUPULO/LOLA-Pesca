@@ -417,9 +417,8 @@
 
             determineSpecies(lat, lon);
 
-            // 2. API CLIMA (Lógica Solicitada: Surface Pressure y Hourly UV)
-            // Esta URL pide surface_pressure en 'current' y uv_index en 'hourly' tal como se pidió
-            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,surface_pressure,wind_speed_10m,wind_direction_10m,weather_code&hourly=uv_index&timezone=auto`;
+            // 2. API CLIMA: CORREGIDO PARA TRAER PRESION NIVEL DEL MAR (MSL) Y UV CORRECTO
+            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,pressure_msl,wind_speed_10m,wind_direction_10m,weather_code&hourly=uv_index&timezone=auto`;
 
             fetch(weatherUrl).then(r => r.json()).then(data => {
                 const cur = data.current;
@@ -435,8 +434,9 @@
                 const dirIndex = Math.round(((wDir %= 360) < 0 ? wDir + 360 : wDir) / 45) % 8;
                 document.getElementById('wind-dir').innerText = "DEL " + dirs[dirIndex];
 
-                // PRESIÓN (Lógica solicitada: surface_pressure)
-                const p = Math.round(cur.surface_pressure);
+                // PRESIÓN (CORREGIDO: usa pressure_msl para tener el valor barométrico estándar)
+                // Si la API no devuelve pressure_msl, usa surface_pressure como fallback
+                const p = Math.round(cur.pressure_msl || cur.surface_pressure || 1013);
                 document.getElementById('press').innerText = p;
                 
                 const pDesc = document.getElementById('press-desc');
@@ -448,11 +448,12 @@
                     pDesc.innerText = "ESTABLE"; pDesc.style.color = "#aaa"; 
                 }
 
-                // UV (Lógica solicitada: data.hourly.uv_index[currentHourIndex])
+                // UV (CORREGIDO: Protección contra undefined)
                 const now = new Date();
                 const currentHourIndex = now.getHours();
-                // Protección: verificar si el array existe
                 let uv = 0;
+                
+                // Verificar si existe el array y el índice
                 if (data.hourly && data.hourly.uv_index && data.hourly.uv_index[currentHourIndex] !== undefined) {
                     uv = data.hourly.uv_index[currentHourIndex];
                 }
@@ -474,6 +475,7 @@
             }).catch(e => {
                 console.error("API Error:", e);
                 document.getElementById('press-desc').innerText = "Sin Datos";
+                document.getElementById('uv-msg').innerText = "Error API";
             });
 
             // 3. MAREAS (API Marina)
