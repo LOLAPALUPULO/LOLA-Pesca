@@ -7,7 +7,7 @@
     <script type="importmap">
 {
   "imports": {
-    "recharts": "https://aistudiocdn.com/recharts@^3.5.1",
+    "recharts": "https://aistudiocdn.com/recharts@^2.12.7",
     "react/": "https://aistudiocdn.com/react@^19.2.1/",
     "react": "https://aistudiocdn.com/react@^19.2.1",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
@@ -38,10 +38,10 @@
             --cam-color-4: #3a4a4a; /* Lighter grey-green for variation */
             --cam-color-4-rgb: 58, 74, 74;
 
-            /* Card Colors (Grey to Black Gradient) */
-            --card: #1a1a1a; /* Very dark grey for cards */
-            --card-rgb: 26, 26, 26;
-            --gradient-card: linear-gradient(145deg, #333333 0%, #1a1a1a 100%); /* Medium grey to very dark grey/black */
+            /* Card Colors (Grey to Black Gradient) - EVEN DARKER */
+            --card: #0d0d0d; /* Very dark grey for cards */
+            --card-rgb: 13, 13, 13;
+            --gradient-card: linear-gradient(145deg, #222222 0%, #0d0d0d 100%); /* Medium grey to very dark grey/black */
 
             --text: #ffffff; /* White text for dark background */
             --text-light: #e0e2e5; /* Off-white for secondary info (brighter for new dark cards) */
@@ -312,13 +312,42 @@
         .c-o { left: 8px; top: 50%; transform: translateY(-50%); } /* Adjusted position */
 
         .compass-needle {
-            position: absolute; top: 50%; left: 50%;
-            width: 10px; /* Increased size */
-            height: 100px; /* Increased size */
-            background: linear-gradient(to bottom, var(--danger) 50%, var(--text) 50%);
-            transform: translate(-50%, -50%) rotate(0deg);
-            box-shadow: 0 0 8px rgba(0,0,0,0.3); /* Adjusted for light theme */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: 50% 50%; /* Rotate around its center */
+            width: 6px; /* Width of the shaft */
+            height: 80px; /* Length of the shaft */
+            background: linear-gradient(to bottom, var(--danger) 50%, var(--text) 50%); /* Red on top half, white on bottom half */
+            border-radius: 2px; /* Slight rounding for the shaft */
+            box-shadow: 0 0 5px rgba(0,0,0,0.5); /* Subtle shadow */
             z-index: 10;
+            transform: translate(-50%, -50%) rotate(0deg); /* Initial centering, JS updates rotation */
+            transition: transform 0.1s linear; /* Smooth rotation */
+        }
+
+        .compass-needle::before { /* North tip (red) */
+            content: '';
+            position: absolute;
+            bottom: 100%; /* Position right above the shaft */
+            left: -7px; /* Adjust to center the triangle based on its width (10px triangle base - 6px shaft width) / 2 = 2px offset + 5px */
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 20px solid var(--danger); /* Triangle pointing up */
+        }
+
+        .compass-needle::after { /* South tip (white) */
+            content: '';
+            position: absolute;
+            top: 100%; /* Position right below the shaft */
+            left: -7px; /* Adjust to center the triangle based on its width */
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 20px solid var(--text); /* Triangle pointing down */
         }
         
         /* --- RELOJ ANALÓGICO (NUEVOS ESTILOS) --- */
@@ -414,7 +443,7 @@
             transform: translate(-50%, -50%) rotate(0deg);
             z-index: 4;
             transition: transform 0.05s linear;
-            filter: drop-shadow(0 0 8px var(--blue)); /* Stronger glow for logo hand */
+            filter: none; /* Removed glow for logo hand */
         }
         /* --- FIN RELOJ ANALÓGICO --- */
 

@@ -4,6 +4,6 @@
   "requestFramePermissions": [
     "geolocation",
     "camera",
-    "device-orientation"
+    "deviceorientation"
   ]
 }
