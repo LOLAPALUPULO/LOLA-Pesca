@@ -29,7 +29,7 @@
             color: var(--text);
             margin: 0;
             padding: 12px;
-            padding-bottom: 120px;
+            padding-bottom: 100px;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
@@ -37,17 +37,11 @@
         /* --- LOGO --- */
         .brand-header {
             text-align: center;
-            padding: 15px 0;
+            padding: 10px 0;
             display: flex;
             justify-content: center;
         }
-        .brand-link { 
-            width: 60%; /* Zona de click amplia */
-            display: block; 
-            transition: opacity 0.2s;
-        }
-        .brand-link:active { opacity: 0.7; }
-        
+        .brand-link { width: 60%; display: block; }
         .brand-logo {
             width: 100%; 
             height: auto;
@@ -69,23 +63,23 @@
         .lbl { 
             font-family: var(--font-title); 
             color: #94a3b8; 
-            font-size: 0.9rem; /* GRANDE */
+            font-size: 0.9rem; 
             margin-bottom: 5px; 
             letter-spacing: 1px; 
             text-transform: uppercase; 
         }
         
         .val { 
-            font-size: 2.3rem; /* JUMBO */
+            font-size: 2.4rem; 
             font-weight: 900; 
-            margin-top: 5px; 
+            margin-top: 2px; 
             line-height: 1; 
             color: white;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         
         .sub-val { 
-            font-size: 1rem; /* GRANDE */
+            font-size: 1rem; 
             color: #cbd5e1; 
             margin-top: 6px; 
             font-weight: 600;
@@ -107,8 +101,8 @@
             padding: 15px;
             background: #151e2e;
         }
-        .loc-title { font-size: 1.4rem; color: white; margin-bottom: 2px; font-weight:bold; }
-        .loc-sub { font-size: 0.9rem; color: var(--green); }
+        .loc-title { font-size: 1.4rem; color: white; margin-bottom: 2px; font-weight:bold; font-family: var(--font-title); }
+        .loc-sub { font-size: 0.8rem; color: var(--yellow); }
 
         /* --- GRILLAS --- */
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
@@ -162,7 +156,7 @@
         .guide-container { padding: 15px; }
         .tabs { display: flex; margin-bottom: 15px; border-bottom: 2px solid #334155; }
         .tab { 
-            flex: 1; padding: 12px; text-align: center; background: none; border: none; 
+            flex: 1; padding: 15px; text-align: center; background: none; border: none; 
             color: #64748b; font-size: 1.2rem; cursor: pointer; font-family: var(--font-title); 
         }
         .tab.active { color: var(--blue); border-bottom: 3px solid var(--blue); color: white; }
@@ -211,7 +205,7 @@
 </head>
 <body>
 
-    <!-- 1. LOGO CON ENLACE (Instagram) -->
+    <!-- 1. LOGO -->
     <div class="brand-header">
         <a href="https://www.instagram.com/lolapalupulo/" target="_blank" class="brand-link">
             <img src="https://raw.githubusercontent.com/LOLAPALUPULO/LOLA-Pesca/refs/heads/main/lolapesca.svg" alt="Lola Pesca" class="brand-logo">
@@ -222,20 +216,18 @@
     <div class="card-box location-bar">
         <div>
             <div class="loc-title" id="loc-name">📍 Buscando GPS...</div>
-            <div class="loc-sub" id="gps-status">Detectando señal...</div>
+            <div class="loc-sub" id="status-msg">Estableciendo conexión...</div>
         </div>
-        <button onclick="forceReload()" style="background:none; border:none; font-size:2rem; cursor:pointer;">🔄</button>
+        <button onclick="window.location.reload()" style="background:none; border:none; font-size:2.5rem; cursor:pointer;">🔄</button>
     </div>
 
     <!-- 3. NIVEL CRÍTICO (Viento / Brújula / Agua) -->
     <div class="grid-3">
-        <!-- Viento -->
         <div class="data-box">
             <span class="lbl">VIENTO</span>
             <span class="val" id="wind-speed">--</span>
             <div class="sub-val" id="wind-dir" style="color: var(--blue); font-weight:bold;">--</div>
         </div>
-        <!-- Brújula -->
         <div class="data-box compass-container" onclick="requestCompassPermission()">
             <div class="compass-rose">
                 <span class="cardinal c-n">N</span>
@@ -246,7 +238,6 @@
             </div>
             <div style="font-size:0.6rem; margin-top:8px; color:#888; font-weight:bold;">BRÚJULA</div>
         </div>
-        <!-- Mareas -->
         <div class="data-box tide-box">
             <div class="lbl" style="color:#bfdbfe">AGUA</div>
             <div class="tide-main" id="tide-current" style="font-size:1.6rem;">--</div>
@@ -254,32 +245,29 @@
         </div>
     </div>
 
-    <!-- 4. ACTIVIDAD: PRESIÓN Y LUNA -->
+    <!-- 4. PRESIÓN Y LUNA -->
     <div class="grid-2">
-        <!-- Presión Robustecida -->
         <div class="data-box">
             <span class="lbl">PRESIÓN (hPa)</span>
             <span class="val" id="press">--</span>
-            <span class="sub-val" id="press-desc" style="font-weight:bold">Cargando..</span>
+            <span class="sub-val" id="press-desc" style="font-weight:bold">Esperando datos..</span>
         </div>
-        <!-- Luna -->
         <div class="data-box" style="justify-content: space-between;">
             <span class="lbl">FASE LUNAR</span>
             <div style="font-size:2rem; margin:0;" id="moon-icon">🌑</div>
-            <span style="font-weight:bold; font-size:0.95rem; color:white;" id="moon-phase">--</span>
+            <span style="font-weight:bold; font-size:0.9rem; color:white;" id="moon-phase">--</span>
         </div>
     </div>
     
-    <!-- 5. AMBIENTE: TEMP Y UV -->
+    <!-- 5. TEMP Y UV -->
     <div class="grid-2">
         <div class="data-box">
             <span class="lbl">TEMP</span>
             <span class="val" id="temp">--°</span>
             <div class="sub-val" id="feels-like">ST: --°</div>
         </div>
-        <!-- UV Máximo -->
         <div class="data-box" style="border: 1px solid #334155;">
-            <span class="lbl">UV MAX (HOY)</span>
+            <span class="lbl">INDICE UV MAX</span>
             <span class="val" id="uv-val">--</span>
             <div style="height:6px; width:80%; background:#333; margin-top:8px; border-radius:3px;">
                 <div id="uv-bar" style="height:100%; width:0%; background:var(--green); border-radius:3px; transition:1s;"></div>
@@ -336,13 +324,13 @@
     </div>
 
     <script>
-        // --- CONFIG & DB ---
+        // --- BASE DE DATOS LOCAL ---
         const fishDB = {
             rio: [
                 {n:"Dorado", h:"5/0 a 8/0 Pata Larga", b:"Anguila, Morena", t:"Usa líder de acero 40lbs."},
                 {n:"Surubí", h:"8/0 a 10/0", b:"Morena, Anguila", t:"Busca pozos profundos de noche."},
                 {n:"Boga", h:"Simple chico (1 o 2)", b:"Maíz, Masa, Salamín", t:"Clava cuando corre, boca dura."},
-                {n:"Pejerrey", h:"Pequeño (4 o 5)", b:"Mojarra viva", t:"Usa boyas y regula profundidad."},
+                {n:"Pejerrey", h:"Pequeño (4 o 5)", b:"Mojarra viva, Filet", t:"Usa boyas y regula profundidad."},
                 {n:"Tararira", h:"Offset / Triple", b:"Rana goma, Dientudo", t:"Activa con calor, busca yuyos."},
                 {n:"Bagre (Moncholo)", h:"3/0 Común", b:"Lombriz, Tripa", t:"Pesca de fondo en remansos."}
             ],
@@ -358,7 +346,7 @@
         let currentMode = 'rio';
         let torchTrack = null;
 
-        // --- STARTUP ---
+        // --- INICIO ---
         window.onload = () => {
             loadFishMenu();
             calculateMoonPhase();
@@ -367,61 +355,68 @@
             renderLog();
         };
 
-        // --- CORE DATA LOGIC ---
-        function forceReload() {
-            document.getElementById('loc-name').innerHTML = "Reiniciando...";
-            initApp();
-        }
-
+        // --- LOGICA DE DATOS BLINDADA ---
         function initApp() {
-            const defaultLat = -34.6037;
-            const defaultLon = -58.3816;
+            // Ubicación Fallback: Buenos Aires (Costanera)
+            const fallbackLat = -34.55;
+            const fallbackLon = -58.4;
 
             if(!navigator.geolocation) {
-                alert("Navegador sin soporte GPS. Cargando modo demo.");
-                fetchData(defaultLat, defaultLon, false);
+                alert("Navegador sin GPS. Se usará ubicación de respaldo.");
+                fetchData(fallbackLat, fallbackLon, false);
                 return;
             }
 
-            const gpsOptions = { timeout: 10000, enableHighAccuracy: true };
+            // Opciones de GPS más agresivas
+            const gpsOptions = { timeout: 8000, maximumAge: 60000 };
             
+            // Timeout manual de seguridad (Si el GPS del navegador no responde nunca)
+            const safetyTimeout = setTimeout(() => {
+                console.warn("GPS tardó mucho.");
+                document.getElementById('status-msg').innerText = "Tiempo de espera agotado. Usando respaldo.";
+                fetchData(fallbackLat, fallbackLon, false);
+            }, 9000);
+
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
+                    clearTimeout(safetyTimeout);
                     fetchData(pos.coords.latitude, pos.coords.longitude, true);
                 }, 
                 (err) => {
-                    console.warn("GPS falló o cancelado:", err);
-                    document.getElementById('loc-name').innerHTML = "Sin GPS (Usa Refresh)";
-                    fetchData(defaultLat, defaultLon, false); // Carga fallback
+                    clearTimeout(safetyTimeout);
+                    console.warn("GPS Falló:", err.message);
+                    fetchData(fallbackLat, fallbackLon, false);
                 }, 
                 gpsOptions
             );
         }
 
-        function fetchData(lat, lon, isLive) {
-            // UI Feedback
-            document.getElementById('gps-status').innerText = isLive ? "🟢 ONLINE - DATOS REALES" : "🔴 MODO DEMO / SIN GPS";
-            document.getElementById('gps-status').style.color = isLive ? "var(--green)" : "var(--danger)";
+        function fetchData(lat, lon, isReal) {
+            // Actualizar status visual
+            const statusDiv = document.getElementById('status-msg');
+            statusDiv.innerText = isReal ? "📡 GPS CONECTADO - DATOS EN TIEMPO REAL" : "⚠️ MODO DEMO / GPS FALLÓ (Zona: BSAS)";
+            statusDiv.style.color = isReal ? "var(--green)" : "var(--danger)";
 
-            // 1. Ciudad
-            if(isLive) {
+            // 1. Ciudad (Nominatim)
+            if (isReal) {
                 fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
-                .then(r=>r.json())
+                .then(r => r.json())
                 .then(d => {
-                    document.getElementById('loc-name').innerText = d.address.city || d.address.town || "Zona Detectada";
-                }).catch(()=> document.getElementById('loc-name').innerText = "Coord. GPS");
+                    document.getElementById('loc-name').innerText = "📍 " + (d.address.city || d.address.town || d.address.village || "Costa/Río");
+                })
+                .catch(() => { document.getElementById('loc-name').innerText = "📍 Zona de Pesca"; });
             } else {
-                document.getElementById('loc-name').innerText = "Buenos Aires (Defecto)";
+                document.getElementById('loc-name').innerText = "📍 Río de la Plata (Demo)";
             }
 
+            // Analisis de Especies
             determineSpecies(lat, lon);
 
-            // 2. API CLIMA (SOLUCIONADO: Presión MSL y UV MAX DIARIO)
-            // Pedimos UV MAX diario porque es más estable que el horario
+            // 2. CLIMA + PRESIÓN + UV (Open-Meteo V1)
+            // SOLUCION UV: Pedimos uv_index_max (diario) en vez de uv_index (horario)
             const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,weather_code&daily=uv_index_max&timezone=auto`;
 
-            fetch(weatherUrl).then(r=>r.json()).then(data => {
-                if(!data.current) return;
+            fetch(weatherUrl).then(r => r.json()).then(data => {
                 const cur = data.current;
                 
                 // Temp
@@ -435,39 +430,56 @@
                 const dirIndex = Math.round(((wDir %= 360) < 0 ? wDir + 360 : wDir) / 45) % 8;
                 document.getElementById('wind-dir').innerText = "DEL " + dirs[dirIndex];
 
-                // PRESIÓN (FALLBACK DOBLE: MSL O SUP)
-                // Usamos pressure_msl (Nivel del mar) que es la estándar, si es null, usamos surface
+                // PRESIÓN (FALLBACK INTELIGENTE)
+                // Intenta Presión Nivel Mar (Mejor), si falla, usa Superficie.
                 let p = cur.pressure_msl;
-                if (!p) p = cur.surface_pressure;
+                if (!p) p = cur.surface_pressure; 
                 
-                document.getElementById('press').innerText = Math.round(p);
-                const pDesc = document.getElementById('press-desc');
-                
-                if(p < 1008) { pDesc.innerText = "BAJA"; pDesc.style.color = "var(--danger)"; }
-                else if(p > 1018) { pDesc.innerText = "ALTA"; pDesc.style.color = "var(--green)"; }
-                else { pDesc.innerText = "ESTABLE"; pDesc.style.color = "#aaa"; }
+                if (p) {
+                    const pVal = Math.round(p);
+                    document.getElementById('press').innerText = pVal;
+                    
+                    const pDesc = document.getElementById('press-desc');
+                    if(pVal < 1008) { 
+                        pDesc.innerText = "⬇ BAJA (Pez lento)"; pDesc.style.color = "var(--danger)"; 
+                    } else if(pVal > 1018) { 
+                        pDesc.innerText = "⬆ ALTA (Activo)"; pDesc.style.color = "var(--green)"; 
+                    } else { 
+                        pDesc.innerText = "➡ ESTABLE"; pDesc.style.color = "#aaa"; 
+                    }
+                } else {
+                    document.getElementById('press').innerText = "N/A";
+                }
 
-                // UV (SOLUCIÓN: USAMOS EL MAXIMO DEL DIA)
-                let uv = 0;
-                if(data.daily && data.daily.uv_index_max && data.daily.uv_index_max.length > 0) {
-                    uv = data.daily.uv_index_max[0]; // El de hoy
+                // UV MAXIMO DIARIO (Seguro)
+                let uvMax = 0;
+                if (data.daily && data.daily.uv_index_max && data.daily.uv_index_max.length > 0) {
+                    uvMax = data.daily.uv_index_max[0];
                 }
                 
-                document.getElementById('uv-val').innerText = uv;
+                document.getElementById('uv-val').innerText = uvMax;
                 const uvBar = document.getElementById('uv-bar');
                 const uvMsg = document.getElementById('uv-msg');
-                let color = "var(--green)", width = "20%", msg = "RIESGO BAJO";
-                if(uv >= 3) { color = "var(--yellow)"; width = "50%"; msg = "MODERADO"; }
-                if(uv >= 6) { color = "var(--orange)"; width = "75%"; msg = "ALTO"; }
-                if(uv >= 8) { color = "var(--danger)"; width = "100%"; msg = "EXTREMO"; }
-                uvBar.style.background = color; uvBar.style.width = width; uvMsg.innerText = msg; uvMsg.style.color = color;
+                
+                let color = "var(--green)", width = "20%", msg = "BAJO";
+                if(uvMax >= 3) { color = "var(--yellow)"; width = "50%"; msg = "MODERADO"; }
+                if(uvMax >= 6) { color = "var(--orange)"; width = "80%"; msg = "ALTO (Gorro)"; }
+                if(uvMax >= 8) { color = "var(--danger)"; width = "100%"; msg = "EXTREMO"; }
+                
+                uvBar.style.background = color;
+                uvBar.style.width = width;
+                uvMsg.innerText = msg;
+                uvMsg.style.color = color;
 
-            }).catch(e => console.error("Error API:", e));
+            }).catch(e => {
+                console.error("API CLIMA ERROR:", e);
+                document.getElementById('press-desc').innerText = "Error conexión";
+            });
 
-            // 3. MAREAS
+            // 3. MAREAS (API Marina)
             const marineUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=tide_height&timezone=auto`;
-            fetch(marineUrl).then(r=>r.json()).then(data => {
-                if(!data.hourly) throw new Error("No es mar");
+            fetch(marineUrl).then(r => r.json()).then(data => {
+                if(!data.hourly || !data.hourly.tide_height) throw new Error("Sin Mareas");
                 
                 const now = new Date();
                 const h = now.getHours();
@@ -477,18 +489,43 @@
                 const trend = tides[1] > tides[0] ? "SUBIENDO ⬆" : "BAJANDO ⬇";
                 document.getElementById('tide-current').innerText = trend;
                 
-                let maxV = -99, maxT = "";
-                for(let i=0; i<tides.length; i++) { if(tides[i] > maxV) { maxV = tides[i]; maxT = times[i]; } }
-                const d = new Date(maxT);
-                const min = d.getMinutes() < 10 ? '0'+d.getMinutes() : d.getMinutes();
-                document.getElementById('tide-next').innerText = `Pleamar: ${d.getHours()}:${min}`;
+                // Buscar próxima pleamar
+                let maxVal = -99, maxTimeStr = "";
+                for(let i=0; i<tides.length; i++) {
+                    if(tides[i] > maxVal) { maxVal = tides[i]; maxTimeStr = times[i]; }
+                }
+                
+                const d = new Date(maxTimeStr);
+                const minFormatted = (d.getMinutes()<10?'0':'') + d.getMinutes();
+                document.getElementById('tide-next').innerText = `Pleamar: ${d.getHours()}:${minFormatted} hs`;
+
             }).catch(() => {
-                document.getElementById('tide-current').innerText = "RÍO";
-                document.getElementById('tide-next').innerText = "Interior / Sin Marea";
+                document.getElementById('tide-current').innerText = "RÍO/LAGO";
+                document.getElementById('tide-next').innerText = "Sin marea oceánica";
             });
         }
 
-        // --- UTILS ---
+        // --- CALCULO LUNAR ---
+        function calculateMoonPhase() {
+            const date = new Date();
+            const lp = 2551443; 
+            const new_moon = new Date(1970, 0, 7, 20, 35, 0);
+            const phase_total = ((date.getTime() - new_moon.getTime()) / 1000) % lp;
+            const phase_days = Math.floor(phase_total / (24 * 3600)) + 1;
+            
+            let phase = "Nueva", icon = "🌑";
+            if (phase_days >= 2 && phase_days < 8) { phase = "Creciente"; icon = "🌒"; }
+            else if (phase_days >= 8 && phase_days < 10) { phase = "Cuarto Crec."; icon = "🌓"; }
+            else if (phase_days >= 10 && phase_days < 14) { phase = "Gibosa"; icon = "🌔"; }
+            else if (phase_days >= 14 && phase_days < 16) { phase = "LLENA"; icon = "🌕"; }
+            else if (phase_days >= 16 && phase_days < 22) { phase = "Menguante"; icon = "🌖"; }
+            else if (phase_days >= 22 && phase_days < 24) { phase = "Cuarto Meng."; icon = "🌗"; }
+            else if (phase_days >= 24) { phase = "Menguante"; icon = "🌘"; }
+            
+            document.getElementById('moon-phase').innerText = phase.toUpperCase();
+            document.getElementById('moon-icon').innerText = icon;
+        }
+
         function determineSpecies(lat, lon) {
             const box = document.getElementById('bio-box');
             const regionLbl = document.getElementById('bio-region');
@@ -513,37 +550,15 @@
             }
         }
 
-        function calculateMoonPhase() {
-            const date = new Date();
-            const lp = 2551443; 
-            const now = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 20, 35, 0);
-            const new_moon = new Date(1970, 0, 7, 20, 35, 0);
-            const phase_total = ((now.getTime() - new_moon.getTime()) / 1000) % lp;
-            const phase_days = Math.floor(phase_total / (24 * 3600)) + 1;
-            let phase = "Nueva", icon = "🌑";
-            if (phase_days >= 2 && phase_days < 8) { phase = "Creciente"; icon = "🌒"; }
-            else if (phase_days >= 8 && phase_days < 10) { phase = "Cuarto Crec."; icon = "🌓"; }
-            else if (phase_days >= 10 && phase_days < 14) { phase = "Gibosa"; icon = "🌔"; }
-            else if (phase_days >= 14 && phase_days < 16) { phase = "LLENA"; icon = "🌕"; }
-            else if (phase_days >= 16 && phase_days < 22) { phase = "Menguante"; icon = "🌖"; }
-            else if (phase_days >= 22 && phase_days < 24) { phase = "Cuarto Meng."; icon = "🌗"; }
-            else if (phase_days >= 24) { phase = "Menguante"; icon = "🌘"; }
-            document.getElementById('moon-phase').innerText = phase;
-            document.getElementById('moon-icon').innerText = icon;
-        }
-
-        // --- UI LOGIC ---
-        function switchTab(m){ currentMode=m; document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); event.target.classList.add('active'); loadFishMenu(); }
-        function loadFishMenu(){ const s=document.getElementById('fish-selector'); s.innerHTML='<option>Selecciona pez...</option>'; fishDB[currentMode].forEach((f,i)=>{const o=document.createElement('option'); o.value=i; o.innerText=f.n; s.appendChild(o)}); document.getElementById('fish-info').classList.remove('show'); }
-        function showFishInfo(){ const i=document.getElementById('fish-selector').value; if(!i)return; const f=fishDB[currentMode][i]; document.getElementById('fish-hook').innerText=f.h; document.getElementById('fish-bait').innerText=f.b; document.getElementById('fish-tip').innerText=f.t; document.getElementById('fish-info').classList.add('show'); }
-        
-        // --- BRUJULA & HERRAMIENTAS ---
+        // --- COMPASS ---
         function requestCompassPermission() {
-            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
                 DeviceOrientationEvent.requestPermission()
                 .then(r => { if (r==='granted') initCompass(); else alert("Permiso denegado"); })
                 .catch(console.error);
-            } else { alert("Brújula activa. Si no gira, no hay sensor."); }
+            } else {
+                alert("Brújula: Gira el celular para probar.");
+            }
         }
         function initCompass() {
             if (window.DeviceOrientationEvent) {
@@ -553,6 +568,12 @@
                 }, true);
             }
         }
+
+        // --- UI ---
+        function switchTab(m){ currentMode=m; document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); event.target.classList.add('active'); loadFishMenu(); }
+        function loadFishMenu(){ const s=document.getElementById('fish-selector'); s.innerHTML='<option>Selecciona pez...</option>'; fishDB[currentMode].forEach((f,i)=>{const o=document.createElement('option'); o.value=i; o.innerText=f.n; s.appendChild(o)}); document.getElementById('fish-info').classList.remove('show'); }
+        function showFishInfo(){ const i=document.getElementById('fish-selector').value; if(!i)return; const f=fishDB[currentMode][i]; document.getElementById('fish-hook').innerText=f.h; document.getElementById('fish-bait').innerText=f.b; document.getElementById('fish-tip').innerText=f.t; document.getElementById('fish-info').classList.add('show'); }
+        
         async function toggleFlash(){ 
             const b=document.getElementById('btn-torch'); 
             if(torchTrack){torchTrack.stop(); torchTrack=null; b.classList.remove('on'); return;} 
@@ -561,10 +582,9 @@
                 torchTrack=s.getVideoTracks()[0]; 
                 await torchTrack.applyConstraints({advanced:[{torch:true}]}); 
                 b.classList.add('on'); 
-            }catch(e){alert("Error: Flash requiere permiso de cámara.");} 
+            }catch(e){alert("Error: Flash requiere permiso de cámara/HTTPS.");} 
         }
 
-        // --- LOCALSTORAGE ---
         function saveQuickLog() {
             const text = prompt("📝 Captura (Especie - Kg):");
             if(text) {
@@ -580,18 +600,15 @@
         function renderLog() {
             const c = document.getElementById('log-history');
             const h = JSON.parse(localStorage.getItem('pescaLog')) || [];
-            if (h.length === 0) { c.innerHTML = '<div style="text-align:center; color:#666; font-size:1rem; padding:10px;">Historial vacío</div>'; return; }
+            if (h.length === 0) { c.innerHTML = '<div style="text-align:center; color:#666; font-size:1rem; padding:10px;">Sin historial</div>'; return; }
             let html = "";
             h.forEach(i => {
-                html += `<div class="log-item">
-                        <div><span class="log-text">${i.text}</span><span class="log-date">${i.date}</span></div>
-                        <button class="btn-delete" onclick="deleteLog(${i.id})">×</button>
-                    </div>`;
+                html += `<div class="log-item"><div><span class="log-text">${i.text}</span><span class="log-date">${i.date}</span></div><button class="btn-delete" onclick="deleteLog(${i.id})">×</button></div>`;
             });
             c.innerHTML = html;
         }
         function deleteLog(id) {
-            if(confirm("¿Eliminar?")) {
+            if(confirm("¿Borrar?")) {
                 let h = JSON.parse(localStorage.getItem('pescaLog')) || [];
                 h = h.filter(i => i.id !== id);
                 localStorage.setItem('pescaLog', JSON.stringify(h));
