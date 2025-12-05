@@ -29,7 +29,7 @@
             color: var(--text);
             margin: 0;
             padding: 12px;
-            padding-bottom: 100px;
+            padding-bottom: 120px;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
@@ -37,11 +37,12 @@
         /* --- LOGO --- */
         .brand-header {
             text-align: center;
-            padding: 10px 0;
+            padding: 15px 0;
             display: flex;
             justify-content: center;
         }
-        .brand-link { width: 60%; display: block; }
+        .brand-link { width: 60%; display: block; transition: opacity 0.2s; }
+        .brand-link:active { opacity: 0.7; }
         .brand-logo {
             width: 100%; 
             height: auto;
@@ -102,7 +103,7 @@
             background: #151e2e;
         }
         .loc-title { font-size: 1.4rem; color: white; margin-bottom: 2px; font-weight:bold; font-family: var(--font-title); }
-        .loc-sub { font-size: 0.8rem; color: var(--yellow); }
+        .loc-sub { font-size: 0.8rem; color: var(--green); }
 
         /* --- GRILLAS --- */
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
@@ -160,12 +161,7 @@
             color: #64748b; font-size: 1.2rem; cursor: pointer; font-family: var(--font-title); 
         }
         .tab.active { color: var(--blue); border-bottom: 3px solid var(--blue); color: white; }
-        
-        select { 
-            width: 100%; padding: 15px; background: #0f172a; border: 1px solid #334155; 
-            color: white; border-radius: 8px; font-size: 1.2rem;
-        }
-
+        select { width: 100%; padding: 15px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 8px; font-size: 1.2rem; }
         .fish-details { margin-top: 15px; display: none; padding: 15px; background: #111827; border-radius: 10px; border: 1px solid #374151; }
         .fish-details.show { display: block; animation: fadeIn 0.3s; }
         .detail-item { margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
@@ -205,7 +201,7 @@
 </head>
 <body>
 
-    <!-- 1. LOGO -->
+    <!-- 1. LOGO CON ENLACE -->
     <div class="brand-header">
         <a href="https://www.instagram.com/lolapalupulo/" target="_blank" class="brand-link">
             <img src="https://raw.githubusercontent.com/LOLAPALUPULO/LOLA-Pesca/refs/heads/main/lolapesca.svg" alt="Lola Pesca" class="brand-logo">
@@ -216,18 +212,20 @@
     <div class="card-box location-bar">
         <div>
             <div class="loc-title" id="loc-name">📍 Buscando GPS...</div>
-            <div class="loc-sub" id="status-msg">Estableciendo conexión...</div>
+            <div class="loc-sub" id="gps-status">Estableciendo conexión...</div>
         </div>
-        <button onclick="window.location.reload()" style="background:none; border:none; font-size:2.5rem; cursor:pointer;">🔄</button>
+        <button onclick="forceReload()" style="background:none; border:none; font-size:2rem; cursor:pointer;">🔄</button>
     </div>
 
     <!-- 3. NIVEL CRÍTICO (Viento / Brújula / Agua) -->
     <div class="grid-3">
+        <!-- Viento -->
         <div class="data-box">
             <span class="lbl">VIENTO</span>
             <span class="val" id="wind-speed">--</span>
             <div class="sub-val" id="wind-dir" style="color: var(--blue); font-weight:bold;">--</div>
         </div>
+        <!-- Brújula -->
         <div class="data-box compass-container" onclick="requestCompassPermission()">
             <div class="compass-rose">
                 <span class="cardinal c-n">N</span>
@@ -238,6 +236,7 @@
             </div>
             <div style="font-size:0.6rem; margin-top:8px; color:#888; font-weight:bold;">BRÚJULA</div>
         </div>
+        <!-- Mareas -->
         <div class="data-box tide-box">
             <div class="lbl" style="color:#bfdbfe">AGUA</div>
             <div class="tide-main" id="tide-current" style="font-size:1.6rem;">--</div>
@@ -245,12 +244,12 @@
         </div>
     </div>
 
-    <!-- 4. PRESIÓN Y LUNA -->
+    <!-- 4. ACTIVIDAD: PRESIÓN Y LUNA -->
     <div class="grid-2">
         <div class="data-box">
             <span class="lbl">PRESIÓN (hPa)</span>
             <span class="val" id="press">--</span>
-            <span class="sub-val" id="press-desc" style="font-weight:bold">Esperando datos..</span>
+            <span class="sub-val" id="press-desc" style="font-weight:bold">Esperando..</span>
         </div>
         <div class="data-box" style="justify-content: space-between;">
             <span class="lbl">FASE LUNAR</span>
@@ -259,7 +258,7 @@
         </div>
     </div>
     
-    <!-- 5. TEMP Y UV -->
+    <!-- 5. AMBIENTE: TEMP Y UV -->
     <div class="grid-2">
         <div class="data-box">
             <span class="lbl">TEMP</span>
@@ -267,7 +266,7 @@
             <div class="sub-val" id="feels-like">ST: --°</div>
         </div>
         <div class="data-box" style="border: 1px solid #334155;">
-            <span class="lbl">INDICE UV MAX</span>
+            <span class="lbl">INDICE UV</span>
             <span class="val" id="uv-val">--</span>
             <div style="height:6px; width:80%; background:#333; margin-top:8px; border-radius:3px;">
                 <div id="uv-bar" style="height:100%; width:0%; background:var(--green); border-radius:3px; transition:1s;"></div>
@@ -355,25 +354,29 @@
             renderLog();
         };
 
-        // --- LOGICA DE DATOS BLINDADA ---
+        // --- LÓGICA DE DATOS BLINDADA ---
+        function forceReload() {
+            document.getElementById('loc-name').innerHTML = "Reiniciando...";
+            initApp();
+        }
+
         function initApp() {
             // Ubicación Fallback: Buenos Aires (Costanera)
-            const fallbackLat = -34.55;
-            const fallbackLon = -58.4;
+            const fallbackLat = -34.6037;
+            const fallbackLon = -58.3816;
 
             if(!navigator.geolocation) {
-                alert("Navegador sin GPS. Se usará ubicación de respaldo.");
+                alert("Navegador sin GPS. Usando ubicación de respaldo.");
                 fetchData(fallbackLat, fallbackLon, false);
                 return;
             }
 
-            // Opciones de GPS más agresivas
-            const gpsOptions = { timeout: 8000, maximumAge: 60000 };
+            const gpsOptions = { timeout: 8000, enableHighAccuracy: true };
             
-            // Timeout manual de seguridad (Si el GPS del navegador no responde nunca)
+            // Timeout de seguridad manual
             const safetyTimeout = setTimeout(() => {
                 console.warn("GPS tardó mucho.");
-                document.getElementById('status-msg').innerText = "Tiempo de espera agotado. Usando respaldo.";
+                document.getElementById('gps-status').innerText = "Tiempo agotado. Modo Respaldo.";
                 fetchData(fallbackLat, fallbackLon, false);
             }, 9000);
 
@@ -392,29 +395,27 @@
         }
 
         function fetchData(lat, lon, isReal) {
-            // Actualizar status visual
-            const statusDiv = document.getElementById('status-msg');
-            statusDiv.innerText = isReal ? "📡 GPS CONECTADO - DATOS EN TIEMPO REAL" : "⚠️ MODO DEMO / GPS FALLÓ (Zona: BSAS)";
-            statusDiv.style.color = isReal ? "var(--green)" : "var(--danger)";
+            // UI Feedback
+            document.getElementById('gps-status').innerText = isReal ? "🟢 GPS ACTIVO" : "🔴 MODO DEMO (SIN GPS)";
+            document.getElementById('gps-status').style.color = isReal ? "var(--green)" : "var(--danger)";
 
-            // 1. Ciudad (Nominatim)
-            if (isReal) {
+            // 1. Ciudad
+            if(isReal) {
                 fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
                 .then(r => r.json())
                 .then(d => {
-                    document.getElementById('loc-name').innerText = "📍 " + (d.address.city || d.address.town || d.address.village || "Costa/Río");
+                    document.getElementById('loc-name').innerText = "📍 " + (d.address.city || d.address.town || "Zona Detectada");
                 })
                 .catch(() => { document.getElementById('loc-name').innerText = "📍 Zona de Pesca"; });
             } else {
-                document.getElementById('loc-name').innerText = "📍 Río de la Plata (Demo)";
+                document.getElementById('loc-name').innerText = "📍 Buenos Aires (Defecto)";
             }
 
-            // Analisis de Especies
             determineSpecies(lat, lon);
 
-            // 2. CLIMA + PRESIÓN + UV (Open-Meteo V1)
-            // SOLUCION UV: Pedimos uv_index_max (diario) en vez de uv_index (horario)
-            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,weather_code&daily=uv_index_max&timezone=auto`;
+            // 2. API CLIMA (Lógica Solicitada: Surface Pressure y Hourly UV)
+            // Esta URL pide surface_pressure en 'current' y uv_index en 'hourly' tal como se pidió
+            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,surface_pressure,wind_speed_10m,wind_direction_10m,weather_code&hourly=uv_index&timezone=auto`;
 
             fetch(weatherUrl).then(r => r.json()).then(data => {
                 const cur = data.current;
@@ -430,41 +431,36 @@
                 const dirIndex = Math.round(((wDir %= 360) < 0 ? wDir + 360 : wDir) / 45) % 8;
                 document.getElementById('wind-dir').innerText = "DEL " + dirs[dirIndex];
 
-                // PRESIÓN (FALLBACK INTELIGENTE)
-                // Intenta Presión Nivel Mar (Mejor), si falla, usa Superficie.
-                let p = cur.pressure_msl;
-                if (!p) p = cur.surface_pressure; 
+                // PRESIÓN (Lógica solicitada: surface_pressure)
+                const p = Math.round(cur.surface_pressure);
+                document.getElementById('press').innerText = p;
                 
-                if (p) {
-                    const pVal = Math.round(p);
-                    document.getElementById('press').innerText = pVal;
-                    
-                    const pDesc = document.getElementById('press-desc');
-                    if(pVal < 1008) { 
-                        pDesc.innerText = "⬇ BAJA (Pez lento)"; pDesc.style.color = "var(--danger)"; 
-                    } else if(pVal > 1018) { 
-                        pDesc.innerText = "⬆ ALTA (Activo)"; pDesc.style.color = "var(--green)"; 
-                    } else { 
-                        pDesc.innerText = "➡ ESTABLE"; pDesc.style.color = "#aaa"; 
-                    }
-                } else {
-                    document.getElementById('press').innerText = "N/A";
+                const pDesc = document.getElementById('press-desc');
+                if(p < 1008) { 
+                    pDesc.innerText = "BAJA"; pDesc.style.color = "var(--danger)"; 
+                } else if(p > 1018) { 
+                    pDesc.innerText = "ALTA"; pDesc.style.color = "var(--green)"; 
+                } else { 
+                    pDesc.innerText = "ESTABLE"; pDesc.style.color = "#aaa"; 
                 }
 
-                // UV MAXIMO DIARIO (Seguro)
-                let uvMax = 0;
-                if (data.daily && data.daily.uv_index_max && data.daily.uv_index_max.length > 0) {
-                    uvMax = data.daily.uv_index_max[0];
+                // UV (Lógica solicitada: data.hourly.uv_index[currentHourIndex])
+                const now = new Date();
+                const currentHourIndex = now.getHours();
+                // Protección: verificar si el array existe
+                let uv = 0;
+                if (data.hourly && data.hourly.uv_index && data.hourly.uv_index[currentHourIndex] !== undefined) {
+                    uv = data.hourly.uv_index[currentHourIndex];
                 }
                 
-                document.getElementById('uv-val').innerText = uvMax;
+                document.getElementById('uv-val').innerText = uv;
                 const uvBar = document.getElementById('uv-bar');
                 const uvMsg = document.getElementById('uv-msg');
                 
                 let color = "var(--green)", width = "20%", msg = "BAJO";
-                if(uvMax >= 3) { color = "var(--yellow)"; width = "50%"; msg = "MODERADO"; }
-                if(uvMax >= 6) { color = "var(--orange)"; width = "80%"; msg = "ALTO (Gorro)"; }
-                if(uvMax >= 8) { color = "var(--danger)"; width = "100%"; msg = "EXTREMO"; }
+                if(uv >= 3) { color = "var(--yellow)"; width = "50%"; msg = "MODERADO"; }
+                if(uv >= 6) { color = "var(--orange)"; width = "75%"; msg = "ALTO"; }
+                if(uv >= 8) { color = "var(--danger)"; width = "100%"; msg = "EXTREMO"; }
                 
                 uvBar.style.background = color;
                 uvBar.style.width = width;
@@ -472,14 +468,14 @@
                 uvMsg.style.color = color;
 
             }).catch(e => {
-                console.error("API CLIMA ERROR:", e);
-                document.getElementById('press-desc').innerText = "Error conexión";
+                console.error("API Error:", e);
+                document.getElementById('press-desc').innerText = "Sin Datos";
             });
 
             // 3. MAREAS (API Marina)
             const marineUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=tide_height&timezone=auto`;
             fetch(marineUrl).then(r => r.json()).then(data => {
-                if(!data.hourly || !data.hourly.tide_height) throw new Error("Sin Mareas");
+                if(!data.hourly || !data.hourly.tide_height) throw new Error("Sin datos de marea");
                 
                 const now = new Date();
                 const h = now.getHours();
@@ -489,23 +485,21 @@
                 const trend = tides[1] > tides[0] ? "SUBIENDO ⬆" : "BAJANDO ⬇";
                 document.getElementById('tide-current').innerText = trend;
                 
-                // Buscar próxima pleamar
                 let maxVal = -99, maxTimeStr = "";
                 for(let i=0; i<tides.length; i++) {
                     if(tides[i] > maxVal) { maxVal = tides[i]; maxTimeStr = times[i]; }
                 }
-                
                 const d = new Date(maxTimeStr);
                 const minFormatted = (d.getMinutes()<10?'0':'') + d.getMinutes();
                 document.getElementById('tide-next').innerText = `Pleamar: ${d.getHours()}:${minFormatted} hs`;
 
             }).catch(() => {
-                document.getElementById('tide-current').innerText = "RÍO/LAGO";
-                document.getElementById('tide-next').innerText = "Sin marea oceánica";
+                document.getElementById('tide-current').innerText = "RÍO";
+                document.getElementById('tide-next').innerText = "Interior / Sin Marea";
             });
         }
 
-        // --- CALCULO LUNAR ---
+        // --- CÁLCULO LUNAR ---
         function calculateMoonPhase() {
             const date = new Date();
             const lp = 2551443; 
@@ -557,7 +551,7 @@
                 .then(r => { if (r==='granted') initCompass(); else alert("Permiso denegado"); })
                 .catch(console.error);
             } else {
-                alert("Brújula: Gira el celular para probar.");
+                alert("Brújula activa. Si no gira, gire el celular.");
             }
         }
         function initCompass() {
@@ -585,6 +579,7 @@
             }catch(e){alert("Error: Flash requiere permiso de cámara/HTTPS.");} 
         }
 
+        // --- BITACORA ---
         function saveQuickLog() {
             const text = prompt("📝 Captura (Especie - Kg):");
             if(text) {
