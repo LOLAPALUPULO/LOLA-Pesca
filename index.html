@@ -144,7 +144,7 @@
             font-size: 1.8rem; /* Tamaño de fuente más pequeño para el valor principal */
         }
         .ambient-data-box .lbl {
-            font-size: 0.7rem; /* Tamaño de fuente más pequeño para la etiqueta */
+            font-size: 0.85rem; /* Aumentado el tamaño de la fuente para la etiqueta */
             margin-bottom: 1px;
         }
         .ambient-data-box .sub-val {
@@ -168,6 +168,12 @@
 
         /* --- BRÚJULA --- */
         .compass-container { cursor: pointer; } 
+        .compass-label { /* Nuevo estilo para la etiqueta de la brújula */
+            font-family: var(--font-title); 
+            font-size: 0.9rem; /* Tamaño ajustado */
+            color: var(--text); /* Color más visible */
+            margin-bottom: 8px; /* Espacio debajo del texto */
+        }
         .compass-rose {
             width: 70px; height: 70px; border-radius: 50%;
             background: #0f172a; border: 3px solid #475569;
@@ -223,17 +229,31 @@
             border: 1px solid rgba(255,255,255,0.3);
         }
 
-        .hour-mark {
+        /* Estilos para los números del reloj */
+        .clock-number {
             position: absolute;
-            background-color: #64748b; /* Subtle gray for minor marks */
-            z-index: 0; 
+            font-size: 0.6rem; /* Pequeño para encajar */
+            font-weight: bold;
+            color: var(--text);
+            transform: translate(-50%, -50%); /* Centra el número */
+            z-index: 1; /* Detrás de las manecillas, delante de la base */
+            text-shadow: 0 0 2px rgba(0,0,0,0.5);
         }
 
-        .mark-12 { top: 2px; left: 50%; transform: translateX(-50%); height: 7px; width: 2px; background-color: var(--text); }
-        .mark-3 { right: 2px; top: 50%; transform: translateY(-50%); width: 7px; height: 2px; background-color: var(--text); }
-        .mark-6 { bottom: 2px; left: 50%; transform: translateX(-50%); height: 7px; width: 2px; background-color: var(--text); }
-        .mark-9 { left: 2px; top: 50%; transform: translateY(-50%); width: 7px; height: 2px; background-color: var(--text); }
-
+        /* Posicionamiento específico para cada número del reloj (ajustado para '12' y orden del HTML) */
+        .clock-number:nth-child(1) { top: 5%; left: 50%; } /* 12 */
+        .clock-number:nth-child(2) { top: 15%; left: 69%; } /* 1 */
+        .clock-number:nth-child(3) { top: 25%; left: 85%; } /* 2 */
+        .clock-number:nth-child(4) { top: 46%; left: 95%; } /* 3 */
+        .clock-number:nth-child(5) { top: 69%; left: 85%; } /* 4 */
+        .clock-number:nth-child(6) { top: 83%; left: 69%; } /* 5 */
+        .clock-number:nth-child(7) { top: 90%; left: 49%; } /* 6 */
+        .clock-number:nth-child(8) { top: 83%; left: 29%; } /* 7 */
+        .clock-number:nth-child(9) { top: 69%; left: 13%; } /* 8 */
+        .clock-number:nth-child(10) { top: 46%; left: 4%; } /* 9 */
+        .clock-number:nth-child(11) { top: 25%; left: 13%; } /* 10 */
+        .clock-number:nth-child(12) { top: 15%; left: 29%; } /* 11 */
+        
         .hand {
             position: absolute;
             bottom: 50%; /* Center the pivot point vertically */
@@ -259,12 +279,17 @@
             z-index: 2;
         }
 
-        .second-hand {
-            width: 2px;
-            height: 33px;
-            background-color: var(--danger);
+        /* Nueva aguja de segundos con el logo */
+        .second-hand-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 30px; /* Tamaño ajustado para el reloj de 70px */
+            height: auto;
+            transform-origin: 50% 50%; /* Gira sobre su centro */
+            transform: translate(-50%, -50%) rotate(0deg); /* Centra la imagen y aplica rotación */
             z-index: 4;
-            transition: transform 0.05s linear; /* Faster transition for smoother second hand */
+            transition: transform 0.05s linear; /* Transición suave */
         }
         /* --- FIN RELOJ ANALÓGICO --- */
 
@@ -398,18 +423,26 @@
         <div class="data-box" id="analog-clock-box">
             <span class="lbl">HORA ACTUAL</span>
             <div class="analog-clock" id="analog-clock">
-                <div class="hour-mark mark-12"></div>
-                <div class="hour-mark mark-3"></div>
-                <div class="hour-mark mark-6"></div>
-                <div class="hour-mark mark-9"></div>
+                <span class="clock-number">12</span>
+                <span class="clock-number">1</span>
+                <span class="clock-number">2</span>
+                <span class="clock-number">3</span>
+                <span class="clock-number">4</span>
+                <span class="clock-number">5</span>
+                <span class="clock-number">6</span>
+                <span class="clock-number">7</span>
+                <span class="clock-number">8</span>
+                <span class="clock-number">9</span>
+                <span class="clock-number">10</span>
+                <span class="clock-number">11</span>
                 <div class="hand hour-hand" id="hour-hand"></div>
                 <div class="hand minute-hand" id="minute-hand"></div>
-                <div class="hand second-hand" id="second-hand"></div>
+                <img src="https://raw.githubusercontent.com/LOLAPALUPULO/LOLA-Pesca/refs/heads/main/lolapesca.svg" alt="LOLA Pesca" class="second-hand-logo" id="second-hand-logo">
             </div>
-            <div class="sub-val" style="font-weight:bold;">Local</div>
         </div>
         <!-- Brújula (Movido) -->
         <div class="data-box compass-container" onclick="requestCompassPermission()">
+            <div class="compass-label">BRÚJULA</div> <!-- Etiqueta movida y con nueva clase -->
             <div class="compass-rose">
                 <span class="cardinal c-n">N</span>
                 <span class="cardinal c-e">E</span>
@@ -417,7 +450,6 @@
                 <span class="cardinal c-o">O</span>
                 <div class="compass-needle" id="compass-needle"></div>
             </div>
-            <div style="font-size:0.6rem; margin-top:8px; color:#888; font-weight:bold;">BRÚJULA</div>
         </div>
         <!-- Temperatura (Movido) -->
         <div class="data-box">
@@ -621,8 +653,12 @@
                 }, 
                 (err) => {
                     clearTimeout(safetyTimeout);
-                    console.error("GPS Falló:", err.message);
-                    document.getElementById('gps-status').innerText = `🔴 GPS FALLO: ${err.message}`;
+                    console.error("GPS Falló:", err.message); // Log del mensaje de error original para depuración
+                    let statusMessage = "GPS FALLO. Intentando modo DEMO.";
+                    if (err.code === err.PERMISSION_DENIED) {
+                        statusMessage = "GPS DENEGADO. Active en configuración.";
+                    }
+                    document.getElementById('gps-status').innerText = `🔴 ${statusMessage}`;
                     document.getElementById('gps-status').style.color = "var(--danger)";
                     // Asegurar que los datos del clima se reseteen también
                     document.getElementById('temp').innerText = "--°";
@@ -862,11 +898,11 @@
             const minutes = now.getMinutes();
             const seconds = now.getSeconds();
 
-            const secondHand = document.getElementById('second-hand');
+            const secondHandLogo = document.getElementById('second-hand-logo');
             const minuteHand = document.getElementById('minute-hand');
             const hourHand = document.getElementById('hour-hand');
 
-            if (secondHand && minuteHand && hourHand) {
+            if (secondHandLogo && minuteHand && hourHand) {
                 // Calculate rotation for each hand
                 // Seconds: 360 degrees / 60 seconds = 6 degrees per second
                 const secondsDegrees = (seconds / 60) * 360;
@@ -875,7 +911,7 @@
                 // Hours: 360 degrees / 12 hours = 30 degrees per hour. Add (minutes / 60) * 30 degrees for smooth movement.
                 const hoursDegrees = ((hours % 12 + minutes / 60) / 12) * 360;
 
-                secondHand.style.transform = `translateX(-50%) rotate(${secondsDegrees}deg)`;
+                secondHandLogo.style.transform = `translate(-50%, -50%) rotate(${secondsDegrees}deg)`;
                 minuteHand.style.transform = `translateX(-50%) rotate(${minutesDegrees}deg)`;
                 hourHand.style.transform = `translateX(-50%) rotate(${hoursDegrees}deg)`;
             }
