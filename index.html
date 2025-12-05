@@ -261,18 +261,6 @@
             <span style="font-weight:bold; font-size:0.9rem; color:white;" id="moon-phase">--</span>
         </div>
     </div>
-
-    <!-- 5. AMBIENTE: SOL -->
-    <div class="grid-2">
-        <div class="data-box">
-            <span class="lbl">AMANECER ☀️</span>
-            <span class="val" id="sunrise-time" style="font-size:1.8rem">--:--</span>
-        </div>
-        <div class="data-box">
-            <span class="lbl">PUESTA SOL 🌙</span>
-            <span class="val" id="sunset-time" style="font-size:1.8rem">--:--</span>
-        </div>
-    </div>
     
     <!-- TEMP y UV -->
     <div class="grid-2">
@@ -421,13 +409,13 @@
             // Predicción Especies
             determineSpecies(lat, lon);
 
-            // 2. CLIMA, SOL, UV, PRESIÓN (Open-Meteo)
-            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,pressure_msl,wind_speed_10m,wind_direction_10m,weather_code&hourly=uv_index&daily=sunrise,sunset&timezone=auto`;
+            // 2. API CLIMA (LIGERA Y RAPIDA)
+            // Quitamos sunrise/sunset para evitar conflictos de parseo
+            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,pressure_msl,wind_speed_10m,wind_direction_10m,weather_code&hourly=uv_index&timezone=auto`;
 
             fetch(weatherUrl).then(r=>r.json()).then(data => {
                 const cur = data.current;
-                const daily = data.daily;
-
+                
                 // Temp
                 document.getElementById('temp').innerText = Math.round(cur.temperature_2m) + "°";
                 document.getElementById('feels-like').innerText = "ST: " + Math.round(cur.apparent_temperature) + "°";
@@ -439,7 +427,7 @@
                 const dirIndex = Math.round(((wDir %= 360) < 0 ? wDir + 360 : wDir) / 45) % 8;
                 document.getElementById('wind-dir').innerText = "DEL " + dirs[dirIndex];
 
-                // Presión
+                // Presión (MSL)
                 const p = Math.round(cur.pressure_msl);
                 document.getElementById('press').innerText = p;
                 const pDesc = document.getElementById('press-desc');
@@ -447,19 +435,15 @@
                 else if(p > 1018) { pDesc.innerText = "ALTA"; pDesc.style.color = "var(--green)"; }
                 else { pDesc.innerText = "ESTABLE"; pDesc.style.color = "#aaa"; }
 
-                // Sol (Parseo Robustecido)
-                if(daily && daily.sunrise && daily.sunset) {
-                    const rise = new Date(daily.sunrise[0]);
-                    const set = new Date(daily.sunset[0]);
-                    const timeOpt = {hour: '2-digit', minute:'2-digit', hour12: false};
-                    document.getElementById('sunrise-time').innerText = rise.toLocaleTimeString([], timeOpt);
-                    document.getElementById('sunset-time').innerText = set.toLocaleTimeString([], timeOpt);
-                }
-
-                // UV (Hora Exacta)
+                // UV (Robustecido)
+                // Obtenemos la hora actual del dispositivo para consultar el array horario
                 const now = new Date();
                 const hourIndex = now.getHours(); 
-                const uv = (data.hourly && data.hourly.uv_index) ? data.hourly.uv_index[hourIndex] : 0;
+                let uv = 0;
+                
+                if (data.hourly && data.hourly.uv_index && data.hourly.uv_index[hourIndex] !== undefined) {
+                    uv = data.hourly.uv_index[hourIndex];
+                }
                 
                 document.getElementById('uv-val').innerText = uv;
                 const uvBar = document.getElementById('uv-bar');
