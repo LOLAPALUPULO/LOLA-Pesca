@@ -59,6 +59,11 @@
         /* TÍTULOS */
         .lbl { font-family: var(--font-title); color: #94a3b8; font-size: 0.9rem; margin-bottom: 5px; letter-spacing: 1px; text-transform: uppercase; }
         .val { font-size: 1.8rem; font-weight: bold; margin-top: 5px; line-height: 1; }
+        .section-header { 
+            text-align: center; color: var(--blue); font-family: var(--font-title); 
+            margin: 20px 0 10px 0; font-size: 1.1rem; letter-spacing: 1px; 
+            border-bottom: 1px solid #334155; padding-bottom: 5px;
+        }
         
         /* HEADER UBICACIÓN */
         .location-bar {
@@ -70,6 +75,23 @@
         }
         .loc-title { font-size: 1.4rem; color: white; margin-bottom: 2px; font-family: var(--font-title); }
         .loc-sub { font-size: 0.9rem; color: #94a3b8; }
+
+        /* PREDICCION DE ESPECIES (NUEVO) */
+        .prediction-box {
+            background: rgba(56, 189, 248, 0.1); /* Fondo azulado muy suave */
+            border: 1px solid var(--blue);
+            text-align: left;
+        }
+        .species-list {
+            font-size: 1.1rem;
+            color: white;
+            font-weight: 500;
+            margin-top: 5px;
+        }
+        .biome-tag {
+            font-size: 0.7rem; background: var(--blue); color: #000; 
+            padding: 2px 6px; border-radius: 4px; font-weight: bold; display: inline-block; margin-bottom: 5px;
+        }
 
         /* --- GRILLAS --- */
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
@@ -95,15 +117,14 @@
         .tide-main { font-size: 1.8rem; font-weight: bold; color: white; margin: 5px 0; }
         .tide-sub { font-size: 0.8rem; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 10px; }
 
-        /* --- BRÚJULA ROSA DE LOS VIENTOS --- */
+        /* --- UV --- */
+        .uv-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+
+        /* --- BRÚJULA --- */
         .compass-rose {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: #0f172a;
-            border: 2px solid #475569;
-            position: relative;
-            box-shadow: inset 0 0 10px #000;
+            width: 80px; height: 80px; border-radius: 50%;
+            background: #0f172a; border: 2px solid #475569;
+            position: relative; box-shadow: inset 0 0 10px #000;
         }
         .cardinal { position: absolute; font-size: 0.6rem; font-weight: bold; color: #64748b; }
         .c-n { top: 2px; left: 50%; transform: translateX(-50%); color: var(--danger); }
@@ -112,8 +133,7 @@
         .c-o { left: 4px; top: 50%; transform: translateY(-50%); }
 
         .compass-needle {
-            position: absolute;
-            top: 50%; left: 50%;
+            position: absolute; top: 50%; left: 50%;
             width: 10px; height: 60px;
             background: linear-gradient(to bottom, var(--danger) 50%, white 50%);
             transform: translate(-50%, -50%) rotate(0deg);
@@ -143,28 +163,15 @@
         .btn-torch.on { background: #f8fafc; color: black; box-shadow: 0 0 20px white; }
         .btn-log { background: var(--green); }
 
-        /* Estilos de la lista de bitácora */
-        .log-container {
-            margin-top: 20px;
-            border-top: 1px solid #334155;
-            padding-top: 10px;
-        }
+        .log-container { margin-top: 20px; border-top: 1px solid #334155; padding-top: 10px; }
         .log-item {
-            background: #1e293b;
-            border-left: 4px solid var(--green);
-            padding: 10px;
-            margin-bottom: 8px;
-            border-radius: 4px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            animation: fadeIn 0.5s;
+            background: #1e293b; border-left: 4px solid var(--green);
+            padding: 10px; margin-bottom: 8px; border-radius: 4px;
+            display: flex; justify-content: space-between; align-items: center; animation: fadeIn 0.5s;
         }
         .log-text { font-size: 0.95rem; color: white; }
         .log-date { font-size: 0.7rem; color: #94a3b8; display: block; margin-top: 2px; }
-        .btn-delete {
-            background: none; border: none; color: var(--danger); font-size: 1.2rem; cursor: pointer; padding: 0 10px;
-        }
+        .btn-delete { background: none; border: none; color: var(--danger); font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
@@ -183,6 +190,13 @@
             <div class="loc-sub" id="loc-coords">Iniciando GPS</div>
         </div>
         <button onclick="initApp()" style="background:none; border:none; font-size:2rem; cursor:pointer;">🔄</button>
+    </div>
+
+    <!-- PREDICCIÓN DE ESPECIES (NUEVO) -->
+    <div class="card-box prediction-box" id="bio-box" style="display:none;">
+        <span class="biome-tag" id="bio-region">DETECTANDO ZONA...</span>
+        <div class="lbl">ESPECIES PREDOMINANTES AQUÍ:</div>
+        <div class="species-list" id="bio-species">--</div>
     </div>
 
     <!-- FILA 1: MAREAS Y UV -->
@@ -239,6 +253,11 @@
         </div>
     </div>
 
+    <!-- TÍTULO DE SECCIÓN (NUEVO) -->
+    <div class="section-header">
+        ENCICLOPEDIA TÁCTICA & EQUIPO
+    </div>
+
     <!-- GUIA TÁCTICA -->
     <div class="card-box guide-container">
         <div class="tabs">
@@ -274,7 +293,6 @@
         </button>
     </div>
 
-    <!-- CONTENEDOR DE REGISTROS GUARDADOS -->
     <div id="log-history" class="log-container">
         <div style="text-align:center; color:#666; font-size:0.8rem;">Historial vacío</div>
     </div>
@@ -286,13 +304,15 @@
                 {n:"Surubí", h:"8/0 a 10/0", b:"Morena, Anguila", t:"Busca pozos profundos de noche."},
                 {n:"Boga", h:"Simple chico (1 o 2)", b:"Maíz, Masa, Salamín", t:"Clava cuando corre, boca dura."},
                 {n:"Pejerrey", h:"Pequeño (4 o 5)", b:"Mojarra viva", t:"Usa boyas y regula profundidad."},
-                {n:"Tararira", h:"Offset / Triple", b:"Rana goma, Dientudo", t:"Activa con calor, busca yuyos."}
+                {n:"Tararira", h:"Offset / Triple", b:"Rana goma, Dientudo", t:"Activa con calor, busca yuyos."},
+                {n:"Bagre (Moncholo)", h:"3/0 Común", b:"Lombriz de tierra, Tripa", t:"Pesca de fondo en remansos."}
             ],
             mar: [
-                {n:"Corvina", h:"3/0 a 5/0", b:"Langostino, Anchoa", t:"Lanza a la 2da canaleta."},
+                {n:"Corvina Rubia", h:"3/0 a 5/0", b:"Langostino, Anchoa", t:"Lanza a la 2da canaleta."},
                 {n:"Lenguado", h:"Triple robador", b:"Pejerrey entero", t:"Recogida muy lenta por fondo."},
                 {n:"Pescadilla", h:"2/0 a 3/0", b:"Camarón, Filet", t:"Pica firme, usa destrabe."},
-                {n:"Pejerrey Mar", h:"Largo y fino", b:"Camarón, Filet", t:"Línea de 3 boyas o paternoster."}
+                {n:"Pejerrey Mar", h:"Largo y fino", b:"Camarón, Filet", t:"Línea de 3 boyas o paternoster."},
+                {n:"Chucho / Raya", h:"6/0 Fuerte", b:"Anchoa entera, Calamar", t:"Pelea pegado al fondo, cuidado con la púa."}
             ]
         };
 
@@ -304,31 +324,61 @@
             calculateMoonPhase();
             initApp();
             initCompass();
-            renderLog(); // Cargar historial al iniciar
+            renderLog();
         };
 
-        // --- FUNCIONES BITÁCORA REAL (LOCALSTORAGE) ---
+        // --- INTELIGENCIA DE ESPECIES POR GPS ---
+        function determineSpecies(lat, lon) {
+            const box = document.getElementById('bio-box');
+            const regionLbl = document.getElementById('bio-region');
+            const speciesLbl = document.getElementById('bio-species');
+            
+            box.style.display = 'block';
+            
+            // Lógica aproximada de zonas (Enfocada en Argentina/Uruguay/Chile)
+            // Zona 1: Río de la Plata / Delta / Paraná Inferior
+            if (lat > -35 && lat < -33 && lon > -60 && lon < -57) {
+                regionLbl.innerText = "ZONA: DELTA / RÍO DE LA PLATA";
+                speciesLbl.innerText = "Dorado, Boga, Tararira, Bagre, Surubí (temporada).";
+            }
+            // Zona 2: Costa Atlántica (Mar del Plata, Pinamar, etc)
+            else if (lat <= -36 && lat > -42 && lon > -60) {
+                regionLbl.innerText = "ZONA: COSTA ATLÁNTICA";
+                speciesLbl.innerText = "Corvina, Pescadilla, Lenguado, Brótola, Pejerrey.";
+            }
+            // Zona 3: Litoral Norte (Corrientes, Entre Ríos Norte)
+            else if (lat > -33 && lat < -25 && lon > -60) {
+                regionLbl.innerText = "ZONA: LITORAL / PARANÁ ALTO";
+                speciesLbl.innerText = "Dorado Grande, Surubí, Pacú, Manguruyú.";
+            }
+            // Zona 4: Patagonia (Lagos y Ríos del Sur)
+            else if (lat <= -39 && lon < -65) {
+                regionLbl.innerText = "ZONA: PATAGONIA";
+                speciesLbl.innerText = "Trucha Arcoíris, Trucha Marrón, Salmón, Fontinalis.";
+            }
+            // Zona 5: Córdoba / Centro
+            else if (lat > -33 && lat < -30 && lon < -62) {
+                regionLbl.innerText = "ZONA: SIERRAS / CENTRO";
+                speciesLbl.innerText = "Pejerrey (Diques), Carpa, Tararira.";
+            }
+            // Default
+            else {
+                regionLbl.innerText = "ZONA: GENERAL";
+                speciesLbl.innerText = "Variada local. Consulte guía de especies abajo.";
+            }
+        }
+
+        // --- BITÁCORA ---
         function saveQuickLog() {
             const text = prompt("📝 Nueva Captura (Especie - Peso):");
             if(text) {
                 const now = new Date();
-                // Formato dd/mm hh:mm
                 const dateStr = now.getDate() + "/" + (now.getMonth()+1) + " " + 
                                 now.getHours() + ":" + (now.getMinutes()<10?'0':'') + now.getMinutes();
-                
-                const newEntry = {
-                    id: Date.now(),
-                    text: text,
-                    date: dateStr
-                };
-
-                // Obtener historial existente
+                const newEntry = { id: Date.now(), text: text, date: dateStr };
                 let history = JSON.parse(localStorage.getItem('pescaLog')) || [];
-                history.unshift(newEntry); // Agregar al principio
-                
-                // Guardar en memoria del teléfono
+                history.unshift(newEntry);
                 localStorage.setItem('pescaLog', JSON.stringify(history));
-                
                 renderLog();
             }
         }
@@ -336,29 +386,23 @@
         function renderLog() {
             const container = document.getElementById('log-history');
             const history = JSON.parse(localStorage.getItem('pescaLog')) || [];
-
             if (history.length === 0) {
-                container.innerHTML = '<div style="text-align:center; color:#666; font-size:0.8rem; margin-top:10px;">Sin registros guardados</div>';
+                container.innerHTML = '<div style="text-align:center; color:#666; font-size:0.8rem; margin-top:10px;">Historial vacío</div>';
                 return;
             }
-
             let html = "";
             history.forEach(item => {
                 html += `
                     <div class="log-item">
-                        <div>
-                            <span class="log-text">${item.text}</span>
-                            <span class="log-date">${item.date}</span>
-                        </div>
+                        <div><span class="log-text">${item.text}</span><span class="log-date">${item.date}</span></div>
                         <button class="btn-delete" onclick="deleteLog(${item.id})">×</button>
-                    </div>
-                `;
+                    </div>`;
             });
             container.innerHTML = html;
         }
 
         function deleteLog(id) {
-            if(confirm("¿Borrar registro?")) {
+            if(confirm("¿Borrar?")) {
                 let history = JSON.parse(localStorage.getItem('pescaLog')) || [];
                 history = history.filter(item => item.id !== id);
                 localStorage.setItem('pescaLog', JSON.stringify(history));
@@ -407,6 +451,9 @@
                 const lat = pos.coords.latitude;
                 const lon = pos.coords.longitude;
                 document.getElementById('loc-coords').innerText = `${lat.toFixed(3)}, ${lon.toFixed(3)}`;
+
+                // EJECUTAR PREDICCIÓN DE ESPECIES
+                determineSpecies(lat, lon);
 
                 try {
                     const req = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
