@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LOLA Pesca - Tactical Ops</title>
+    <script type="importmap">
+{
+  "imports": {
+    "recharts": "https://aistudiocdn.com/recharts@^3.5.1",
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0"
+  }
+}
+</script>
     <style>
         /* --- FUENTE TACTICAL --- */
         @font-face {
@@ -108,7 +119,7 @@
 
         /* --- GRILLAS --- */
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
 
         .data-box {
             background: var(--card);
@@ -235,6 +246,7 @@
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
+<link rel="stylesheet" href="/index.css">
 </head>
 <body>
 
@@ -306,6 +318,39 @@
         </div>
     </div>
 
+    <!-- NUEVA SECCIÓN: CONDICIONES AMBIENTALES -->
+    <div class="section-header">CONDICIONES AMBIENTALES</div>
+
+    <div class="grid-2">
+        <!-- Humedad -->
+        <div class="data-box">
+            <span class="lbl">HUMEDAD</span>
+            <span class="val" id="humidity-val">--%</span>
+            <span class="sub-val" style="font-weight:bold"></span>
+        </div>
+        <!-- Nubes -->
+        <div class="data-box">
+            <span class="lbl">NUBES</span>
+            <span class="val" id="clouds-val">--%</span>
+            <span class="sub-val" style="font-weight:bold"></span>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <!-- Amanecer -->
+        <div class="data-box">
+            <span class="lbl">AMANECER</span>
+            <span class="val" id="sunrise-time">--:--</span>
+            <span class="sub-val" style="font-weight:bold"></span>
+        </div>
+        <!-- Atardecer -->
+        <div class="data-box">
+            <span class="lbl">ATARDECER</span>
+            <span class="val" id="sunset-time">--:--</span>
+            <span class="sub-val" style="font-weight:bold"></span>
+        </div>
+    </div>
+
     <!-- 6. CONSULTAS -->
     <div class="section-header">ENCICLOPEDIA TÁCTICA</div>
 
@@ -359,6 +404,9 @@
     <div id="log-history" class="log-container">
         <div style="text-align:center; color:#666; font-size:1rem; padding:10px;">Cargando historial...</div>
     </div>
+    
+    <!-- Punto de montaje para la lógica de React (oculto) -->
+    <div id="react-root-dummy" style="display: none;"></div>
 
     <script>
         // --- CONFIG & DB AMPLIADA ---
@@ -416,7 +464,7 @@
 
             const gpsOptions = { timeout: 8000, enableHighAccuracy: true };
             const safetyTimeout = setTimeout(() => {
-                console.warn("GPS tardó mucho.");
+                console.warn("GPS tardó mucho. Usando ubicación de respaldo.");
                 document.getElementById('gps-status').innerText = "Tiempo agotado. Modo Respaldo.";
                 fetchData(fallbackLat, fallbackLon, false);
             }, 9000);
@@ -428,7 +476,22 @@
                 }, 
                 (err) => {
                     clearTimeout(safetyTimeout);
-                    console.warn("GPS Falló:", err.message);
+                    console.error("GPS Falló:", err.message);
+                    document.getElementById('gps-status').innerText = `🔴 GPS FALLO: ${err.message}`;
+                    document.getElementById('gps-status').style.color = "var(--danger)";
+                    // Asegurar que los datos del clima se reseteen también
+                    document.getElementById('temp').innerText = "--°";
+                    document.getElementById('feels-like').innerText = "ST: --°";
+                    document.getElementById('wind-speed').innerText = "--";
+                    document.getElementById('wind-dir').innerText = "--";
+                    document.getElementById('press').innerText = "--";
+                    document.getElementById('press-desc').innerText = "Sin Datos";
+                    document.getElementById('humidity-val').innerText = '--%';
+                    document.getElementById('clouds-val').innerText = '--%';
+                    document.getElementById('sunrise-time').innerText = '--:--';
+                    document.getElementById('sunset-time').innerText = '--:--';
+                    document.getElementById('tide-current').innerText = "RÍO";
+                    document.getElementById('tide-next').innerText = "Interior / Sin Marea";
                     fetchData(fallbackLat, fallbackLon, false);
                 }, 
                 gpsOptions
@@ -444,7 +507,10 @@
                 .then(r=>r.json())
                 .then(d => {
                     document.getElementById('loc-name').innerText = "📍 " + (d.address.city || d.address.town || d.address.village || "Zona Detectada");
-                }).catch(()=> document.getElementById('loc-name').innerText = "📍 Zona de Pesca");
+                }).catch((e)=> {
+                    console.error("Error al obtener nombre de ubicación:", e);
+                    document.getElementById('loc-name').innerText = "📍 Zona de Pesca (Nombre no disponible)";
+                });
             } else {
                 document.getElementById('loc-name').innerText = "📍 Buenos Aires (Defecto)";
             }
@@ -452,70 +518,133 @@
             determineSpecies(lat, lon);
 
             // API CLIMA (SOLUCIÓN: Parámetros de presión corregidos para MSL)
-            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m&timezone=auto`;
+            // Agregamos relative_humidity_2m, cloud_cover para 'current'
+            // Y sunrise, sunset para 'daily'
+            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,relative_humidity_2m,cloud_cover&daily=sunrise,sunset&timezone=auto`;
 
-            fetch(weatherUrl).then(r => r.json()).then(data => {
-                const cur = data.current;
-                
+            fetch(weatherUrl)
+                .then(r => {
+                    if (!r.ok) {
+                        throw new Error(`HTTP error! status: ${r.status}`);
+                    }
+                    return r.json();
+                })
+                .then(data => {
+                console.log("Open-Meteo API Response (Clima/Ambiente):", data); // Log de la respuesta completa de la API
+
+                // Asegura que cur y daily sean objetos para evitar errores al acceder a propiedades
+                const cur = data.current || {};
+                const daily = data.daily || {};
+
                 // Temp
-                document.getElementById('temp').innerText = Math.round(cur.temperature_2m) + "°";
-                document.getElementById('feels-like').innerText = "ST: " + Math.round(cur.apparent_temperature) + "°";
+                document.getElementById('temp').innerText = cur?.temperature_2m !== undefined && cur?.temperature_2m !== null ? `${Math.round(cur.temperature_2m)}°` : '--°';
+                document.getElementById('feels-like').innerText = cur?.apparent_temperature !== undefined && cur?.apparent_temperature !== null ? `ST: ${Math.round(cur.apparent_temperature)}°` : 'ST: --°';
 
                 // Viento
-                document.getElementById('wind-speed').innerText = Math.round(cur.wind_speed_10m);
-                const wDir = cur.wind_direction_10m;
-                const dirs = ['NORTE', 'NE', 'ESTE', 'SE', 'SUR', 'SO', 'OESTE', 'NO'];
-                const dirIndex = Math.round(((wDir %= 360) < 0 ? wDir + 360 : wDir) / 45) % 8;
-                document.getElementById('wind-dir').innerText = "DEL " + dirs[dirIndex];
+                document.getElementById('wind-speed').innerText = cur?.wind_speed_10m !== undefined && cur?.wind_speed_10m !== null ? Math.round(cur.wind_speed_10m).toString() : '--';
+                let wDir = cur?.wind_direction_10m; // Cambiado de 'const' a 'let'
+                if (wDir !== undefined && wDir !== null) {
+                    const dirs = ['NORTE', 'NE', 'ESTE', 'SE', 'SUR', 'SO', 'OESTE', 'NO'];
+                    const dirIndex = Math.round(((wDir %= 360) < 0 ? wDir + 360 : wDir) / 45) % 8;
+                    document.getElementById('wind-dir').innerText = "DEL " + dirs[dirIndex];
+                } else {
+                    document.getElementById('wind-dir').innerText = '--';
+                }
 
-                // PRESIÓN (SOLUCIÓN: Prioridad a MSL, luego Surface, luego 1013)
-                // Esto asegura que cargue datos reales y no "NaN" o "--"
-                let p = 1013;
-                if (cur.pressure_msl) {
-                    p = Math.round(cur.pressure_msl);
-                } else if (cur.surface_pressure) {
-                    p = Math.round(cur.surface_pressure);
+                // Presión (React la manejará en tiempo real)
+                // Se mantiene el placeholder para que React lo sobreescriba.
+                document.getElementById('press').innerText = "--";
+                document.getElementById('press-desc').innerText = "Cargando...";
+
+                // Humedad
+                const humidityVal = cur?.relative_humidity_2m;
+                document.getElementById('humidity-val').innerText = (humidityVal !== undefined && humidityVal !== null) ? `${Math.round(humidityVal)}%` : '--%';
+                if (humidityVal === undefined || humidityVal === null) console.warn("Humedad no disponible o es null en la respuesta de la API.");
+
+                // Nubes
+                const cloudsVal = cur?.cloud_cover;
+                document.getElementById('clouds-val').innerText = (cloudsVal !== undefined && cloudsVal !== null) ? `${Math.round(cloudsVal)}%` : '--%';
+                if (cloudsVal === undefined || cloudsVal === null) console.warn("Cobertura de nubes no disponible o es null en la respuesta de la API.");
+
+                // Amanecer y Atardecer
+                if (daily?.sunrise?.[0] && daily?.sunset?.[0]) { // Comprobación más robusta
+                    const sunriseTime = new Date(daily.sunrise[0]).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+                    const sunsetTime = new Date(daily.sunset[0]).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+                    document.getElementById('sunrise-time').innerText = sunriseTime;
+                    document.getElementById('sunset-time').innerText = sunsetTime;
+                } else {
+                    document.getElementById('sunrise-time').innerText = '--:--';
+                    document.getElementById('sunset-time').innerText = '--:--';
+                    console.warn("Datos de amanecer/atardecer no disponibles o están vacíos en la respuesta de la API.");
                 }
-                
-                document.getElementById('press').innerText = p;
-                
-                const pDesc = document.getElementById('press-desc');
-                if(p <= 1009) { 
-                    pDesc.innerText = "BAJA"; pDesc.style.color = "var(--danger)"; 
-                } else if(p >= 1016) { 
-                    pDesc.innerText = "ALTA"; pDesc.style.color = "var(--green)"; 
-                } else { 
-                    pDesc.innerText = "ESTABLE"; pDesc.style.color = "#aaa"; 
-                }
+
+                console.log("UI actualizada para humedad, nubes, amanecer, atardecer.");
 
             }).catch(e => {
-                console.error("API Error:", e);
+                console.error("API Error (Clima/Ambiente):", e);
+                // Asegura que todos los campos relevantes muestren "Sin Datos" o "--" en caso de error de la API
+                document.getElementById('temp').innerText = "--°";
+                document.getElementById('feels-like').innerText = "ST: --°";
+                document.getElementById('wind-speed').innerText = "--";
+                document.getElementById('wind-dir').innerText = "--";
                 document.getElementById('press').innerText = "--";
                 document.getElementById('press-desc').innerText = "Sin Datos";
+                document.getElementById('humidity-val').innerText = '--%';
+                document.getElementById('clouds-val').innerText = '--%';
+                document.getElementById('sunrise-time').innerText = '--:--';
+                document.getElementById('sunset-time').innerText = '--:--';
             });
 
             // MAREAS
             const marineUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=tide_height&timezone=auto`;
-            fetch(marineUrl).then(r => r.json()).then(data => {
-                if(!data.hourly || !data.hourly.tide_height) throw new Error("Sin datos de marea");
+            fetch(marineUrl).then(r => {
+                if (!r.ok) {
+                    // Si el status es 400 y es una ubicación en tierra, el error es esperado
+                    if (r.status === 400 && !isReal && lat === -34.6037 && lon === -58.3816) {
+                        console.warn(`API Error (Mareas - expected for land location): HTTP error! status: ${r.status}. Ubicación en tierra no soportada por la API marina.`);
+                    } else {
+                        throw new Error(`HTTP error! status: ${r.status}`);
+                    }
+                }
+                return r.json();
+            }).then(data => {
+                console.log("Marine API Response (Mareas):", data); // Log de la respuesta completa de la API
+                
+                if(!data.hourly || !data.hourly.tide_height || data.hourly.tide_height.length === 0) {
+                    throw new Error("Sin datos de marea o array de tide_height vacío en la respuesta de la API");
+                }
                 
                 const now = new Date();
                 const h = now.getHours();
-                const tides = data.hourly.tide_height.slice(h, h+12);
-                const times = data.hourly.time.slice(h, h+12);
+                const tides = data.hourly.tide_height.slice(h, h + 12);
+                const times = data.hourly.time.slice(h, h + 12);
                 
+                if (tides.length < 2) { // Necesitamos al menos 2 puntos para determinar la tendencia
+                    document.getElementById('tide-current').innerText = "RÍO";
+                    document.getElementById('tide-next').innerText = "Interior / Sin Marea";
+                    console.warn("No hay suficientes datos de marea para determinar la tendencia.");
+                    return;
+                }
+
                 const trend = tides[1] > tides[0] ? "SUBIENDO ⬆" : "BAJANDO ⬇";
                 document.getElementById('tide-current').innerText = trend;
                 
-                let maxVal = -99, maxTimeStr = "";
+                let maxVal = -9999; // Usar un valor muy bajo para asegurar que cualquier marea sea mayor
+                let maxTimeStr = "";
                 for(let i=0; i<tides.length; i++) {
                     if(tides[i] > maxVal) { maxVal = tides[i]; maxTimeStr = times[i]; }
                 }
-                const d = new Date(maxTimeStr);
-                const minFormatted = (d.getMinutes()<10?'0':'') + d.getMinutes();
-                document.getElementById('tide-next').innerText = `Pleamar: ${d.getHours()}:${minFormatted} hs`;
+                if (maxTimeStr) {
+                    const d = new Date(maxTimeStr);
+                    const minFormatted = (d.getMinutes()<10?'0':'') + d.getMinutes();
+                    document.getElementById('tide-next').innerText = `Pleamar: ${d.getHours()}:${minFormatted} hs`;
+                } else {
+                    document.getElementById('tide-next').innerText = "Próxima Pleamar: --:--";
+                    console.warn("No se encontró una pleamar válida en los datos de marea.");
+                }
 
-            }).catch(() => {
+            }).catch((e) => {
+                console.error("API Error (Mareas):", e);
                 document.getElementById('tide-current').innerText = "RÍO";
                 document.getElementById('tide-next').innerText = "Interior / Sin Marea";
             });
@@ -633,5 +762,6 @@
             }
         }
     </script>
+    <script type="module" src="/index.tsx"></script>
 </body>
 </html>
