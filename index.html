@@ -32,6 +32,7 @@
             padding-bottom: 120px;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden; /* Evita scroll lateral por la animación */
         }
 
         /* --- LOGO --- */
@@ -171,6 +172,36 @@
         .detail-item { margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
         .detail-item:last-child { border: none; }
 
+        /* --- TICKER ANIMATION (ESTRATEGIAS) --- */
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+            background-color: #1e293b;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            white-space: nowrap;
+            box-sizing: border-box;
+            border-top: 1px solid #334155;
+            border-bottom: 1px solid #334155;
+            margin-bottom: 12px;
+        }
+
+        .ticker {
+            display: inline-block;
+            padding-left: 100%;
+            animation: ticker-scroll 160s linear infinite; /* VELOCIDAD REDUCIDA PARA LECTURA */
+            color: var(--yellow);
+            font-family: var(--font-title);
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @keyframes ticker-scroll {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
         /* --- PREDICCION ESPECIES --- */
         .prediction-box { background: rgba(56, 189, 248, 0.1); border: 1px solid #334155; text-align: left; padding: 15px; display: none; }
         .species-list { font-size: 1.1rem; color: white; font-weight: 500; margin-top: 8px; line-height: 1.4; }
@@ -262,25 +293,37 @@
         </div>
     </div>
     
-    <!-- 5. AMBIENTE: TEMP Y UV -->
+    <!-- 5. AMBIENTE: TEMP Y HUMEDAD -->
     <div class="grid-2">
         <div class="data-box">
             <span class="lbl">TEMP</span>
             <span class="val" id="temp">--°</span>
             <div class="sub-val" id="feels-like">ST: --°</div>
         </div>
-        <div class="data-box" style="border: 1px solid #334155;">
-            <span class="lbl">INDICE UV</span>
-            <span class="val" id="uv-val">--</span>
-            <div style="height:6px; width:80%; background:#333; margin-top:8px; border-radius:3px;">
-                <div id="uv-bar" style="height:100%; width:0%; background:var(--green); border-radius:3px; transition:1s;"></div>
+        <div class="data-box">
+            <span class="lbl">AMBIENTE</span>
+            <div class="grid-2" style="width:100%; margin:0; gap:2px;">
+                <div>
+                    <div style="font-size:1.4rem; color:white; font-weight:bold;" id="humidity">--%</div>
+                    <div style="font-size:0.7rem; color:#aaa;">HUMEDAD</div>
+                </div>
+                <div>
+                    <div style="font-size:1.4rem; color:white; font-weight:bold;" id="clouds">--%</div>
+                    <div style="font-size:0.7rem; color:#aaa;">NUBES</div>
+                </div>
             </div>
-            <div class="sub-val" id="uv-msg">--</div>
         </div>
     </div>
 
     <!-- 6. CONSULTAS -->
     <div class="section-header">ENCICLOPEDIA TÁCTICA</div>
+
+    <!-- TICKER (TEXTO PASANTE) DE ESTRATEGIAS -->
+    <div class="ticker-wrap">
+        <div class="ticker">
+            ⚠️ SIGILO: Evita ruidos en la costa • 🌬️ VIENTO: Pesca donde golpea la ola, ahí está la comida • 🔪 AFILA: Revisa el filo del anzuelo siempre • 🦅 OBSERVA: Si hay gaviotas tirándose, hay cardumen • 🌑 LUNAS: Nueva y Llena mueven más agua • 📉 PRESIÓN: Si baja de golpe, el pique se corta • ⚙️ FRENO: Regula la estrella antes de tirar • 🪵 ESTRUCTURA: Busca palos y piedras, ahí acecha el predador • 🩸 SANGRE: Cebo fresco es clave • 🧵 NYLON: Revisa los últimos metros, si está rasposo cortá • 🐟 DEVOLUCIÓN: Cuidá el recurso • 🌊 REPUNTE: El mejor momento es el cambio de marea • 🧼 LIMPIEZA: El pez huele el tabaco y combustible en tus manos.
+        </div>
+    </div>
     
     <div class="card-box prediction-box" id="bio-box">
         <span class="biome-tag" id="bio-region">ZONA...</span>
@@ -298,16 +341,16 @@
         </select>
         <div id="fish-info" class="fish-details">
             <div class="detail-item">
-                <div class="lbl">ANZUELO</div>
+                <div class="lbl">ANZUELO RECOMENDADO</div>
                 <div id="fish-hook" style="font-size:1.2rem; color:var(--blue); font-weight:bold;">--</div>
             </div>
             <div class="detail-item">
-                <div class="lbl">CARNADA</div>
+                <div class="lbl">MEJOR CARNADA</div>
                 <div id="fish-bait" style="font-size:1.2rem;">--</div>
             </div>
             <div class="detail-item">
-                <div class="lbl">CONSEJO</div>
-                <div id="fish-tip" style="font-size:1.1rem; color:var(--orange); font-style:italic;">--</div>
+                <div class="lbl">INTELIGENCIA TÁCTICA</div>
+                <div id="fish-tip" style="font-size:1.1rem; color:var(--orange); font-style:italic; line-height: 1.4;">--</div>
             </div>
         </div>
     </div>
@@ -327,22 +370,28 @@
     </div>
 
     <script>
-        // --- CONFIG & DB ---
+        // --- CONFIG & DB AMPLIADA ---
         const fishDB = {
             rio: [
-                {n:"Dorado", h:"5/0 a 8/0 Pata Larga", b:"Anguila, Morena", t:"Usa líder de acero 40lbs."},
-                {n:"Surubí", h:"8/0 a 10/0", b:"Morena, Anguila", t:"Busca pozos profundos de noche."},
-                {n:"Boga", h:"Simple chico (1 o 2)", b:"Maíz, Masa, Salamín", t:"Clava cuando corre, boca dura."},
-                {n:"Pejerrey", h:"Pequeño (4 o 5)", b:"Mojarra viva, Filet", t:"Usa boyas y regula profundidad."},
-                {n:"Tararira", h:"Offset / Triple", b:"Rana goma, Dientudo", t:"Activa con calor, busca yuyos."},
-                {n:"Bagre (Moncholo)", h:"3/0 Común", b:"Lombriz, Tripa", t:"Pesca de fondo en remansos."}
+                {n:"Dorado", h:"5/0 a 8/0 Pata Larga", b:"Anguila, Morena, Sabalito", t:"Usa líder de acero 40lbs MINIMO. Busca correderas y palos sumergidos. El dorado caza por vibración y destello."},
+                {n:"Surubí", h:"8/0 a 10/0 Ojal", b:"Morena grande, Anguila, Cascarudo", t:"Actividad nocturna. Busca veriles profundos y salidas de arroyos. Dejar comer antes de clavar."},
+                {n:"Boga", h:"Simple chico (1 o 2) Pata Corta", b:"Maíz fermentado, Masa, Salamín, Corazón", t:"Boca muy dura pero pique sutil. Clava firme cuando corre la línea. Ceba la zona previamente."},
+                {n:"Pejerrey (Río)", h:"Pequeño (4 o 5)", b:"Mojarra viva, Filet de dientudo", t:"Pesca a flote con boyas. Fundamental regular la profundidad (brazolada) según la temperatura."},
+                {n:"Tararira", h:"Offset para goma / Triple", b:"Rana de goma, Dientudo fresco", t:"Se activa con calor. Busca zonas bajas con vegetación/juncos. Ataca por irritación o hambre."},
+                {n:"Bagre (Moncholo/Amarillo)", h:"3/0 Común", b:"Lombriz de tierra, Tripa de pollo", t:"Pez de fondo. Busca remansos donde el agua gira lento. Ideal para principiantes o pesca variada."},
+                {n:"Pacú", h:"Corto y fuerte (Mustad 92611)", b:"Bolitas de masa, Fruta (Aguai), Coquitos", t:"Pica muy suave, como si robara la carnada. Pescar bajo árboles o camalotes."},
+                {n:"Patí", h:"8/0 a 10/0", b:"Anguila podrida, Tripa, Filet de Sábalo", t:"Prefiere aguas profundas y correntosas. Caza por olfato, usa carnada con olor fuerte."},
+                {n:"Manguruyú", h:"12/0 Reforzado", b:"Anguila entera, boga viva chica", t:"El gigante del fondo. Equipo pesado exclusivo. Busca los pozos más profundos del cauce."}
             ],
             mar: [
-                {n:"Corvina Rubia", h:"3/0 a 5/0", b:"Langostino, Anchoa", t:"Lanza a la 2da canaleta."},
-                {n:"Lenguado", h:"Triple robador", b:"Pejerrey entero", t:"Recogida muy lenta por fondo."},
-                {n:"Pescadilla", h:"2/0 a 3/0", b:"Camarón, Filet", t:"Pica firme, usa destrabe."},
-                {n:"Pejerrey Mar", h:"Largo y fino", b:"Camarón, Filet", t:"Línea de 3 boyas o paternoster."},
-                {n:"Chucho / Raya", h:"6/0 Fuerte", b:"Anchoa, Calamar", t:"Pelea pegado al fondo."}
+                {n:"Corvina Rubia", h:"3/0 a 5/0", b:"Langostino, Anchoa, Almeja", t:"Lanza a la 2da canaleta. Come succionando el fondo. Si hay cangrejo, ata la carnada con hilo elástico."},
+                {n:"Corvina Negra", h:"6/0 a 8/0 Reforzado", b:"Cangrejo vivo (colorado/negro)", t:"Busca fondos de piedra o barro en rías (San Clemente/Mar Chiquita). Paciencia extrema."},
+                {n:"Lenguado", h:"Triple robador + Simple", b:"Pejerrey entero fresco", t:"Pesca dinámica (spinning/trolling). Recogida muy lenta arrastrando por el fondo de arena."},
+                {n:"Pescadilla", h:"2/0 a 3/0", b:"Camarón, Filet de pejerrey", t:"Pica firme y voraz. Usa línea con destrabe o 'bait clip' para ganar distancia."},
+                {n:"Pejerrey (Mar)", h:"Largo y fino (Cornalera)", b:"Camarón, Filet magru, Mondongo", t:"Línea de 3 boyas o paternoster. Busca la espuma de la ola (rompiente) o muelles."},
+                {n:"Chucho / Raya", h:"6/0 a 8/0 Fuerte", b:"Anchoa entera, Calamar", t:"Se 'chupa' al fondo. No fuerces la caña, mantené tensión hasta que se mueva. Cuidado con la púa."},
+                {n:"Burriqueta", h:"N3 o N4 Fino", b:"Lombriz de mar, Camarón", t:"Excelente pesca familiar. Se encuentra en la primer canaleta, muy cerca de la orilla."},
+                {n:"Pez Elefante", h:"2/0 a 3/0", b:"Anchoa fresca, Lombriz de mar", t:"Pique sutil. Temporada invernal o primavera. Busca pozos de arena limpia."}
             ]
         };
 
@@ -365,7 +414,6 @@
         }
 
         function initApp() {
-            // Ubicación Fallback: Buenos Aires (Costanera)
             const fallbackLat = -34.6037;
             const fallbackLon = -58.3816;
 
@@ -375,10 +423,7 @@
                 return;
             }
 
-            // Timeout de 8 segundos para GPS, si no, carga defecto
             const gpsOptions = { timeout: 8000, enableHighAccuracy: true };
-            
-            // Timeout de seguridad manual
             const safetyTimeout = setTimeout(() => {
                 console.warn("GPS tardó mucho.");
                 document.getElementById('gps-status').innerText = "Tiempo agotado. Modo Respaldo.";
@@ -400,11 +445,9 @@
         }
 
         function fetchData(lat, lon, isReal) {
-            // UI Feedback
             document.getElementById('gps-status').innerText = isReal ? "🟢 GPS ACTIVO" : "🔴 MODO DEMO (SIN GPS)";
             document.getElementById('gps-status').style.color = isReal ? "var(--green)" : "var(--danger)";
 
-            // 1. Ciudad (Nominatim)
             if(isReal) {
                 fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
                 .then(r=>r.json())
@@ -417,8 +460,8 @@
 
             determineSpecies(lat, lon);
 
-            // 2. API CLIMA: CORREGIDO PARA TRAER PRESION NIVEL DEL MAR (MSL) Y UV CORRECTO
-            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,pressure_msl,wind_speed_10m,wind_direction_10m,weather_code&hourly=uv_index&timezone=auto`;
+            // API CLIMA (Con Humedad y Nubes)
+            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,pressure_msl,wind_speed_10m,wind_direction_10m,relative_humidity_2m,cloud_cover&timezone=auto`;
 
             fetch(weatherUrl).then(r => r.json()).then(data => {
                 const cur = data.current;
@@ -434,8 +477,7 @@
                 const dirIndex = Math.round(((wDir %= 360) < 0 ? wDir + 360 : wDir) / 45) % 8;
                 document.getElementById('wind-dir').innerText = "DEL " + dirs[dirIndex];
 
-                // PRESIÓN (CORREGIDO: usa pressure_msl para tener el valor barométrico estándar)
-                // Si la API no devuelve pressure_msl, usa surface_pressure como fallback
+                // Presión
                 const p = Math.round(cur.pressure_msl || cur.surface_pressure || 1013);
                 document.getElementById('press').innerText = p;
                 
@@ -448,37 +490,16 @@
                     pDesc.innerText = "ESTABLE"; pDesc.style.color = "#aaa"; 
                 }
 
-                // UV (CORREGIDO: Protección contra undefined)
-                const now = new Date();
-                const currentHourIndex = now.getHours();
-                let uv = 0;
-                
-                // Verificar si existe el array y el índice
-                if (data.hourly && data.hourly.uv_index && data.hourly.uv_index[currentHourIndex] !== undefined) {
-                    uv = data.hourly.uv_index[currentHourIndex];
-                }
-                
-                document.getElementById('uv-val').innerText = uv;
-                const uvBar = document.getElementById('uv-bar');
-                const uvMsg = document.getElementById('uv-msg');
-                
-                let color = "var(--green)", width = "20%", msg = "BAJO";
-                if(uv >= 3) { color = "var(--yellow)"; width = "50%"; msg = "MODERADO"; }
-                if(uv >= 6) { color = "var(--orange)"; width = "75%"; msg = "ALTO"; }
-                if(uv >= 8) { color = "var(--danger)"; width = "100%"; msg = "EXTREMO"; }
-                
-                uvBar.style.background = color;
-                uvBar.style.width = width;
-                uvMsg.innerText = msg;
-                uvMsg.style.color = color;
+                // Humedad y Nubes
+                document.getElementById('humidity').innerText = cur.relative_humidity_2m + "%";
+                document.getElementById('clouds').innerText = cur.cloud_cover + "%";
 
             }).catch(e => {
                 console.error("API Error:", e);
                 document.getElementById('press-desc').innerText = "Sin Datos";
-                document.getElementById('uv-msg').innerText = "Error API";
             });
 
-            // 3. MAREAS (API Marina)
+            // MAREAS
             const marineUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=tide_height&timezone=auto`;
             fetch(marineUrl).then(r => r.json()).then(data => {
                 if(!data.hourly || !data.hourly.tide_height) throw new Error("Sin datos de marea");
