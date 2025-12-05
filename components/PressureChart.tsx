@@ -38,9 +38,10 @@ const PressureChart: React.FC<PressureChartProps> = ({ data }) => {
               <XAxis dataKey="time" stroke="var(--text)" tick={{ fontSize: 10 }} />
               <YAxis stroke="var(--text)" tick={{ fontSize: 10 }} domain={['auto', 'auto']} />
               <Tooltip
-                contentStyle={{ backgroundColor: 'var(--card)', border: 'none', borderRadius: '5px' }}
+                // Updated Tooltip styling to match the new theme
+                contentStyle={{ backgroundColor: 'var(--card)', border: '1px solid var(--blue)', borderRadius: '5px', boxShadow: '0 0 10px rgba(56, 189, 248, 0.3)' }}
                 itemStyle={{ color: 'var(--text)' }}
-                labelStyle={{ color: 'var(--blue)' }}
+                labelStyle={{ color: 'var(--blue)', fontWeight: 'bold' }}
               />
               <Line
                 type="monotone"
