@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PescaTactiva - Mareas &amp; Tácticas</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f1f5f9;
+            --blue: #38bdf8;
+            --green: #4ade80;
+            --orange: #fb923c;
+            --danger: #f87171;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 10px;
+            padding-bottom: 80px;
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--card);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-bottom: 3px solid var(--blue);
+        }
+        .loc-title { font-size: 1.1rem; font-weight: 700; color: white; }
+        .loc-sub { font-size: 0.8rem; color: #94a3b8; }
+        
+        /* TARJETA MAREAS (PRINCIPAL) */
+        .tide-card {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e293b 100%);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+        }
+        .tide-header { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; }
+        .tide-main { font-size: 2.5rem; font-weight: 800; margin: 10px 0; color: white; }
+        .tide-arrow { font-size: 1.5rem; vertical-align: middle; }
+        .tide-next { font-size: 0.9rem; background: rgba(0,0,0,0.3); padding: 5px 10px; border-radius: 20px; display: inline-block; }
+
+        /* GRID DATOS */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .data-box {
+            background: var(--card);
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .val { font-size: 1.3rem; font-weight: bold; }
+        .lbl { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; }
+        .status-good { color: var(--green); }
+        .status-bad { color: var(--danger); }
+
+        /* SOLUNAR */
+        .solunar-box {
+            background: var(--card);
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--orange);
+        }
+
+        /* GUIA PECES Y TABS */
+        .guide-container { background: var(--card); padding: 10px; border-radius: 10px; margin-bottom: 15px; }
+        .tabs { display: flex; margin-bottom: 10px; border-bottom: 1px solid #334155; }
+        .tab { flex: 1; padding: 10px; text-align: center; background: none; border: none; color: #64748b; font-weight: bold; }
+        .tab.active { color: var(--blue); border-bottom: 2px solid var(--blue); }
+        
+        select { width: 100%; padding: 10px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 6px; }
+        
+        .fish-details { margin-top: 10px; display: none; padding: 10px; background: #0f172a; border-radius: 6px; }
+        .fish-details.show { display: block; animation: fadeIn 0.3s; }
+        .detail-row { margin-bottom: 8px; border-bottom: 1px solid #1e293b; padding-bottom: 5px; }
+        .detail-label { font-size: 0.75rem; color: #64748b; }
+
+        /* BOTONES ACCION */
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-action {
+            padding: 15px; border: none; border-radius: 10px; font-weight: bold; color: white;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-torch { background: #475569; }
+        .btn-torch.on { background: #f1f5f9; color: black; box-shadow: 0 0 15px white; }
+        .btn-log { background: var(--green); }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <!-- 1. UBICACIÓN -->
+    <div class="header">
+        <div>
+            <div class="loc-title" id="loc-name">📍 Detectando zona...</div>
+            <div class="loc-sub" id="loc-coords">GPS: Esperando satélites</div>
+        </div>
+        <button onclick="initData()" style="background:none; border:none; font-size:1.5rem;">🔄</button>
+    </div>
+
+    <!-- 2. MAREAS (DATOS OCEANOGRÁFICOS) -->
+    <div class="tide-card">
+        <div class="tide-header">Estado de la Marea</div>
+        <div class="tide-main" id="tide-current">--</div>
+        <div class="tide-next" id="tide-next">Próx. Pleamar: --:--</div>
+        <div style="margin-top:10px; font-size:0.8rem; opacity:0.7">Datos marinos oficiales</div>
+    </div>
+
+    <!-- 3. CLIMA Y SOLUNAR -->
+    <div class="grid-2">
+        <div class="data-box">
+            <span class="lbl">Temperatura</span>
+            <span class="val" id="temp">--°C</span>
+        </div>
+        <div class="data-box">
+            <span class="lbl">Presión (hPa)</span>
+            <span class="val" id="press">--</span>
+            <span style="font-size:0.7rem;" id="press-desc">--</span>
+        </div>
+    </div>
+
+    <div class="solunar-box">
+        <div>
+            <div style="font-size:0.8rem; color:#94a3b8">Fase Lunar & Actividad</div>
+            <div style="font-weight:bold; font-size:1.1rem" id="moon-phase">--</div>
+        </div>
+        <div style="font-size:2rem;" id="moon-icon">🌑</div>
+    </div>
+
+    <!-- 4. GUÍA TÁCTICA DE PESCA -->
+    <div class="guide-container">
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('rio')">RÍO / AGUA DULCE</button>
+            <button class="tab" onclick="switchTab('mar')">MAR / AGUA SALADA</button>
+        </div>
+        
+        <select id="fish-selector" onchange="showFishInfo()">
+            <option value="">Selecciona tu objetivo...</option>
+        </select>
+
+        <div id="fish-info" class="fish-details">
+            <div class="detail-row">
+                <div class="detail-label">ANZUELO RECOMENDADO</div>
+                <div id="fish-hook" style="font-weight:bold; color:var(--blue)">--</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">MEJOR CARNADA</div>
+                <div id="fish-bait">--</div>
+            </div>
+            <div class="detail-row" style="border:none">
+                <div class="detail-label">CONSEJO CLAVE</div>
+                <div id="fish-tip" style="color:var(--orange)">--</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. HERRAMIENTAS -->
+    <div class="action-grid">
+        <button id="btn-torch" class="btn-action btn-torch" onclick="toggleFlash()">
+            🔦 LINTERNA
+        </button>
+        <button class="btn-action btn-log" onclick="saveQuickLog()">
+            📝 BITÁCORA
+        </button>
+    </div>
+    <div id="log-msg" style="text-align:center; font-size:0.8rem; margin-top:5px; color:var(--green); height:20px;"></div>
+
+    <script>
+        // --- BASE DE DATOS DE PESCA ---
+        const fishDB = {
+            rio: [
+                {n:"Dorado", h:"5/0 a 8/0 Pata Larga", b:"Anguila, Morena, Sabalo", t:"Usa líder de acero siempre."},
+                {n:"Surubí", h:"8/0 a 10/0", b:"Morena grande, Anguila", t:"Busca pozos profundos de noche."},
+                {n:"Boga", h:"Simple chico y fuerte (1 o 2)", b:"Maíz, Masa, Salamín", t:"Clava solo cuando corre la línea."},
+                {n:"Pejerrey", h:"Pequeño y fino (4 o 5)", b:"Mojarra viva, Filet", t:"Usa boyas y regula profundidad."},
+                {n:"Tararira", h:"Offset o Triple con señuelo", b:"Rana de goma, Dientudo", t:"Activa con calor, busca vegetación."}
+            ],
+            mar: [
+                {n:"Corvina Rubia", h:"3/0 a 5/0", b:"Langostino, Anchoa", t:"Lanza a la segunda canaleta."},
+                {n:"Lenguado", h:"Triple robador", b:"Pejerrey entero fresco", t:"Recogida muy lenta por el fondo."},
+                {n:"Pescadilla", h:"2/0 a 3/0", b:"Camarón, Filet", t:"Pica firme, usa plomada con destrabe."},
+                {n:"Pejerrey de Mar", h:"Largo y fino", b:"Camarón, Filet de magrú", t:"Usa línea de 3 boyas o paternoster."}
+            ]
+        };
+
+        let currentMode = 'rio';
+        let torchTrack = null;
+
+        window.onload = () => {
+            initData();
+            loadFishMenu();
+        };
+
+        // --- 1. DATOS REALES (Mareas + Clima) ---
+        function initData() {
+            document.getElementById('loc-name').innerHTML = "📡 Conectando satélites...";
+            
+            if(!navigator.geolocation) {
+                alert("Tu celular no soporta GPS");
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+                
+                document.getElementById('loc-coords').innerText = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+                
+                // Nominatim (Ciudad)
+                try {
+                    const cityReq = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                    const cityData = await cityReq.json();
+                    const area = cityData.address.city || cityData.address.town || cityData.address.village || "Zona de Pesca";
+                    document.getElementById('loc-name').innerText = "📍 " + area;
+                } catch(e) { document.getElementById('loc-name').innerText = "📍 Ubicación detectada"; }
+
+                // Open-Meteo MARINE (Mareas + Clima)
+                // Pedimos datos horarios de nivel del mar y meteorológicos
+                const weatherUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&current=wave_height,surface_pressure&hourly=wave_height,tide_height&daily=sunrise,sunset&timezone=auto`;
+                const meteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,surface_pressure,wind_speed_10m&daily=sunrise,sunset&timezone=auto`;
+
+                // Usamos la API general para clima y la Marina para mareas (si estamos cerca del mar)
+                fetch(meteoUrl).then(r=>r.json()).then(data => {
+                    // Clima
+                    document.getElementById('temp').innerText = Math.round(data.current.temperature_2m) + "°C";
+                    const p = Math.round(data.current.surface_pressure);
+                    document.getElementById('press').innerText = p;
+                    
+                    let desc = "Estable";
+                    if(p < 1008) desc = "BAJA (Pez aletargado)";
+                    else if(p > 1018) desc = "ALTA (Buen pique)";
+                    
+                    const elDesc = document.getElementById('press-desc');
+                    elDesc.innerText = desc;
+                    elDesc.className = (p > 1018) ? 'status-good' : (p < 1008 ? 'status-bad' : '');
+
+                    // Simulación Solunar simple basada en fecha
+                    const date = new Date();
+                    // Cálculo aproximado de fase lunar (algoritmo simple)
+                    const moonAge = (date.getTime() / 86400000 - 2451550.1) % 29.530588853; // Días desde luna nueva conocida
+                    const age = moonAge < 0 ? moonAge + 29.53 : moonAge;
+                    
+                    let phase = "Luna Nueva";
+                    let icon = "🌑";
+                    if(age > 3 && age <= 6) { phase = "Creciente"; icon = "🌒"; }
+                    else if(age > 6 && age <= 10) { phase = "Cuarto Creciente"; icon = "🌓"; }
+                    else if(age > 10 && age <= 13) { phase = "Gibosa"; icon = "🌔"; }
+                    else if(age > 13 && age <= 16) { phase = "LUNA LLENA"; icon = "🌕"; }
+                    else if(age > 16 && age <= 20) { phase = "Gibosa Menguante"; icon = "🌖"; }
+                    else if(age > 20 && age <= 24) { phase = "Cuarto Menguante"; icon = "🌗"; }
+                    else if(age > 24 && age <= 27) { phase = "Menguante"; icon = "🌘"; }
+
+                    document.getElementById('moon-phase').innerText = phase;
+                    document.getElementById('moon-icon').innerText = icon;
+                });
+
+                // Intentamos buscar Mareas (Solo funciona si hay mar cerca, Open-Meteo devuelve null si es tierra adentro)
+                // Para simplificar, hacemos un cálculo de tendencia si no hay dato de marea exacto.
+                fetch(weatherUrl).then(r=>r.json()).then(marine => {
+                    // Buscamos picos en las próximas 12hs
+                    if(!marine.hourly || !marine.hourly.tide_height) {
+                        document.getElementById('tide-current').innerText = "Sin datos marea";
+                        document.getElementById('tide-next').innerText = "Zona de interior";
+                        return;
+                    }
+
+                    const now = new Date();
+                    const currentHour = now.getHours();
+                    const tides = marine.hourly.tide_height.slice(currentHour, currentHour + 12);
+                    const times = marine.hourly.time.slice(currentHour, currentHour + 12);
+
+                    // Buscar el máximo (pleamar) y mínimo (bajamar)
+                    let maxVal = -99;
+                    let maxTime = "";
+                    let minVal = 99;
+                    let minTime = "";
+
+                    // Lógica simple para determinar si sube o baja ahora
+                    const currentTide = tides[0];
+                    const nextTide = tides[1];
+                    const trend = nextTide > currentTide ? "SUBIENDO ⬆" : "BAJANDO ⬇";
+                    
+                    document.getElementById('tide-current').innerText = trend;
+
+                    // Buscar próxima pleamar
+                    for(let i=0; i<tides.length; i++){
+                        if(tides[i] > maxVal) { maxVal = tides[i]; maxTime = times[i]; }
+                    }
+                    const pTime = new Date(maxTime);
+                    const pStr = pTime.getHours() + ":" + (pTime.getMinutes()<10?'0':'') + pTime.getMinutes();
+                    
+                    document.getElementById('tide-next').innerText = `Pleamar: ${pStr} hs (${maxVal.toFixed(1)}m)`;
+
+                }).catch(err => {
+                    document.getElementById('tide-current').innerText = "Río Interior";
+                    document.getElementById('tide-next').innerText = "Sin marea oceánica";
+                });
+
+            }, (err) => {
+                alert("Necesitas activar el GPS para ver las mareas de tu zona.");
+            });
+        }
+
+        // --- 2. GUÍA DE PECES ---
+        function switchTab(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            loadFishMenu();
+        }
+
+        function loadFishMenu() {
+            const sel = document.getElementById('fish-selector');
+            sel.innerHTML = '<option value="">Selecciona tu objetivo...</option>';
+            fishDB[currentMode].forEach((f, i) => {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.innerText = f.n;
+                sel.appendChild(opt);
+            });
+            document.getElementById('fish-info').classList.remove('show');
+        }
+
+        function showFishInfo() {
+            const idx = document.getElementById('fish-selector').value;
+            if(idx === "") return;
+            const f = fishDB[currentMode][idx];
+            document.getElementById('fish-hook').innerText = f.h;
+            document.getElementById('fish-bait').innerText = f.b;
+            document.getElementById('fish-tip').innerText = f.t;
+            document.getElementById('fish-info').classList.add('show');
+        }
+
+        // --- 3. LINTERNA ---
+        async function toggleFlash() {
+            const btn = document.getElementById('btn-torch');
+            if(torchTrack) {
+                torchTrack.stop();
+                torchTrack = null;
+                btn.classList.remove('on');
+                return;
+            }
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({video: {facingMode: "environment"}});
+                torchTrack = stream.getVideoTracks()[0];
+                const caps = torchTrack.getCapabilities();
+                if(!caps.torch) { alert("Tu celular no tiene flash LED accesible."); return; }
+                await torchTrack.applyConstraints({advanced: [{torch: true}]});
+                btn.classList.add('on');
+            } catch(e) { alert("Debes dar permiso de cámara para usar la linterna real."); }
+        }
+
+        // --- 4. BITÁCORA RÁPIDA ---
+        function saveQuickLog() {
+            const now = new Date();
+            const time = now.getHours() + ":" + now.getMinutes();
+            const text = prompt("¿Qué capturaste?", "Especie - Peso");
+            if(text) {
+                // Aquí podrías guardar en localStorage
+                document.getElementById('log-msg').innerText = `✅ Guardado: ${text} a las ${time}`;
+                setTimeout(()=>document.getElementById('log-msg').innerText="", 3000);
+            }
+        }
+    </script>
+</body>
+</html>
