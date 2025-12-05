@@ -602,8 +602,8 @@
 
                 if (pressElement && pDescElement && pressureHPA !== undefined && pressureHPA !== null) {
                     pressElement.innerText = Math.round(pressureHPA).toString();
-                    let descText: string;
-                    let descColor: string;
+                    let descText; 
+                    let descColor; 
                     if (pressureHPA <= 1009) {
                         descText = "BAJA";
                         descColor = "var(--danger)";

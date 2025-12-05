@@ -2,6 +2,8 @@
   "name": "LOLA Pesca - Tactical Ops",
   "description": "Una aplicación táctica para pesca con información en tiempo real de clima, mareas, brújula y guía de especies.",
   "requestFramePermissions": [
-    "geolocation"
+    "geolocation",
+    "camera",
+    "device-orientation"
   ]
 }
