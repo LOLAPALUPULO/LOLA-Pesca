@@ -34,17 +34,25 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- LOGO --- */
+        /* --- LOGO CON ENLACE --- */
         .brand-header {
             text-align: center;
             padding: 15px 0;
             display: flex;
             justify-content: center;
         }
+        .brand-link {
+            display: inline-block;
+            width: 50%; /* Zona táctil */
+            transition: transform 0.1s;
+        }
+        .brand-link:active { transform: scale(0.95); opacity: 0.8; }
+        
         .brand-logo {
-            width: 50%; /* Tamaño equilibrado */
+            width: 100%; 
             height: auto;
             filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+            display: block;
         }
 
         /* --- CONTENEDORES --- */
@@ -61,14 +69,14 @@
         .lbl { 
             font-family: var(--font-title); 
             color: #94a3b8; 
-            font-size: 1rem; /* Aumentado */
+            font-size: 1rem; 
             margin-bottom: 8px; 
             letter-spacing: 1px; 
             text-transform: uppercase; 
         }
         
         .val { 
-            font-size: 2.4rem; /* MUY GRANDE */
+            font-size: 2.2rem; 
             font-weight: 800; 
             margin-top: 5px; 
             line-height: 1; 
@@ -76,7 +84,7 @@
         }
         
         .sub-val { 
-            font-size: 1.1rem; /* Aumentado */
+            font-size: 1rem; 
             color: #aaa; 
             margin-top: 5px; 
             font-weight: 500;
@@ -123,7 +131,7 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            min-height: 110px; /* Más altura para dedos grandes */
+            min-height: 110px; 
         }
 
         /* --- MAREAS --- */
@@ -135,7 +143,7 @@
         .tide-sub { font-size: 0.9rem; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 10px; }
 
         /* --- BRÚJULA --- */
-        .compass-container { cursor: pointer; } /* Para indicar click en iOS */
+        .compass-container { cursor: pointer; } 
         .compass-rose {
             width: 70px; height: 70px; border-radius: 50%;
             background: #0f172a; border: 3px solid #475569;
@@ -152,7 +160,6 @@
             width: 8px; height: 50px;
             background: linear-gradient(to bottom, var(--danger) 50%, white 50%);
             transform: translate(-50%, -50%) rotate(0deg);
-            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
             transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 0 5px rgba(0,0,0,0.5);
             z-index: 10;
@@ -169,12 +176,7 @@
         
         select { 
             width: 100%; padding: 15px; background: #0f172a; border: 1px solid #334155; 
-            color: white; border-radius: 8px; font-size: 1.2rem; /* Select grande */
-            appearance: none; -webkit-appearance: none;
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat;
-            background-position: right 15px top 50%;
-            background-size: 12px auto;
+            color: white; border-radius: 8px; font-size: 1.2rem;
         }
 
         .fish-details { margin-top: 15px; display: none; padding: 15px; background: #0f172a; border-radius: 10px; border: 1px solid #333; }
@@ -209,9 +211,11 @@
 </head>
 <body>
 
-    <!-- 1. LOGO -->
+    <!-- 1. LOGO CON ENLACE -->
     <div class="brand-header">
-        <img src="https://raw.githubusercontent.com/LOLAPALUPULO/LOLA-Pesca/refs/heads/main/lolapesca.svg" alt="Lola Pesca" class="brand-logo">
+        <a href="https://www.instagram.com/lolapalupulo/" target="_blank" class="brand-link">
+            <img src="https://raw.githubusercontent.com/LOLAPALUPULO/LOLA-Pesca/refs/heads/main/lolapesca.svg" alt="Lola Pesca" class="brand-logo">
+        </a>
     </div>
 
     <!-- 2. UBICACIÓN -->
@@ -223,7 +227,7 @@
         <button onclick="window.location.reload()" style="background:none; border:none; font-size:2.5rem; cursor:pointer;">🔄</button>
     </div>
 
-    <!-- 3. NIVEL CRÍTICO: VIENTO / BRUJULA / MAREA -->
+    <!-- 3. NIVEL CRÍTICO: VIENTO / BRÚJULA / MAREA -->
     <div class="grid-3">
         <!-- Viento -->
         <div class="data-box">
@@ -231,7 +235,7 @@
             <span class="val" id="wind-speed">--</span>
             <div class="sub-val" id="wind-dir" style="color: var(--blue); font-weight:bold;">--</div>
         </div>
-        <!-- Brújula (Clickable para permiso iOS) -->
+        <!-- Brújula -->
         <div class="data-box compass-container" onclick="requestCompassPermission()">
             <div class="compass-rose">
                 <span class="cardinal c-n">N</span>
@@ -250,7 +254,7 @@
         </div>
     </div>
 
-    <!-- 4. ACTIVIDAD -->
+    <!-- 4. ACTIVIDAD: PRESIÓN y LUNA -->
     <div class="grid-2">
         <div class="data-box">
             <span class="lbl">PRESIÓN (hPa)</span>
@@ -264,19 +268,19 @@
         </div>
     </div>
 
-    <!-- 5. AMBIENTE -->
-    <!-- Sol -->
+    <!-- 5. AMBIENTE: SOL -->
     <div class="grid-2">
         <div class="data-box">
             <span class="lbl">AMANECER ☀️</span>
-            <span class="val" id="sunrise-time" style="font-size:1.8rem">--:--</span>
+            <span class="val" id="sunrise-time" style="font-size:2rem">--:--</span>
         </div>
         <div class="data-box">
             <span class="lbl">PUESTA SOL 🌙</span>
-            <span class="val" id="sunset-time" style="font-size:1.8rem">--:--</span>
+            <span class="val" id="sunset-time" style="font-size:2rem">--:--</span>
         </div>
     </div>
-    <!-- Temp / UV -->
+    
+    <!-- TEMP y UV -->
     <div class="grid-2">
         <div class="data-box">
             <span class="lbl">TEMP</span>
@@ -392,15 +396,16 @@
                     document.getElementById('loc-name').innerText = loc;
                 } catch(e) { document.getElementById('loc-name').innerText = "Ubicación GPS"; }
 
-                // 2. Clima Completo (Open-Meteo)
-                // Usamos una sola llamada robusta
-                const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,surface_pressure,wind_speed_10m,wind_direction_10m,weather_code&hourly=uv_index&daily=sunrise,sunset&timezone=auto`;
+                // 2. Clima Completo (API ROBUSTA: PRESIÓN MSL, DIARIO PARA SOL, HORARIO PARA UV)
+                const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,pressure_msl,wind_speed_10m,wind_direction_10m,weather_code&hourly=uv_index&daily=sunrise,sunset&timezone=auto`;
 
                 fetch(weatherUrl).then(r=>r.json()).then(data => {
+                    if(!data.current) throw new Error("Sin datos clima");
+
                     const cur = data.current;
                     const daily = data.daily;
 
-                    // Temp
+                    // Temp & Sensación
                     document.getElementById('temp').innerText = Math.round(cur.temperature_2m) + "°";
                     document.getElementById('feels-like').innerText = "ST: " + Math.round(cur.apparent_temperature) + "°";
                     
@@ -411,28 +416,29 @@
                     const dirIndex = Math.round(((wDir %= 360) < 0 ? wDir + 360 : wDir) / 45) % 8;
                     document.getElementById('wind-dir').innerText = "DEL " + dirs[dirIndex];
 
-                    // Presión
-                    const p = Math.round(cur.surface_pressure);
+                    // Presión (USAMOS MSL: Mean Sea Level, más preciso para pesca)
+                    const p = Math.round(cur.pressure_msl);
                     document.getElementById('press').innerText = p;
                     const pDesc = document.getElementById('press-desc');
                     if(p < 1008) { pDesc.innerText = "BAJA"; pDesc.style.color = "var(--danger)"; }
                     else if(p > 1018) { pDesc.innerText = "ALTA"; pDesc.style.color = "var(--green)"; }
                     else { pDesc.innerText = "ESTABLE"; pDesc.style.color = "#aaa"; }
 
-                    // Sol
-                    if(daily.sunrise && daily.sunset) {
+                    // Sol (Extraer hora de ISO string)
+                    if(daily && daily.sunrise && daily.sunset) {
                         const rise = new Date(daily.sunrise[0]);
                         const set = new Date(daily.sunset[0]);
-                        const fmt = (d) => d.getHours() + ":" + (d.getMinutes()<10?'0':'') + d.getMinutes();
+                        // Función helper para hora local
+                        const fmt = (d) => d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                         document.getElementById('sunrise-time').innerText = fmt(rise);
                         document.getElementById('sunset-time').innerText = fmt(set);
                     }
 
                     // UV (Hora Actual)
                     const now = new Date();
-                    // Buscar hora actual en ISO strings de hourly.time o usar index simple
                     const currentHour = now.getHours();
-                    const uv = data.hourly.uv_index[currentHour] || 0;
+                    // Proteccion si el array no está listo
+                    const uv = (data.hourly && data.hourly.uv_index) ? data.hourly.uv_index[currentHour] : 0;
                     
                     document.getElementById('uv-val').innerText = uv;
                     const uvBar = document.getElementById('uv-bar');
@@ -447,7 +453,7 @@
 
                 }).catch(e => { console.error("Error clima", e); });
 
-                // 3. Mareas (Marine API) - Separado para que no rompa el resto si falla
+                // 3. Mareas
                 const marineUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=tide_height&timezone=auto`;
                 fetch(marineUrl).then(r=>r.json()).then(data => {
                     if(!data.hourly) throw new Error("Sin datos marinos");
@@ -483,7 +489,6 @@
                     })
                     .catch(console.error);
             } else {
-                // Android no suele requerir permiso explícito
                 alert("Brújula activa. Si no gira, tu dispositivo no tiene sensor.");
             }
         }
@@ -494,7 +499,6 @@
                     let heading = event.alpha; 
                     if(heading !== null) {
                         const needle = document.getElementById('compass-needle');
-                        // Invertimos rotación para que apunte al norte
                         needle.style.transform = `translate(-50%, -50%) rotate(${360 - heading}deg)`;
                     }
                 }, true);
