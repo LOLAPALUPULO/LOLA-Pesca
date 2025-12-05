@@ -24,42 +24,53 @@
         }
 
         :root {
-            /* Marine Blue Theme Defaults (Unified Theme) - Even Darker Version */
-            --bg: #000a1a; /* Ultra dark blue, almost black for overall background */
-            --bg-rgb: 0, 10, 26;
-            --bg-gradient-top: #002244; /* Deep marine blue for top of gradient */
-            --bg-gradient-bottom: #000a1a; /* Ultra dark blue for bottom of gradient */
-            --card: #0a2d4b; /* Dark blue-grey for cards */
-            --card-rgb: 10, 45, 75;
+            /* Tactical Camouflage Theme */
+            --bg: #0a1414; /* Base dark color for camouflage */
+            --bg-rgb: 10, 20, 20;
+
+            /* Camouflage Colors */
+            --cam-color-1: #0f1a1a; /* Very dark, almost black, slightly greenish */
+            --cam-color-1-rgb: 15, 26, 26;
+            --cam-color-2: #1a2a2a; /* Dark grey-green */
+            --cam-color-2-rgb: 26, 42, 42;
+            --cam-color-3: #2a3a3a; /* Medium grey-green */
+            --cam-color-3-rgb: 42, 58, 58;
+            --cam-color-4: #3a4a4a; /* Lighter grey-green for variation */
+            --cam-color-4-rgb: 58, 74, 74;
+
+            /* Card Colors (Grey to Black Gradient) */
+            --card: #1a1a1a; /* Very dark grey for cards */
+            --card-rgb: 26, 26, 26;
+            --gradient-card: linear-gradient(145deg, #333333 0%, #1a1a1a 100%); /* Medium grey to very dark grey/black */
+
             --text: #ffffff; /* White text for dark background */
-            --text-light: #a0a7b3; /* Light grey-blue text for secondary info */
-            --blue: #88eeff; /* Even brighter blue for highlights */
-            --green: #88ff88; /* Even brighter green for highlights */
-            --yellow: #ffff88; /* Even brighter yellow for highlights */
-            --orange: #ffb166; /* Even brighter orange for highlights */
-            --danger: #ff6666; /* Even brighter red for highlights */
+            --text-light: #e0e2e5; /* Off-white for secondary info (brighter for new dark cards) */
+            --blue: #aaffff; /* Very vibrant light blue for highlights */
+            --green: #aaffaa; /* Very vibrant green for highlights */
+            --yellow: #ffffaa; /* Very vibrant yellow for highlights */
+            --orange: #ffc288; /* Very vibrant orange for highlights */
+            --danger: #ff8888; /* Very vibrant red for highlights */
             --font-title: 'PitchedBattle', sans-serif;
             --font-default: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
             /* RGB versions for rgba() functions */
-            --blue-rgb: 136, 238, 255;
-            --green-rgb: 136, 255, 136;
-            --yellow-rgb: 255, 255, 136;
-            --orange-rgb: 255, 177, 102;
-            --danger-rgb: 255, 102, 102;
+            --blue-rgb: 170, 255, 255;
+            --green-rgb: 170, 255, 170;
+            --yellow-rgb: 255, 255, 170;
+            --orange-rgb: 255, 194, 136;
+            --danger-rgb: 255, 136, 136;
             --text-rgb: 255, 255, 255; /* ffffff */
-            --text-light-rgb: 160, 167, 179; /* a0a7b3 */
+            --text-light-rgb: 224, 226, 229; /* e0e2e5 */
 
 
-            /* WebGL-like effects (adjusted for deeper marine theme) */
-            --shadow-dark: rgba(0, 0, 0, 0.9); /* Very pronounced dark shadow */
-            --shadow-light: rgba(var(--blue-rgb), 0.4); /* More visible blue shadow */
-            --shadow-inner: rgba(0, 0, 0, 0.5); /* Very pronounced inner shadow */
-            --border-glow: rgba(var(--blue-rgb), 0.6);
-            --gradient-card: linear-gradient(145deg, #0f3c64 0%, #0a2d4b 100%); /* Dark card gradient */
-            --gradient-button: linear-gradient(145deg, #88eeff 0%, #44bbee 100%); /* Blue button */
-            --button-shadow-color: #44bbee;
-            --border-line-color: #4a86c4; /* Brighter blue-grey border color */
+            /* WebGL-like effects (adjusted for deep tactical theme) */
+            --shadow-dark: rgba(0, 0, 0, 0.95); /* Extremely pronounced dark shadow */
+            --shadow-light: rgba(var(--blue-rgb), 0.5); /* More visible blue shadow */
+            --shadow-inner: rgba(0, 0, 0, 0.7); /* Very pronounced inner shadow */
+            --border-glow: rgba(var(--blue-rgb), 0.7);
+            --gradient-button: linear-gradient(145deg, #aaffff 0%, #66cccc 100%); /* Blue button */
+            --button-shadow-color: #66cccc;
+            --border-line-color: #6688aa; /* Softer blue-grey border color */
             --torch-bg-start: #3a4759; /* Darker torch background */
             --torch-bg-end: #2d3846;
             --torch-shadow: #2d3846;
@@ -82,14 +93,25 @@
             -webkit-tap-highlight-color: transparent;
             overflow-x: hidden;
 
-            /* Main background gradient: Deep marine at top, blending to ultra dark marine at bottom */
+            /* Tactical Camouflage Background */
+            background-color: var(--bg); /* Base for darkest part of camouflage */
             background-image:
-                linear-gradient(to bottom, var(--bg-gradient-top) 0%, var(--bg-gradient-bottom) 100%),
-                radial-gradient(circle at top left, rgba(var(--blue-rgb), 0.2) 0%, transparent 50%),
-                radial-gradient(circle at bottom right, rgba(var(--bg-rgb), 0.1) 0%, transparent 70%);
+                /* Camouflage layers (radial gradients for irregular shapes) */
+                radial-gradient(circle at 10% 90%, rgba(var(--cam-color-1-rgb), 0.8) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(var(--cam-color-1-rgb), 0.8) 0%, transparent 60%),
+                radial-gradient(circle at 40% 10%, rgba(var(--cam-color-2-rgb), 0.7) 0%, transparent 70%),
+                radial-gradient(ellipse at 90% 60%, rgba(var(--cam-color-2-rgb), 0.7) 0%, transparent 70%),
+                radial-gradient(circle at 60% 40%, rgba(var(--cam-color-3-rgb), 0.6) 0%, transparent 80%),
+                radial-gradient(ellipse at 20% 70%, rgba(var(--cam-color-3-rgb), 0.6) 0%, transparent 80%),
+                radial-gradient(circle at 70% 80%, rgba(var(--cam-color-4-rgb), 0.4) 0%, transparent 90%),
+                /* Subtle background light effects (integrating with camo) */
+                radial-gradient(circle at top left, rgba(var(--blue-rgb), 0.1) 0%, transparent 50%),
+                radial-gradient(circle at bottom right, rgba(var(--bg-rgb), 0.05) 0%, transparent 70%);
+
+            background-size: 500px 500px, 600px 600px, 450px 450px, 550px 550px, 700px 700px, 400px 400px, 650px 650px, cover, cover; /* Varying sizes + fill */
+            background-position: 0 0, 100px 150px, 250px 50px, 50px 300px, 300px 100px, 150px 400px, 400px 200px, 0 0, 0 0; /* Varying positions + fill */
+            background-repeat: repeat; /* Repeat the camouflage pattern */
             background-attachment: fixed; /* Keep background fixed when scrolling */
-            background-size: cover;
-            background-color: var(--bg); /* Fallback */
         }
 
         /* --- LOGO --- */
@@ -386,7 +408,7 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 80px; /* Increased size */
+            width: 120px; /* Increased size */
             height: auto;
             transform-origin: 50% 50%;
             transform: translate(-50%, -50%) rotate(0deg);
