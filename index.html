@@ -37,12 +37,11 @@
         /* --- LOGO --- */
         .brand-header {
             text-align: center;
-            padding: 15px 0;
+            padding: 10px 0;
             display: flex;
             justify-content: center;
         }
-        .brand-link { width: 60%; display: block; transition: opacity 0.2s; }
-        .brand-link:active { opacity: 0.7; }
+        .brand-link { width: 60%; display: block; }
         .brand-logo {
             width: 100%; 
             height: auto;
@@ -161,7 +160,12 @@
             color: #64748b; font-size: 1.2rem; cursor: pointer; font-family: var(--font-title); 
         }
         .tab.active { color: var(--blue); border-bottom: 3px solid var(--blue); color: white; }
-        select { width: 100%; padding: 15px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 8px; font-size: 1.2rem; }
+        
+        select { 
+            width: 100%; padding: 15px; background: #0f172a; border: 1px solid #334155; 
+            color: white; border-radius: 8px; font-size: 1.2rem;
+        }
+
         .fish-details { margin-top: 15px; display: none; padding: 15px; background: #111827; border-radius: 10px; border: 1px solid #374151; }
         .fish-details.show { display: block; animation: fadeIn 0.3s; }
         .detail-item { margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
@@ -323,7 +327,7 @@
     </div>
 
     <script>
-        // --- BASE DE DATOS LOCAL ---
+        // --- CONFIG & DB ---
         const fishDB = {
             rio: [
                 {n:"Dorado", h:"5/0 a 8/0 Pata Larga", b:"Anguila, Morena", t:"Usa líder de acero 40lbs."},
@@ -345,7 +349,7 @@
         let currentMode = 'rio';
         let torchTrack = null;
 
-        // --- INICIO ---
+        // --- STARTUP ---
         window.onload = () => {
             loadFishMenu();
             calculateMoonPhase();
@@ -354,7 +358,7 @@
             renderLog();
         };
 
-        // --- LÓGICA DE DATOS BLINDADA ---
+        // --- CORE DATA LOGIC ---
         function forceReload() {
             document.getElementById('loc-name').innerHTML = "Reiniciando...";
             initApp();
@@ -366,11 +370,12 @@
             const fallbackLon = -58.3816;
 
             if(!navigator.geolocation) {
-                alert("Navegador sin GPS. Usando ubicación de respaldo.");
+                alert("Navegador sin soporte GPS. Usando ubicación de respaldo.");
                 fetchData(fallbackLat, fallbackLon, false);
                 return;
             }
 
+            // Timeout de 8 segundos para GPS, si no, carga defecto
             const gpsOptions = { timeout: 8000, enableHighAccuracy: true };
             
             // Timeout de seguridad manual
@@ -399,14 +404,13 @@
             document.getElementById('gps-status').innerText = isReal ? "🟢 GPS ACTIVO" : "🔴 MODO DEMO (SIN GPS)";
             document.getElementById('gps-status').style.color = isReal ? "var(--green)" : "var(--danger)";
 
-            // 1. Ciudad
+            // 1. Ciudad (Nominatim)
             if(isReal) {
                 fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
-                .then(r => r.json())
+                .then(r=>r.json())
                 .then(d => {
-                    document.getElementById('loc-name').innerText = "📍 " + (d.address.city || d.address.town || "Zona Detectada");
-                })
-                .catch(() => { document.getElementById('loc-name').innerText = "📍 Zona de Pesca"; });
+                    document.getElementById('loc-name').innerText = "📍 " + (d.address.city || d.address.town || d.address.village || "Zona Detectada");
+                }).catch(()=> document.getElementById('loc-name').innerText = "📍 Zona de Pesca");
             } else {
                 document.getElementById('loc-name').innerText = "📍 Buenos Aires (Defecto)";
             }
@@ -579,7 +583,7 @@
             }catch(e){alert("Error: Flash requiere permiso de cámara/HTTPS.");} 
         }
 
-        // --- BITACORA ---
+        // --- LOCALSTORAGE ---
         function saveQuickLog() {
             const text = prompt("📝 Captura (Especie - Kg):");
             if(text) {
