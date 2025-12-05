@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LOLA Pesca - Tactical Pro</title>
+    <title>LOLA Pesca - Tactical Ops</title>
     <style>
         /* --- FUENTE TACTICAL --- */
         @font-face {
@@ -37,11 +37,17 @@
         /* --- LOGO --- */
         .brand-header {
             text-align: center;
-            padding: 10px 0;
+            padding: 15px 0;
             display: flex;
             justify-content: center;
         }
-        .brand-link { width: 50%; display: block; }
+        .brand-link { 
+            width: 60%; /* Zona de click amplia */
+            display: block; 
+            transition: opacity 0.2s;
+        }
+        .brand-link:active { opacity: 0.7; }
+        
         .brand-logo {
             width: 100%; 
             height: auto;
@@ -63,32 +69,32 @@
         .lbl { 
             font-family: var(--font-title); 
             color: #94a3b8; 
-            font-size: 0.85rem; 
+            font-size: 0.9rem; /* GRANDE */
             margin-bottom: 5px; 
             letter-spacing: 1px; 
             text-transform: uppercase; 
         }
         
         .val { 
-            font-size: 2.2rem; 
+            font-size: 2.3rem; /* JUMBO */
             font-weight: 900; 
-            margin-top: 2px; 
+            margin-top: 5px; 
             line-height: 1; 
             color: white;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         
         .sub-val { 
-            font-size: 0.9rem; 
+            font-size: 1rem; /* GRANDE */
             color: #cbd5e1; 
-            margin-top: 5px; 
+            margin-top: 6px; 
             font-weight: 600;
         }
 
         .section-header { 
             text-align: center; color: var(--blue); font-family: var(--font-title); 
-            margin: 30px 0 15px 0; font-size: 1.2rem; letter-spacing: 1px; 
-            border-bottom: 2px solid #334155; padding-bottom: 5px;
+            margin: 30px 0 15px 0; font-size: 1.4rem; letter-spacing: 1px; 
+            border-bottom: 2px solid #334155; padding-bottom: 8px;
         }
         
         /* HEADER UBICACIÓN */
@@ -96,13 +102,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-left: 5px solid var(--blue);
+            border-left: 6px solid var(--blue);
             text-align: left;
-            padding: 12px 15px;
+            padding: 15px;
             background: #151e2e;
         }
-        .loc-title { font-size: 1.2rem; color: white; margin-bottom: 2px; font-weight:bold; }
-        .loc-sub { font-size: 0.8rem; color: var(--green); }
+        .loc-title { font-size: 1.4rem; color: white; margin-bottom: 2px; font-weight:bold; }
+        .loc-sub { font-size: 0.9rem; color: var(--green); }
 
         /* --- GRILLAS --- */
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
@@ -110,14 +116,14 @@
 
         .data-box {
             background: var(--card);
-            padding: 12px 5px;
+            padding: 15px 5px;
             border-radius: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            min-height: 100px;
+            min-height: 110px;
             border: 1px solid rgba(255,255,255,0.05);
         }
 
@@ -126,17 +132,17 @@
             background: linear-gradient(160deg, #1e3a8a 0%, #0f172a 100%);
             border: 1px solid #3b82f6;
         }
-        .tide-main { font-size: 1.6rem; font-weight: bold; color: white; margin: 5px 0; }
-        .tide-sub { font-size: 0.85rem; background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); }
+        .tide-main { font-size: 1.7rem; font-weight: bold; color: white; margin: 5px 0; }
+        .tide-sub { font-size: 0.9rem; background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); }
 
         /* --- BRÚJULA --- */
         .compass-container { cursor: pointer; } 
         .compass-rose {
-            width: 65px; height: 65px; border-radius: 50%;
+            width: 70px; height: 70px; border-radius: 50%;
             background: #0f172a; border: 3px solid #475569;
             position: relative; box-shadow: inset 0 0 10px #000;
         }
-        .cardinal { position: absolute; font-size: 0.7rem; font-weight: bold; color: #64748b; }
+        .cardinal { position: absolute; font-size: 0.75rem; font-weight: bold; color: #64748b; }
         .c-n { top: 2px; left: 50%; transform: translateX(-50%); color: var(--danger); }
         .c-s { bottom: 2px; left: 50%; transform: translateX(-50%); }
         .c-e { right: 4px; top: 50%; transform: translateY(-50%); }
@@ -144,7 +150,7 @@
 
         .compass-needle {
             position: absolute; top: 50%; left: 50%;
-            width: 8px; height: 45px;
+            width: 8px; height: 50px;
             background: linear-gradient(to bottom, var(--danger) 50%, white 50%);
             transform: translate(-50%, -50%) rotate(0deg);
             transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -157,13 +163,13 @@
         .tabs { display: flex; margin-bottom: 15px; border-bottom: 2px solid #334155; }
         .tab { 
             flex: 1; padding: 12px; text-align: center; background: none; border: none; 
-            color: #64748b; font-size: 1.1rem; cursor: pointer; font-family: var(--font-title); 
+            color: #64748b; font-size: 1.2rem; cursor: pointer; font-family: var(--font-title); 
         }
         .tab.active { color: var(--blue); border-bottom: 3px solid var(--blue); color: white; }
         
         select { 
             width: 100%; padding: 15px; background: #0f172a; border: 1px solid #334155; 
-            color: white; border-radius: 8px; font-size: 1.1rem;
+            color: white; border-radius: 8px; font-size: 1.2rem;
         }
 
         .fish-details { margin-top: 15px; display: none; padding: 15px; background: #111827; border-radius: 10px; border: 1px solid #374151; }
@@ -173,15 +179,15 @@
 
         /* --- PREDICCION ESPECIES --- */
         .prediction-box { background: rgba(56, 189, 248, 0.1); border: 1px solid #334155; text-align: left; padding: 15px; display: none; }
-        .species-list { font-size: 1.1rem; color: white; font-weight: 500; margin-top: 8px; }
-        .biome-tag { font-size: 0.8rem; background: var(--blue); color: #000; padding: 3px 8px; border-radius: 4px; font-weight: bold; }
+        .species-list { font-size: 1.1rem; color: white; font-weight: 500; margin-top: 8px; line-height: 1.4; }
+        .biome-tag { font-size: 0.9rem; background: var(--blue); color: #000; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
 
         /* --- BOTONES --- */
         .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px;}
         .btn-action {
-            padding: 20px; border: none; border-radius: 12px; color: white;
+            padding: 22px; border: none; border-radius: 12px; color: white;
             display: flex; align-items: center; justify-content: center; gap: 10px; 
-            font-size: 1.1rem; cursor: pointer; font-family: var(--font-title);
+            font-size: 1.2rem; cursor: pointer; font-family: var(--font-title);
             box-shadow: 0 4px 0 rgba(0,0,0,0.3); transition: transform 0.1s;
         }
         .btn-action:active { transform: translateY(4px); box-shadow: none; }
@@ -197,15 +203,15 @@
             display: flex; justify-content: space-between; align-items: center; 
         }
         .log-text { font-size: 1rem; color: white; font-weight: bold; }
-        .log-date { font-size: 0.8rem; color: #94a3b8; display: block; margin-top: 4px; }
-        .btn-delete { background: #450a0a; border-radius: 6px; color: var(--danger); font-size: 1.2rem; width: 35px; height: 35px; border: none; }
+        .log-date { font-size: 0.85rem; color: #94a3b8; display: block; margin-top: 4px; }
+        .btn-delete { background: #450a0a; border-radius: 6px; color: var(--danger); font-size: 1.3rem; width: 40px; height: 40px; border: none; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <!-- 1. LOGO CON ENLACE -->
+    <!-- 1. LOGO CON ENLACE (Instagram) -->
     <div class="brand-header">
         <a href="https://www.instagram.com/lolapalupulo/" target="_blank" class="brand-link">
             <img src="https://raw.githubusercontent.com/LOLAPALUPULO/LOLA-Pesca/refs/heads/main/lolapesca.svg" alt="Lola Pesca" class="brand-logo">
@@ -215,13 +221,13 @@
     <!-- 2. UBICACIÓN -->
     <div class="card-box location-bar">
         <div>
-            <div class="loc-title" id="loc-name">📍 Cargando...</div>
-            <div class="loc-sub" id="gps-status">Inicializando satélites</div>
+            <div class="loc-title" id="loc-name">📍 Buscando GPS...</div>
+            <div class="loc-sub" id="gps-status">Detectando señal...</div>
         </div>
         <button onclick="forceReload()" style="background:none; border:none; font-size:2rem; cursor:pointer;">🔄</button>
     </div>
 
-    <!-- 3. NIVEL CRÍTICO -->
+    <!-- 3. NIVEL CRÍTICO (Viento / Brújula / Agua) -->
     <div class="grid-3">
         <!-- Viento -->
         <div class="data-box">
@@ -243,34 +249,37 @@
         <!-- Mareas -->
         <div class="data-box tide-box">
             <div class="lbl" style="color:#bfdbfe">AGUA</div>
-            <div class="tide-main" id="tide-current" style="font-size:1.4rem;">--</div>
+            <div class="tide-main" id="tide-current" style="font-size:1.6rem;">--</div>
             <div class="tide-sub" id="tide-next">--</div>
         </div>
     </div>
 
-    <!-- 4. ACTIVIDAD: PRESIÓN y LUNA -->
+    <!-- 4. ACTIVIDAD: PRESIÓN Y LUNA -->
     <div class="grid-2">
+        <!-- Presión Robustecida -->
         <div class="data-box">
             <span class="lbl">PRESIÓN (hPa)</span>
             <span class="val" id="press">--</span>
-            <span class="sub-val" id="press-desc" style="font-weight:bold">--</span>
+            <span class="sub-val" id="press-desc" style="font-weight:bold">Cargando..</span>
         </div>
+        <!-- Luna -->
         <div class="data-box" style="justify-content: space-between;">
             <span class="lbl">FASE LUNAR</span>
             <div style="font-size:2rem; margin:0;" id="moon-icon">🌑</div>
-            <span style="font-weight:bold; font-size:0.9rem; color:white;" id="moon-phase">--</span>
+            <span style="font-weight:bold; font-size:0.95rem; color:white;" id="moon-phase">--</span>
         </div>
     </div>
     
-    <!-- TEMP y UV -->
+    <!-- 5. AMBIENTE: TEMP Y UV -->
     <div class="grid-2">
         <div class="data-box">
             <span class="lbl">TEMP</span>
             <span class="val" id="temp">--°</span>
             <div class="sub-val" id="feels-like">ST: --°</div>
         </div>
+        <!-- UV Máximo -->
         <div class="data-box" style="border: 1px solid #334155;">
-            <span class="lbl">INDICE UV</span>
+            <span class="lbl">UV MAX (HOY)</span>
             <span class="val" id="uv-val">--</span>
             <div style="height:6px; width:80%; background:#333; margin-top:8px; border-radius:3px;">
                 <div id="uv-bar" style="height:100%; width:0%; background:var(--green); border-radius:3px; transition:1s;"></div>
@@ -353,7 +362,7 @@
         window.onload = () => {
             loadFishMenu();
             calculateMoonPhase();
-            initApp(); // Intenta GPS
+            initApp(); 
             initCompass();
             renderLog();
         };
@@ -365,25 +374,24 @@
         }
 
         function initApp() {
-            // Ubicación por defecto (Buenos Aires / Rio de la Plata) en caso de fallo
             const defaultLat = -34.6037;
             const defaultLon = -58.3816;
 
             if(!navigator.geolocation) {
-                alert("Navegador sin soporte GPS. Usando ubicación por defecto.");
+                alert("Navegador sin soporte GPS. Cargando modo demo.");
                 fetchData(defaultLat, defaultLon, false);
                 return;
             }
 
-            // Timeout de 5 segundos para GPS, si no, carga defecto
-            const gpsOptions = { timeout: 5000, enableHighAccuracy: true };
+            const gpsOptions = { timeout: 10000, enableHighAccuracy: true };
             
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
                     fetchData(pos.coords.latitude, pos.coords.longitude, true);
                 }, 
                 (err) => {
-                    console.warn("Error GPS:", err);
+                    console.warn("GPS falló o cancelado:", err);
+                    document.getElementById('loc-name').innerHTML = "Sin GPS (Usa Refresh)";
                     fetchData(defaultLat, defaultLon, false); // Carga fallback
                 }, 
                 gpsOptions
@@ -392,28 +400,28 @@
 
         function fetchData(lat, lon, isLive) {
             // UI Feedback
-            document.getElementById('gps-status').innerText = isLive ? "🟢 GPS ACTIVO" : "🔴 MODO DEMO (SIN GPS)";
+            document.getElementById('gps-status').innerText = isLive ? "🟢 ONLINE - DATOS REALES" : "🔴 MODO DEMO / SIN GPS";
             document.getElementById('gps-status').style.color = isLive ? "var(--green)" : "var(--danger)";
 
-            // 1. Nombre Ciudad (Nominatim)
+            // 1. Ciudad
             if(isLive) {
                 fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
                 .then(r=>r.json())
                 .then(d => {
-                    document.getElementById('loc-name').innerText = d.address.city || d.address.town || d.address.village || "Zona Detectada";
-                }).catch(()=> document.getElementById('loc-name').innerText = "Coordenadas GPS");
+                    document.getElementById('loc-name').innerText = d.address.city || d.address.town || "Zona Detectada";
+                }).catch(()=> document.getElementById('loc-name').innerText = "Coord. GPS");
             } else {
-                document.getElementById('loc-name').innerText = "Buenos Aires (Default)";
+                document.getElementById('loc-name').innerText = "Buenos Aires (Defecto)";
             }
 
-            // Predicción Especies
             determineSpecies(lat, lon);
 
-            // 2. API CLIMA (LIGERA Y RAPIDA)
-            // Quitamos sunrise/sunset para evitar conflictos de parseo
-            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,pressure_msl,wind_speed_10m,wind_direction_10m,weather_code&hourly=uv_index&timezone=auto`;
+            // 2. API CLIMA (SOLUCIONADO: Presión MSL y UV MAX DIARIO)
+            // Pedimos UV MAX diario porque es más estable que el horario
+            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,weather_code&daily=uv_index_max&timezone=auto`;
 
             fetch(weatherUrl).then(r=>r.json()).then(data => {
+                if(!data.current) return;
                 const cur = data.current;
                 
                 // Temp
@@ -427,39 +435,39 @@
                 const dirIndex = Math.round(((wDir %= 360) < 0 ? wDir + 360 : wDir) / 45) % 8;
                 document.getElementById('wind-dir').innerText = "DEL " + dirs[dirIndex];
 
-                // Presión (MSL)
-                const p = Math.round(cur.pressure_msl);
-                document.getElementById('press').innerText = p;
+                // PRESIÓN (FALLBACK DOBLE: MSL O SUP)
+                // Usamos pressure_msl (Nivel del mar) que es la estándar, si es null, usamos surface
+                let p = cur.pressure_msl;
+                if (!p) p = cur.surface_pressure;
+                
+                document.getElementById('press').innerText = Math.round(p);
                 const pDesc = document.getElementById('press-desc');
+                
                 if(p < 1008) { pDesc.innerText = "BAJA"; pDesc.style.color = "var(--danger)"; }
                 else if(p > 1018) { pDesc.innerText = "ALTA"; pDesc.style.color = "var(--green)"; }
                 else { pDesc.innerText = "ESTABLE"; pDesc.style.color = "#aaa"; }
 
-                // UV (Robustecido)
-                // Obtenemos la hora actual del dispositivo para consultar el array horario
-                const now = new Date();
-                const hourIndex = now.getHours(); 
+                // UV (SOLUCIÓN: USAMOS EL MAXIMO DEL DIA)
                 let uv = 0;
-                
-                if (data.hourly && data.hourly.uv_index && data.hourly.uv_index[hourIndex] !== undefined) {
-                    uv = data.hourly.uv_index[hourIndex];
+                if(data.daily && data.daily.uv_index_max && data.daily.uv_index_max.length > 0) {
+                    uv = data.daily.uv_index_max[0]; // El de hoy
                 }
                 
                 document.getElementById('uv-val').innerText = uv;
                 const uvBar = document.getElementById('uv-bar');
                 const uvMsg = document.getElementById('uv-msg');
-                let color = "var(--green)", width = "20%", msg = "BAJO";
+                let color = "var(--green)", width = "20%", msg = "RIESGO BAJO";
                 if(uv >= 3) { color = "var(--yellow)"; width = "50%"; msg = "MODERADO"; }
                 if(uv >= 6) { color = "var(--orange)"; width = "75%"; msg = "ALTO"; }
                 if(uv >= 8) { color = "var(--danger)"; width = "100%"; msg = "EXTREMO"; }
                 uvBar.style.background = color; uvBar.style.width = width; uvMsg.innerText = msg; uvMsg.style.color = color;
 
-            }).catch(e => console.error("Error Clima:", e));
+            }).catch(e => console.error("Error API:", e));
 
-            // 3. MAREAS (API Marina)
+            // 3. MAREAS
             const marineUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=tide_height&timezone=auto`;
             fetch(marineUrl).then(r=>r.json()).then(data => {
-                if(!data.hourly) throw new Error("Tierra firme");
+                if(!data.hourly) throw new Error("No es mar");
                 
                 const now = new Date();
                 const h = now.getHours();
@@ -476,7 +484,7 @@
                 document.getElementById('tide-next').innerText = `Pleamar: ${d.getHours()}:${min}`;
             }).catch(() => {
                 document.getElementById('tide-current').innerText = "RÍO";
-                document.getElementById('tide-next').innerText = "Interior / Sin Datos";
+                document.getElementById('tide-next').innerText = "Interior / Sin Marea";
             });
         }
 
@@ -572,7 +580,7 @@
         function renderLog() {
             const c = document.getElementById('log-history');
             const h = JSON.parse(localStorage.getItem('pescaLog')) || [];
-            if (h.length === 0) { c.innerHTML = '<div style="text-align:center; color:#666; font-size:1rem; padding:10px;">Sin historial</div>'; return; }
+            if (h.length === 0) { c.innerHTML = '<div style="text-align:center; color:#666; font-size:1rem; padding:10px;">Historial vacío</div>'; return; }
             let html = "";
             h.forEach(i => {
                 html += `<div class="log-item">
@@ -583,7 +591,7 @@
             c.innerHTML = html;
         }
         function deleteLog(id) {
-            if(confirm("¿Borrar?")) {
+            if(confirm("¿Eliminar?")) {
                 let h = JSON.parse(localStorage.getItem('pescaLog')) || [];
                 h = h.filter(i => i.id !== id);
                 localStorage.setItem('pescaLog', JSON.stringify(h));
