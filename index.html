@@ -87,18 +87,13 @@
             min-height: 100px;
         }
 
-        /* --- MAREAS (Ahora al 50%) --- */
+        /* --- MAREAS --- */
         .tide-box {
             background: linear-gradient(135deg, #172554 0%, #0f172a 100%);
             border: 1px solid #1e3a8a;
         }
         .tide-main { font-size: 1.8rem; font-weight: bold; color: white; margin: 5px 0; }
         .tide-sub { font-size: 0.8rem; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 10px; }
-
-        /* --- UV INDEX --- */
-        .uv-dot {
-            height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 5px;
-        }
 
         /* --- BRÚJULA ROSA DE LOS VIENTOS --- */
         .compass-rose {
@@ -110,27 +105,18 @@
             position: relative;
             box-shadow: inset 0 0 10px #000;
         }
-        /* Puntos Cardinales */
-        .cardinal {
-            position: absolute;
-            font-size: 0.6rem;
-            font-weight: bold;
-            color: #64748b;
-        }
-        .c-n { top: 2px; left: 50%; transform: translateX(-50%); color: var(--danger); } /* Norte Rojo */
+        .cardinal { position: absolute; font-size: 0.6rem; font-weight: bold; color: #64748b; }
+        .c-n { top: 2px; left: 50%; transform: translateX(-50%); color: var(--danger); }
         .c-s { bottom: 2px; left: 50%; transform: translateX(-50%); }
         .c-e { right: 4px; top: 50%; transform: translateY(-50%); }
         .c-o { left: 4px; top: 50%; transform: translateY(-50%); }
 
-        /* La Aguja (Flecha Bicolor) */
         .compass-needle {
             position: absolute;
             top: 50%; left: 50%;
             width: 10px; height: 60px;
-            /* Diseño Bicolor con CSS puro */
             background: linear-gradient(to bottom, var(--danger) 50%, white 50%);
-            transform: translate(-50%, -50%) rotate(0deg); /* Se rota con JS */
-            /* Forma de diamante */
+            transform: translate(-50%, -50%) rotate(0deg);
             clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
             transition: transform 0.1s ease-out;
             box-shadow: 0 0 5px rgba(0,0,0,0.5);
@@ -146,7 +132,7 @@
         .fish-details { margin-top: 15px; display: none; padding: 15px; background: #0f172a; border-radius: 6px; }
         .fish-details.show { display: block; animation: fadeIn 0.3s; }
 
-        /* --- BOTONES --- */
+        /* --- BOTONES Y BITACORA --- */
         .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .btn-action {
             padding: 20px; border: none; border-radius: 10px; color: white;
@@ -156,6 +142,29 @@
         .btn-torch { background: #475569; }
         .btn-torch.on { background: #f8fafc; color: black; box-shadow: 0 0 20px white; }
         .btn-log { background: var(--green); }
+
+        /* Estilos de la lista de bitácora */
+        .log-container {
+            margin-top: 20px;
+            border-top: 1px solid #334155;
+            padding-top: 10px;
+        }
+        .log-item {
+            background: #1e293b;
+            border-left: 4px solid var(--green);
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeIn 0.5s;
+        }
+        .log-text { font-size: 0.95rem; color: white; }
+        .log-date { font-size: 0.7rem; color: #94a3b8; display: block; margin-top: 2px; }
+        .btn-delete {
+            background: none; border: none; color: var(--danger); font-size: 1.2rem; cursor: pointer; padding: 0 10px;
+        }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
@@ -176,16 +185,13 @@
         <button onclick="initApp()" style="background:none; border:none; font-size:2rem; cursor:pointer;">🔄</button>
     </div>
 
-    <!-- FILA 1: MAREAS Y RAYOS UV (Mitad y Mitad) -->
+    <!-- FILA 1: MAREAS Y UV -->
     <div class="grid-2">
-        <!-- MAREAS -->
         <div class="data-box tide-box">
             <div class="lbl" style="color:#bfdbfe">MAREA</div>
             <div class="tide-main" id="tide-current">--</div>
             <div class="tide-sub" id="tide-next">Cargando...</div>
         </div>
-
-        <!-- UV INDEX -->
         <div class="data-box" style="border: 1px solid #334155;">
             <div class="lbl">INDICE UV</div>
             <div class="val" id="uv-val">--</div>
@@ -196,30 +202,24 @@
         </div>
     </div>
 
-    <!-- FILA 2: TEMP, VIENTO, BRÚJULA (Tercios) -->
+    <!-- FILA 2: TEMP, VIENTO, BRÚJULA -->
     <div class="grid-3">
-        <!-- Temp -->
         <div class="data-box">
             <span class="lbl">TEMP</span>
             <span class="val" id="temp" style="font-size:1.5rem">--°</span>
             <div style="font-size:0.7rem; color:#888;" id="weather-desc">--</div>
         </div>
-        
-        <!-- Viento -->
         <div class="data-box">
             <span class="lbl">VIENTO</span>
             <span class="val" id="wind-speed" style="font-size:1.5rem">--</span>
             <div style="font-size:0.7rem; color:#888;" id="wind-dir">km/h</div>
         </div>
-        
-        <!-- Brújula Rosa -->
         <div class="data-box" style="padding:5px;">
             <div class="compass-rose">
                 <span class="cardinal c-n">N</span>
                 <span class="cardinal c-e">E</span>
                 <span class="cardinal c-s">S</span>
                 <span class="cardinal c-o">O</span>
-                <!-- La Aguja que rota -->
                 <div class="compass-needle" id="compass-needle"></div>
             </div>
         </div>
@@ -246,7 +246,7 @@
             <button class="tab" onclick="switchTab('mar')">MAR</button>
         </div>
         <select id="fish-selector" onchange="showFishInfo()">
-            <!-- JS lo llena -->
+            <!-- JS -->
         </select>
         <div id="fish-info" class="fish-details">
             <div style="margin-bottom:10px;">
@@ -264,7 +264,7 @@
         </div>
     </div>
 
-    <!-- HERRAMIENTAS -->
+    <!-- HERRAMIENTAS Y BITACORA -->
     <div class="action-grid">
         <button id="btn-torch" class="btn-action btn-torch" onclick="toggleFlash()">
             LINTERNA
@@ -273,7 +273,11 @@
             BITÁCORA
         </button>
     </div>
-    <div id="log-msg" style="text-align:center; font-size:0.9rem; margin-top:10px; color:var(--green); min-height:20px;"></div>
+
+    <!-- CONTENEDOR DE REGISTROS GUARDADOS -->
+    <div id="log-history" class="log-container">
+        <div style="text-align:center; color:#666; font-size:0.8rem;">Historial vacío</div>
+    </div>
 
     <script>
         const fishDB = {
@@ -300,25 +304,82 @@
             calculateMoonPhase();
             initApp();
             initCompass();
+            renderLog(); // Cargar historial al iniciar
         };
 
-        // --- BRÚJULA (ROSA DE LOS VIENTOS) ---
+        // --- FUNCIONES BITÁCORA REAL (LOCALSTORAGE) ---
+        function saveQuickLog() {
+            const text = prompt("📝 Nueva Captura (Especie - Peso):");
+            if(text) {
+                const now = new Date();
+                // Formato dd/mm hh:mm
+                const dateStr = now.getDate() + "/" + (now.getMonth()+1) + " " + 
+                                now.getHours() + ":" + (now.getMinutes()<10?'0':'') + now.getMinutes();
+                
+                const newEntry = {
+                    id: Date.now(),
+                    text: text,
+                    date: dateStr
+                };
+
+                // Obtener historial existente
+                let history = JSON.parse(localStorage.getItem('pescaLog')) || [];
+                history.unshift(newEntry); // Agregar al principio
+                
+                // Guardar en memoria del teléfono
+                localStorage.setItem('pescaLog', JSON.stringify(history));
+                
+                renderLog();
+            }
+        }
+
+        function renderLog() {
+            const container = document.getElementById('log-history');
+            const history = JSON.parse(localStorage.getItem('pescaLog')) || [];
+
+            if (history.length === 0) {
+                container.innerHTML = '<div style="text-align:center; color:#666; font-size:0.8rem; margin-top:10px;">Sin registros guardados</div>';
+                return;
+            }
+
+            let html = "";
+            history.forEach(item => {
+                html += `
+                    <div class="log-item">
+                        <div>
+                            <span class="log-text">${item.text}</span>
+                            <span class="log-date">${item.date}</span>
+                        </div>
+                        <button class="btn-delete" onclick="deleteLog(${item.id})">×</button>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function deleteLog(id) {
+            if(confirm("¿Borrar registro?")) {
+                let history = JSON.parse(localStorage.getItem('pescaLog')) || [];
+                history = history.filter(item => item.id !== id);
+                localStorage.setItem('pescaLog', JSON.stringify(history));
+                renderLog();
+            }
+        }
+
+        // --- BRÚJULA ---
         function initCompass() {
             if (window.DeviceOrientationEvent) {
                 window.addEventListener("deviceorientation", function(event) {
-                    // alpha: rotación del dispositivo (0-360)
                     let heading = event.alpha; 
                     if(heading !== null) {
-                        // Para que la aguja apunte al norte, debe rotar en sentido contrario al giro del teléfono.
-                        // Calculamos la rotación inversa.
                         const needle = document.getElementById('compass-needle');
-                        // translate(-50%, -50%) es necesario para centrar la aguja
                         needle.style.transform = `translate(-50%, -50%) rotate(${360 - heading}deg)`;
                     }
                 }, true);
             }
         }
 
+        // --- DATOS APP ---
         function calculateMoonPhase() {
             const date = new Date();
             const lp = 2551443; 
@@ -353,20 +414,14 @@
                     document.getElementById('loc-name').innerText = res.address.city || res.address.town || res.address.village || "Zona de Pesca";
                 } catch(e) { document.getElementById('loc-name').innerText = "Ubicación GPS"; }
 
-                // API: CLIMA + UV
                 const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,surface_pressure,wind_speed_10m,weather_code&hourly=uv_index&timezone=auto`;
 
                 fetch(weatherUrl).then(r=>r.json()).then(data => {
                     const cur = data.current;
-                    
-                    // Temp
                     document.getElementById('temp').innerText = Math.round(cur.temperature_2m) + "°";
                     document.getElementById('weather-desc').innerText = (cur.weather_code < 3 ? "Despejado" : "Nublado/Lluvia");
-                    
-                    // Viento
                     document.getElementById('wind-speed').innerText = Math.round(cur.wind_speed_10m);
                     
-                    // Presión
                     const p = Math.round(cur.surface_pressure);
                     document.getElementById('press').innerText = p;
                     const pDesc = document.getElementById('press-desc');
@@ -374,32 +429,20 @@
                     else if(p > 1018) { pDesc.innerText = "ALTA"; pDesc.style.color = "var(--green)"; }
                     else { pDesc.innerText = "ESTABLE"; pDesc.style.color = "#aaa"; }
 
-                    // UV INDEX (Buscamos la hora actual en el array hourly)
+                    // UV
                     const now = new Date();
-                    const currentHourIndex = now.getHours();
-                    const uv = data.hourly.uv_index[currentHourIndex];
-                    
+                    const uv = data.hourly.uv_index[now.getHours()] || 0;
                     document.getElementById('uv-val').innerText = uv;
                     const uvBar = document.getElementById('uv-bar');
                     const uvMsg = document.getElementById('uv-msg');
-                    
-                    // Escala de Colores UV
-                    let color = "var(--green)";
-                    let width = "20%";
-                    let msg = "Bajo";
-
-                    if(uv >= 3 && uv < 6) { color = "var(--yellow)"; width = "50%"; msg = "Moderado"; }
-                    else if(uv >= 6 && uv < 8) { color = "var(--orange)"; width = "75%"; msg = "Alto"; }
-                    else if(uv >= 8) { color = "var(--danger)"; width = "100%"; msg = "Extremo!"; }
-
-                    uvBar.style.background = color;
-                    uvBar.style.width = width;
-                    uvMsg.innerText = msg;
-                    uvMsg.style.color = color;
+                    let color = "var(--green)", width = "20%", msg = "Bajo";
+                    if(uv >= 3) { color = "var(--yellow)"; width = "50%"; msg = "Moderado"; }
+                    if(uv >= 6) { color = "var(--orange)"; width = "75%"; msg = "Alto"; }
+                    if(uv >= 8) { color = "var(--danger)"; width = "100%"; msg = "Extremo!"; }
+                    uvBar.style.background = color; uvBar.style.width = width; uvMsg.innerText = msg; uvMsg.style.color = color;
 
                 }).catch(e => { console.error(e); });
 
-                // MAREAS
                 const marineUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=tide_height&timezone=auto`;
                 fetch(marineUrl).then(r=>r.json()).then(data => {
                     if(!data.hourly) throw new Error("No mar");
@@ -409,7 +452,6 @@
                     const times = data.hourly.time.slice(h, h+12);
                     const trend = tides[1] > tides[0] ? "SUBIENDO ⬆" : "BAJANDO ⬇";
                     document.getElementById('tide-current').innerText = trend;
-                    
                     let maxV = -99, maxT = "";
                     for(let i=0; i<tides.length; i++) { if(tides[i] > maxV) { maxV = tides[i]; maxT = times[i]; } }
                     const d = new Date(maxT);
@@ -427,7 +469,6 @@
         function loadFishMenu(){ const s=document.getElementById('fish-selector'); s.innerHTML='<option>Selecciona pez...</option>'; fishDB[currentMode].forEach((f,i)=>{const o=document.createElement('option'); o.value=i; o.innerText=f.n; s.appendChild(o)}); document.getElementById('fish-info').classList.remove('show'); }
         function showFishInfo(){ const i=document.getElementById('fish-selector').value; if(!i)return; const f=fishDB[currentMode][i]; document.getElementById('fish-hook').innerText=f.h; document.getElementById('fish-bait').innerText=f.b; document.getElementById('fish-tip').innerText=f.t; document.getElementById('fish-info').classList.add('show'); }
         async function toggleFlash(){ const b=document.getElementById('btn-torch'); if(torchTrack){torchTrack.stop(); torchTrack=null; b.classList.remove('on'); return;} try{ const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}}); torchTrack=s.getVideoTracks()[0]; await torchTrack.applyConstraints({advanced:[{torch:true}]}); b.classList.add('on'); }catch(e){alert("Sin permiso o sin flash");} }
-        function saveQuickLog(){ const t=prompt("Captura:"); if(t){ document.getElementById('log-msg').innerText="✅ Guardado: "+t; setTimeout(()=>document.getElementById('log-msg').innerText="",3000); }}
     </script>
 </body>
 </html>
