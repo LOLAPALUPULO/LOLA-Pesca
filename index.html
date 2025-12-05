@@ -36,12 +36,12 @@
         /* --- LOGO --- */
         .brand-header {
             text-align: center;
-            padding: 20px 0;
+            padding: 15px 0;
             display: flex;
             justify-content: center;
         }
         .brand-logo {
-            width: 50%;
+            width: 45%; 
             height: auto;
             filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
         }
@@ -57,11 +57,13 @@
         }
 
         /* TÍTULOS */
-        .lbl { font-family: var(--font-title); color: #94a3b8; font-size: 0.9rem; margin-bottom: 5px; letter-spacing: 1px; text-transform: uppercase; }
-        .val { font-size: 1.8rem; font-weight: bold; margin-top: 5px; line-height: 1; }
+        .lbl { font-family: var(--font-title); color: #94a3b8; font-size: 0.75rem; margin-bottom: 5px; letter-spacing: 1px; text-transform: uppercase; }
+        .val { font-size: 1.5rem; font-weight: bold; margin-top: 5px; line-height: 1; }
+        .sub-val { font-size: 0.8rem; color: #888; margin-top: 2px; }
+        
         .section-header { 
             text-align: center; color: var(--blue); font-family: var(--font-title); 
-            margin: 20px 0 10px 0; font-size: 1.1rem; letter-spacing: 1px; 
+            margin: 25px 0 10px 0; font-size: 1rem; letter-spacing: 1px; 
             border-bottom: 1px solid #334155; padding-bottom: 5px;
         }
         
@@ -72,41 +74,35 @@
             align-items: center;
             border-bottom: 3px solid var(--blue);
             text-align: left;
+            padding: 10px 15px;
         }
-        .loc-title { font-size: 1.4rem; color: white; margin-bottom: 2px; font-family: var(--font-title); }
-        .loc-sub { font-size: 0.9rem; color: #94a3b8; }
+        .loc-title { font-size: 1.2rem; color: white; margin-bottom: 2px; font-family: var(--font-title); }
+        .loc-sub { font-size: 0.8rem; color: #94a3b8; }
 
-        /* PREDICCION DE ESPECIES (NUEVO) */
+        /* PREDICCION DE ESPECIES */
         .prediction-box {
-            background: rgba(56, 189, 248, 0.1); /* Fondo azulado muy suave */
-            border: 1px solid var(--blue);
+            background: rgba(56, 189, 248, 0.05);
+            border: 1px solid #334155;
             text-align: left;
+            padding: 10px;
         }
-        .species-list {
-            font-size: 1.1rem;
-            color: white;
-            font-weight: 500;
-            margin-top: 5px;
-        }
-        .biome-tag {
-            font-size: 0.7rem; background: var(--blue); color: #000; 
-            padding: 2px 6px; border-radius: 4px; font-weight: bold; display: inline-block; margin-bottom: 5px;
-        }
+        .species-list { font-size: 1rem; color: white; font-weight: 500; margin-top: 5px; }
+        .biome-tag { font-size: 0.7rem; background: var(--blue); color: #000; padding: 2px 6px; border-radius: 4px; font-weight: bold; display: inline-block; margin-bottom: 5px; }
 
         /* --- GRILLAS --- */
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
 
         .data-box {
             background: var(--card);
-            padding: 15px 5px;
+            padding: 10px 5px;
             border-radius: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            min-height: 100px;
+            min-height: 95px;
         }
 
         /* --- MAREAS --- */
@@ -114,15 +110,12 @@
             background: linear-gradient(135deg, #172554 0%, #0f172a 100%);
             border: 1px solid #1e3a8a;
         }
-        .tide-main { font-size: 1.8rem; font-weight: bold; color: white; margin: 5px 0; }
-        .tide-sub { font-size: 0.8rem; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 10px; }
-
-        /* --- UV --- */
-        .uv-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        .tide-main { font-size: 1.6rem; font-weight: bold; color: white; margin: 5px 0; }
+        .tide-sub { font-size: 0.75rem; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 10px; }
 
         /* --- BRÚJULA --- */
         .compass-rose {
-            width: 80px; height: 80px; border-radius: 50%;
+            width: 65px; height: 65px; border-radius: 50%;
             background: #0f172a; border: 2px solid #475569;
             position: relative; box-shadow: inset 0 0 10px #000;
         }
@@ -134,7 +127,7 @@
 
         .compass-needle {
             position: absolute; top: 50%; left: 50%;
-            width: 10px; height: 60px;
+            width: 8px; height: 45px;
             background: linear-gradient(to bottom, var(--danger) 50%, white 50%);
             transform: translate(-50%, -50%) rotate(0deg);
             clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
@@ -146,18 +139,18 @@
         /* --- GUIA PECES --- */
         .guide-container { padding: 10px; }
         .tabs { display: flex; margin-bottom: 10px; border-bottom: 1px solid #334155; }
-        .tab { flex: 1; padding: 12px; text-align: center; background: none; border: none; color: #64748b; font-size: 1.2rem; cursor: pointer; font-family: var(--font-title); }
+        .tab { flex: 1; padding: 10px; text-align: center; background: none; border: none; color: #64748b; font-size: 1rem; cursor: pointer; font-family: var(--font-title); }
         .tab.active { color: var(--blue); border-bottom: 2px solid var(--blue); }
-        select { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 6px; font-size: 1rem; }
+        select { width: 100%; padding: 10px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 6px; font-size: 1rem; }
         .fish-details { margin-top: 15px; display: none; padding: 15px; background: #0f172a; border-radius: 6px; }
         .fish-details.show { display: block; animation: fadeIn 0.3s; }
 
         /* --- BOTONES Y BITACORA --- */
-        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;}
         .btn-action {
-            padding: 20px; border: none; border-radius: 10px; color: white;
+            padding: 15px; border: none; border-radius: 10px; color: white;
             display: flex; align-items: center; justify-content: center; gap: 8px; 
-            font-size: 1.2rem; cursor: pointer; font-family: var(--font-title);
+            font-size: 1.1rem; cursor: pointer; font-family: var(--font-title);
         }
         .btn-torch { background: #475569; }
         .btn-torch.on { background: #f8fafc; color: black; box-shadow: 0 0 20px white; }
@@ -178,12 +171,12 @@
 </head>
 <body>
 
-    <!-- LOGO -->
+    <!-- 1. LOGO -->
     <div class="brand-header">
         <img src="https://raw.githubusercontent.com/LOLAPALUPULO/LOLA-Pesca/refs/heads/main/lolapesca.svg" alt="Lola Pesca" class="brand-logo">
     </div>
 
-    <!-- UBICACIÓN -->
+    <!-- 2. UBICACIÓN -->
     <div class="card-box location-bar">
         <div>
             <div class="loc-title" id="loc-name">📍 Buscando...</div>
@@ -192,42 +185,15 @@
         <button onclick="initApp()" style="background:none; border:none; font-size:2rem; cursor:pointer;">🔄</button>
     </div>
 
-    <!-- PREDICCIÓN DE ESPECIES (NUEVO) -->
-    <div class="card-box prediction-box" id="bio-box" style="display:none;">
-        <span class="biome-tag" id="bio-region">DETECTANDO ZONA...</span>
-        <div class="lbl">ESPECIES PREDOMINANTES AQUÍ:</div>
-        <div class="species-list" id="bio-species">--</div>
-    </div>
-
-    <!-- FILA 1: MAREAS Y UV -->
-    <div class="grid-2">
-        <div class="data-box tide-box">
-            <div class="lbl" style="color:#bfdbfe">MAREA</div>
-            <div class="tide-main" id="tide-current">--</div>
-            <div class="tide-sub" id="tide-next">Cargando...</div>
-        </div>
-        <div class="data-box" style="border: 1px solid #334155;">
-            <div class="lbl">INDICE UV</div>
-            <div class="val" id="uv-val">--</div>
-            <div style="font-size:0.8rem; margin-top:5px;" id="uv-msg">--</div>
-            <div style="height:4px; width:80%; background:#333; margin-top:5px; border-radius:2px;">
-                <div id="uv-bar" style="height:100%; width:0%; background:var(--green); border-radius:2px; transition:1s;"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- FILA 2: TEMP, VIENTO, BRÚJULA -->
+    <!-- 3. NIVEL 1: CRÍTICO (VIENTO, BRÚJULA, MAREA) -->
     <div class="grid-3">
-        <div class="data-box">
-            <span class="lbl">TEMP</span>
-            <span class="val" id="temp" style="font-size:1.5rem">--°</span>
-            <div style="font-size:0.7rem; color:#888;" id="weather-desc">--</div>
-        </div>
+        <!-- Viento -->
         <div class="data-box">
             <span class="lbl">VIENTO</span>
-            <span class="val" id="wind-speed" style="font-size:1.5rem">--</span>
-            <div style="font-size:0.7rem; color:#888;" id="wind-dir">km/h</div>
+            <span class="val" id="wind-speed" style="font-size:1.4rem;">--</span>
+            <div class="sub-val" id="wind-dir" style="color: var(--blue); font-weight:bold;">--</div>
         </div>
+        <!-- Brújula -->
         <div class="data-box" style="padding:5px;">
             <div class="compass-rose">
                 <span class="cardinal c-n">N</span>
@@ -236,29 +202,71 @@
                 <span class="cardinal c-o">O</span>
                 <div class="compass-needle" id="compass-needle"></div>
             </div>
+            <div style="font-size:0.6rem; margin-top:5px; color:#666; font-weight:bold;">BRÚJULA</div>
+        </div>
+        <!-- Mareas -->
+        <div class="data-box tide-box">
+            <div class="lbl" style="color:#bfdbfe">AGUA</div>
+            <div class="tide-main" id="tide-current" style="font-size:1.3rem;">--</div>
+            <div class="tide-sub" id="tide-next">Cargando</div>
         </div>
     </div>
 
-    <!-- FILA 3: PRESIÓN Y LUNA -->
+    <!-- 4. NIVEL 2: ACTIVIDAD (PRESIÓN Y LUNA) -->
     <div class="grid-2">
         <div class="data-box">
             <span class="lbl">PRESIÓN (hPa)</span>
             <span class="val" id="press">--</span>
-            <span style="font-size:0.9rem; margin-top:5px; font-weight:bold" id="press-desc">--</span>
+            <span style="font-size:0.8rem; margin-top:5px; font-weight:bold" id="press-desc">--</span>
         </div>
         <div class="data-box" style="justify-content: space-between;">
             <span class="lbl">FASE LUNAR</span>
-            <div style="font-size:2.5rem; margin:0;" id="moon-icon">🌑</div>
-            <span style="font-weight:bold; font-size:0.9rem; color:white;" id="moon-phase">--</span>
+            <div style="font-size:1.8rem; margin:0;" id="moon-icon">🌑</div>
+            <span style="font-weight:bold; font-size:0.8rem; color:white;" id="moon-phase">--</span>
         </div>
     </div>
 
-    <!-- TÍTULO DE SECCIÓN (NUEVO) -->
-    <div class="section-header">
-        ENCICLOPEDIA TÁCTICA & EQUIPO
+    <!-- 5. NIVEL 3: AMBIENTE (SOL, TEMP, UV) -->
+    <!-- Nueva fila: Horarios del Sol -->
+    <div class="grid-2">
+        <div class="data-box">
+            <span class="lbl">AMANECER ☀️</span>
+            <span class="val" id="sunrise-time" style="font-size:1.4rem">--:--</span>
+        </div>
+        <div class="data-box">
+            <span class="lbl">PUESTA SOL 🌙</span>
+            <span class="val" id="sunset-time" style="font-size:1.4rem">--:--</span>
+        </div>
     </div>
 
-    <!-- GUIA TÁCTICA -->
+    <!-- Temp y UV -->
+    <div class="grid-2">
+        <div class="data-box">
+            <span class="lbl">TEMP</span>
+            <span class="val" id="temp">--°</span>
+            <div class="sub-val" id="feels-like">ST: --°</div>
+        </div>
+        <div class="data-box" style="border: 1px solid #334155;">
+            <span class="lbl">INDICE UV</span>
+            <span class="val" id="uv-val">--</span>
+            <div style="height:4px; width:80%; background:#333; margin-top:5px; border-radius:2px;">
+                <div id="uv-bar" style="height:100%; width:0%; background:var(--green); border-radius:2px; transition:1s;"></div>
+            </div>
+            <div class="sub-val" id="uv-msg">--</div>
+        </div>
+    </div>
+
+    <!-- 6. NIVEL 4: CONSULTAS -->
+    <div class="section-header">ENCICLOPEDIA TÁCTICA</div>
+    
+    <!-- Predicción Automática -->
+    <div class="card-box prediction-box" id="bio-box" style="display:none;">
+        <span class="biome-tag" id="bio-region">DETECTANDO ZONA...</span>
+        <div class="lbl">ESPECIES PREDOMINANTES:</div>
+        <div class="species-list" id="bio-species">--</div>
+    </div>
+
+    <!-- Guía Manual -->
     <div class="card-box guide-container">
         <div class="tabs">
             <button class="tab active" onclick="switchTab('rio')">RÍO</button>
@@ -283,7 +291,7 @@
         </div>
     </div>
 
-    <!-- HERRAMIENTAS Y BITACORA -->
+    <!-- 7. HERRAMIENTAS -->
     <div class="action-grid">
         <button id="btn-torch" class="btn-action btn-torch" onclick="toggleFlash()">
             LINTERNA
@@ -327,7 +335,7 @@
             renderLog();
         };
 
-        // --- INTELIGENCIA DE ESPECIES POR GPS ---
+        // --- INTELIGENCIA DE ESPECIES ---
         function determineSpecies(lat, lon) {
             const box = document.getElementById('bio-box');
             const regionLbl = document.getElementById('bio-region');
@@ -335,33 +343,22 @@
             
             box.style.display = 'block';
             
-            // Lógica aproximada de zonas (Enfocada en Argentina/Uruguay/Chile)
-            // Zona 1: Río de la Plata / Delta / Paraná Inferior
             if (lat > -35 && lat < -33 && lon > -60 && lon < -57) {
                 regionLbl.innerText = "ZONA: DELTA / RÍO DE LA PLATA";
                 speciesLbl.innerText = "Dorado, Boga, Tararira, Bagre, Surubí (temporada).";
             }
-            // Zona 2: Costa Atlántica (Mar del Plata, Pinamar, etc)
             else if (lat <= -36 && lat > -42 && lon > -60) {
                 regionLbl.innerText = "ZONA: COSTA ATLÁNTICA";
                 speciesLbl.innerText = "Corvina, Pescadilla, Lenguado, Brótola, Pejerrey.";
             }
-            // Zona 3: Litoral Norte (Corrientes, Entre Ríos Norte)
             else if (lat > -33 && lat < -25 && lon > -60) {
                 regionLbl.innerText = "ZONA: LITORAL / PARANÁ ALTO";
                 speciesLbl.innerText = "Dorado Grande, Surubí, Pacú, Manguruyú.";
             }
-            // Zona 4: Patagonia (Lagos y Ríos del Sur)
             else if (lat <= -39 && lon < -65) {
                 regionLbl.innerText = "ZONA: PATAGONIA";
                 speciesLbl.innerText = "Trucha Arcoíris, Trucha Marrón, Salmón, Fontinalis.";
             }
-            // Zona 5: Córdoba / Centro
-            else if (lat > -33 && lat < -30 && lon < -62) {
-                regionLbl.innerText = "ZONA: SIERRAS / CENTRO";
-                speciesLbl.innerText = "Pejerrey (Diques), Carpa, Tararira.";
-            }
-            // Default
             else {
                 regionLbl.innerText = "ZONA: GENERAL";
                 speciesLbl.innerText = "Variada local. Consulte guía de especies abajo.";
@@ -452,7 +449,6 @@
                 const lon = pos.coords.longitude;
                 document.getElementById('loc-coords').innerText = `${lat.toFixed(3)}, ${lon.toFixed(3)}`;
 
-                // EJECUTAR PREDICCIÓN DE ESPECIES
                 determineSpecies(lat, lon);
 
                 try {
@@ -461,20 +457,42 @@
                     document.getElementById('loc-name').innerText = res.address.city || res.address.town || res.address.village || "Zona de Pesca";
                 } catch(e) { document.getElementById('loc-name').innerText = "Ubicación GPS"; }
 
-                const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,surface_pressure,wind_speed_10m,weather_code&hourly=uv_index&timezone=auto`;
+                const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,surface_pressure,wind_speed_10m,wind_direction_10m,weather_code&hourly=uv_index&daily=sunrise,sunset&timezone=auto`;
 
                 fetch(weatherUrl).then(r=>r.json()).then(data => {
                     const cur = data.current;
+                    const daily = data.daily;
+
+                    // Temp & Sensación
                     document.getElementById('temp').innerText = Math.round(cur.temperature_2m) + "°";
-                    document.getElementById('weather-desc').innerText = (cur.weather_code < 3 ? "Despejado" : "Nublado/Lluvia");
-                    document.getElementById('wind-speed').innerText = Math.round(cur.wind_speed_10m);
+                    document.getElementById('feels-like').innerText = "ST: " + Math.round(cur.apparent_temperature) + "°";
                     
+                    document.getElementById('weather-desc').innerText = (cur.weather_code < 3 ? "Despejado" : "Nublado/Lluvia");
+                    
+                    // Viento & Dirección
+                    document.getElementById('wind-speed').innerText = Math.round(cur.wind_speed_10m);
+                    const wDir = cur.wind_direction_10m;
+                    const dirs = ['NORTE', 'NE', 'ESTE', 'SE', 'SUR', 'SO', 'OESTE', 'NO'];
+                    // Ajuste de índice para 8 direcciones
+                    const dirIndex = Math.round(((wDir %= 360) < 0 ? wDir + 360 : wDir) / 45) % 8;
+                    document.getElementById('wind-dir').innerText = "DEL " + dirs[dirIndex];
+
+                    // Presión
                     const p = Math.round(cur.surface_pressure);
                     document.getElementById('press').innerText = p;
                     const pDesc = document.getElementById('press-desc');
                     if(p < 1008) { pDesc.innerText = "BAJA"; pDesc.style.color = "var(--danger)"; }
                     else if(p > 1018) { pDesc.innerText = "ALTA"; pDesc.style.color = "var(--green)"; }
                     else { pDesc.innerText = "ESTABLE"; pDesc.style.color = "#aaa"; }
+
+                    // Amanecer y Puesta
+                    if(daily.sunrise && daily.sunset) {
+                        const rise = new Date(daily.sunrise[0]);
+                        const set = new Date(daily.sunset[0]);
+                        const fmt = (d) => d.getHours() + ":" + (d.getMinutes()<10?'0':'') + d.getMinutes();
+                        document.getElementById('sunrise-time').innerText = fmt(rise);
+                        document.getElementById('sunset-time').innerText = fmt(set);
+                    }
 
                     // UV
                     const now = new Date();
