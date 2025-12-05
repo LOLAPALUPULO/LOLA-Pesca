@@ -12,7 +12,7 @@
     "react": "https://aistudiocdn.com/react@^19.2.1",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
     "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
-    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.1"
+    "react-dom": "https://aistudiocdn.com/react-dom@^1.31.0"
   }
 }
 </script>
@@ -24,96 +24,52 @@
         }
 
         :root {
-            /* Dark Mode Defaults */
-            --bg: #030a13;
-            --bg-rgb: 3, 10, 19;
-            --bg-lighter: #0a1420; /* Slightly lighter for top of gradient */
-            --card: #152238;
-            --text: #e0f2fe;
-            --text-light: #94a3b8;
-            --blue: #38bdf8;
-            --green: #4ade80;
-            --yellow: #facc15;
-            --orange: #fb923c;
-            --danger: #ef4444;
+            /* Marine Blue Theme Defaults (Unified Theme) - Even Darker Version */
+            --bg: #000a1a; /* Ultra dark blue, almost black for overall background */
+            --bg-rgb: 0, 10, 26;
+            --bg-gradient-top: #002244; /* Deep marine blue for top of gradient */
+            --bg-gradient-bottom: #000a1a; /* Ultra dark blue for bottom of gradient */
+            --card: #0a2d4b; /* Dark blue-grey for cards */
+            --card-rgb: 10, 45, 75;
+            --text: #ffffff; /* White text for dark background */
+            --text-light: #a0a7b3; /* Light grey-blue text for secondary info */
+            --blue: #88eeff; /* Even brighter blue for highlights */
+            --green: #88ff88; /* Even brighter green for highlights */
+            --yellow: #ffff88; /* Even brighter yellow for highlights */
+            --orange: #ffb166; /* Even brighter orange for highlights */
+            --danger: #ff6666; /* Even brighter red for highlights */
             --font-title: 'PitchedBattle', sans-serif;
             --font-default: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
             /* RGB versions for rgba() functions */
-            --blue-rgb: 56, 189, 248;
-            --green-rgb: 74, 222, 128;
-            --yellow-rgb: 252, 205, 21;
-            --orange-rgb: 251, 146, 60;
-            --danger-rgb: 239, 68, 68;
-            --text-rgb: 224, 242, 254; /* e0f2fe */
-            --card-rgb: 21, 34, 56; /* 152238 */
-            --text-light-rgb: 148, 163, 184; /* 94a3b8 */
+            --blue-rgb: 136, 238, 255;
+            --green-rgb: 136, 255, 136;
+            --yellow-rgb: 255, 255, 136;
+            --orange-rgb: 255, 177, 102;
+            --danger-rgb: 255, 102, 102;
+            --text-rgb: 255, 255, 255; /* ffffff */
+            --text-light-rgb: 160, 167, 179; /* a0a7b3 */
 
 
-            /* WebGL-like effects */
-            --shadow-dark: rgba(0, 0, 0, 0.7);
-            --shadow-light: rgba(var(--blue-rgb), 0.2);
-            --shadow-inner: rgba(0, 0, 0, 0.3);
-            --border-glow: rgba(var(--blue-rgb), 0.5);
-            --gradient-card: linear-gradient(145deg, #152238 0%, #0e1a2d 100%);
-            --gradient-button: linear-gradient(145deg, #38bdf8 0%, #258cdb 100%);
-            --button-shadow-color: #258cdb; /* Darker blue for button 3D effect */
-            --border-line-color: #334155;
-            --torch-bg-start: #475569;
-            --torch-bg-end: #3a4759;
-            --torch-shadow: #3a4759;
-            --log-delete-bg: #551c1c;
-            --log-delete-bg-hover: #6a2525;
+            /* WebGL-like effects (adjusted for deeper marine theme) */
+            --shadow-dark: rgba(0, 0, 0, 0.9); /* Very pronounced dark shadow */
+            --shadow-light: rgba(var(--blue-rgb), 0.4); /* More visible blue shadow */
+            --shadow-inner: rgba(0, 0, 0, 0.5); /* Very pronounced inner shadow */
+            --border-glow: rgba(var(--blue-rgb), 0.6);
+            --gradient-card: linear-gradient(145deg, #0f3c64 0%, #0a2d4b 100%); /* Dark card gradient */
+            --gradient-button: linear-gradient(145deg, #88eeff 0%, #44bbee 100%); /* Blue button */
+            --button-shadow-color: #44bbee;
+            --border-line-color: #4a86c4; /* Brighter blue-grey border color */
+            --torch-bg-start: #3a4759; /* Darker torch background */
+            --torch-bg-end: #2d3846;
+            --torch-shadow: #2d3846;
+            --log-delete-bg: #8c0a0a; /* Darker red for delete */
+            --log-delete-bg-hover: #b30d0d;
             --log-delete-color: var(--danger);
             --log-button-shadow-color: #30b05b;
 
             /* Icon Glow */
-            --icon-default-glow: 0 0 8px rgba(var(--blue-rgb), 0.7);
-        }
-
-        /* Light Mode Variables */
-        :root[data-theme="light"] {
-            --bg: #f0f2f5;
-            --bg-rgb: 240, 242, 245;
-            --bg-lighter: #ffffff; /* Even lighter for light mode */
-            --card: #ffffff;
-            --text: #1f2937;
-            --text-light: #6b7280;
-            --blue: #2563eb;
-            --green: #22c55e;
-            --yellow: #fbbf24;
-            --orange: #f97316;
-            --danger: #dc2626;
-
-            /* RGB versions for rgba() functions - Light Mode */
-            --blue-rgb: 37, 99, 235;
-            --green-rgb: 34, 197, 94;
-            --yellow-rgb: 251, 191, 36;
-            --orange-rgb: 249, 115, 22;
-            --danger-rgb: 220, 38, 38;
-            --text-rgb: 31, 41, 55; /* 1f2937 */
-            --card-rgb: 255, 255, 255; /* ffffff */
-            --text-light-rgb: 107, 114, 128; /* 6b7280 */
-
-
-            --shadow-dark: rgba(0, 0, 0, 0.2);
-            --shadow-light: rgba(var(--blue-rgb), 0.1);
-            --shadow-inner: rgba(0, 0, 0, 0.05);
-            --border-glow: rgba(var(--blue-rgb), 0.3);
-            --gradient-card: linear-gradient(145deg, #f9fafb 0%, #ffffff 100%);
-            --gradient-button: linear-gradient(145deg, #3b82f6 0%, #2563eb 100%);
-            --button-shadow-color: #2563eb;
-            --border-line-color: #e2e8f0;
-            --torch-bg-start: #e0e7ee;
-            --torch-bg-end: #cfd8e3;
-            --torch-shadow: #cfd8e3;
-            --log-delete-bg: #ef4444;
-            --log-delete-bg-hover: #dc2626;
-            --log-delete-color: white;
-            --log-button-shadow-color: #22c55e;
-
-            /* Icon Glow for Light Mode */
-            --icon-default-glow: 0 0 8px rgba(var(--blue-rgb), 0.5);
+            --icon-default-glow: 0 0 12px rgba(var(--blue-rgb), 1.0); /* Even Stronger blue glow */
         }
 
         body {
@@ -126,11 +82,11 @@
             -webkit-tap-highlight-color: transparent;
             overflow-x: hidden;
 
-            /* Main background gradient: Lighter variant of --bg at top, blending to --bg at bottom */
+            /* Main background gradient: Deep marine at top, blending to ultra dark marine at bottom */
             background-image:
-                linear-gradient(to bottom, var(--bg-lighter) 0%, var(--bg) 100%),
-                radial-gradient(circle at top left, rgba(var(--blue-rgb), 0.08) 0%, transparent 40%),
-                radial-gradient(circle at bottom right, rgba(var(--text-rgb), 0.03) 0%, transparent 60%);
+                linear-gradient(to bottom, var(--bg-gradient-top) 0%, var(--bg-gradient-bottom) 100%),
+                radial-gradient(circle at top left, rgba(var(--blue-rgb), 0.2) 0%, transparent 50%),
+                radial-gradient(circle at bottom right, rgba(var(--bg-rgb), 0.1) 0%, transparent 70%);
             background-attachment: fixed; /* Keep background fixed when scrolling */
             background-size: cover;
             background-color: var(--bg); /* Fallback */
@@ -157,7 +113,7 @@
             padding: 15px;
             margin-bottom: 12px;
             box-shadow: 0 5px 15px var(--shadow-dark),
-                        inset 0 0 8px rgba(var(--blue-rgb), 0.08);
+                        inset 0 0 8px rgba(var(--blue-rgb), 0.08); /* Blue inner glow */
             text-align: center;
             position: relative;
             transition: all 0.2s ease-out;
@@ -313,26 +269,33 @@
             text-shadow: none; /* Removed glow from compass label */
         }
         .compass-rose {
-            width: 70px; height: 70px; border-radius: 50%;
+            width: 120px; /* Increased size */
+            height: 120px; /* Increased size */
+            border-radius: 50%;
             background: linear-gradient(145deg, rgba(var(--card-rgb), 0.8) 0%, rgba(var(--card-rgb), 0.5) 100%);
-            border: 3px solid #475569; /* This can also be a variable if desired */
+            border: 3px solid #cfd8e3; /* Adjusted for light theme */
             position: relative; 
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.8), 0 0 8px rgba(var(--blue-rgb), 0.1);
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.2), 0 0 8px rgba(var(--blue-rgb), 0.1); /* Adjusted for light theme */
         }
         
-        .cardinal { position: absolute; font-size: 0.75rem; font-weight: bold; color: var(--text-light); }
-        .c-n { top: 2px; left: 50%; transform: translateX(-50%); color: var(--danger); }
-        .c-e { right: 4px; top: 50%; transform: translateY(-50%); }
-        .c-s { bottom: 2px; left: 50%; transform: translateX(-50%); }
-        .c-o { left: 4px; top: 50%; transform: translateY(-50%); }
+        .cardinal { 
+            position: absolute; 
+            font-size: 0.9rem; /* Adjusted font size */
+            font-weight: bold; 
+            color: var(--text-light); 
+        }
+        .c-n { top: 8px; left: 50%; transform: translateX(-50%); color: var(--danger); } /* Adjusted position */
+        .c-e { right: 8px; top: 50%; transform: translateY(-50%); } /* Adjusted position */
+        .c-s { bottom: 8px; left: 50%; transform: translateX(-50%); } /* Adjusted position */
+        .c-o { left: 8px; top: 50%; transform: translateY(-50%); } /* Adjusted position */
 
         .compass-needle {
             position: absolute; top: 50%; left: 50%;
-            width: 8px; height: 50px;
+            width: 10px; /* Increased size */
+            height: 100px; /* Increased size */
             background: linear-gradient(to bottom, var(--danger) 50%, var(--text) 50%);
             transform: translate(-50%, -50%) rotate(0deg);
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 0 8px var(--shadow-dark);
+            box-shadow: 0 0 8px rgba(0,0,0,0.3); /* Adjusted for light theme */
             z-index: 10;
         }
         
@@ -347,13 +310,13 @@
         }
 
         .analog-clock {
-            width: 70px;
-            height: 70px;
+            width: 120px; /* Increased size */
+            height: 120px; /* Increased size */
             border-radius: 50%;
             background: linear-gradient(145deg, rgba(var(--card-rgb), 0.8) 0%, rgba(var(--card-rgb), 0.5) 100%);
-            border: 3px solid #475569; /* This can also be a variable if desired */
+            border: 3px solid #cfd8e3; /* Adjusted for light theme */
             position: relative;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.8), 0 0 8px rgba(var(--blue-rgb), 0.1);
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.2), 0 0 8px rgba(var(--blue-rgb), 0.1); /* Adjusted for light theme */
         }
         
         .analog-clock::after {
@@ -362,23 +325,23 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 8px;
-            height: 8px;
+            width: 10px; /* Increased size */
+            height: 10px; /* Increased size */
             background-color: var(--blue);
             border-radius: 50%;
             z-index: 5;
-            border: 1px solid rgba(var(--text-rgb), 0.3);
+            border: 1px solid rgba(var(--text-rgb), 0.2); /* Adjusted for light theme */
             box-shadow: 0 0 8px var(--blue);
         }
 
         .clock-number {
             position: absolute;
-            font-size: 0.6rem;
+            font-size: 0.7rem; /* Adjusted font size */
             font-weight: bold;
             color: var(--text);
             transform: translate(-50%, -50%);
             z-index: 1;
-            text-shadow: 0 0 2px var(--shadow-inner); /* Subtle text shadow kept */
+            text-shadow: 0 0 2px rgba(0,0,0,0.1); /* Subtle text shadow kept for legibility */
         }
         
         .clock-number:nth-child(1) { top: 5%; left: 50%; }
@@ -406,15 +369,15 @@
         }
 
         .hour-hand {
-            width: 4px;
-            height: 25px;
+            width: 5px; /* Increased size */
+            height: 35px; /* Increased size */
             background-color: var(--text);
             z-index: 3;
         }
 
         .minute-hand {
-            width: 3px;
-            height: 30px;
+            width: 4px; /* Increased size */
+            height: 50px; /* Increased size */
             background-color: var(--blue);
             z-index: 2;
         }
@@ -423,7 +386,7 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 30px;
+            width: 80px; /* Increased size */
             height: auto;
             transform-origin: 50% 50%;
             transform: translate(-50%, -50%) rotate(0deg);
@@ -645,7 +608,7 @@
     </style>
 <link rel="stylesheet" href="/index.css">
 </head>
-<body data-theme="dark">
+<body>
 
     <!-- 1. LOGO CON ENLACE -->
     <div class="brand-header">
@@ -661,9 +624,7 @@
             <div class="loc-sub" id="gps-status">Estableciendo conexión...</div>
         </div>
         <div class="location-controls">
-            <button onclick="toggleTheme()" id="theme-toggle" aria-label="Toggle light/dark mode">
-                <span id="theme-icon">⚫</span>
-            </button>
+            <!-- Removed theme toggle button -->
             <button onclick="forceReload()" aria-label="Reload data">
                 🔄
             </button>
@@ -860,37 +821,8 @@
         window.appPressureHistory = [];
         const MAX_PRESSURE_HISTORY_POINTS = 20;
 
-        // --- THEME TOGGLE LOGIC ---
-        function applyTheme(theme) {
-            const body = document.body;
-            const themeIcon = document.getElementById('theme-icon');
-            if (theme === 'light') {
-                body.setAttribute('data-theme', 'light');
-                if (themeIcon) themeIcon.innerText = '💡'; // Light bulb for light mode
-            } else {
-                body.setAttribute('data-theme', 'dark');
-                if (themeIcon) themeIcon.innerText = '⚫'; // Dark circle for dark mode
-            }
-            localStorage.setItem('theme', theme);
-        }
-
-        function toggleTheme() {
-            const currentTheme = document.body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            applyTheme(newTheme);
-        }
-
         // --- STARTUP ---
         window.onload = () => {
-            // Initialize theme first
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme) {
-                applyTheme(savedTheme);
-            } else {
-                // Default to dark mode if no preference saved
-                applyTheme('dark'); 
-            }
-
             loadFishMenu();
             calculateMoonPhase();
             initApp(); 
@@ -1159,9 +1091,6 @@
             } else if (lat > -33 && lat < -25 && lon > -60) {
                 regionLbl.innerText = "LITORAL / PARANÁ";
                 speciesLbl.innerText = "Dorado, Surubí, Pacú, Manguruyú.";
-            } else if (lat <= -39 && lon < -65) {
-                regionLbl.innerText = "PATAGONIA";
-                speciesLbl.innerText = "Trucha Arcoíris, Marrón, Salmón.";
             } else {
                 regionLbl.innerText = "ZONA GENERAL";
                 speciesLbl.innerText = "Variada local. Verifique reglamentación.";
