@@ -28,9 +28,10 @@
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
-            padding: 10px;
-            padding-bottom: 80px;
+            padding: 12px;
+            padding-bottom: 100px;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* --- LOGO --- */
@@ -41,7 +42,7 @@
             justify-content: center;
         }
         .brand-logo {
-            width: 45%; 
+            width: 50%; /* Tamaño equilibrado */
             height: auto;
             filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
         }
@@ -49,22 +50,42 @@
         /* --- CONTENEDORES --- */
         .card-box {
             background: var(--card);
-            border-radius: 12px;
-            padding: 15px;
+            border-radius: 16px;
+            padding: 18px;
             margin-bottom: 15px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
             text-align: center;
         }
 
-        /* TÍTULOS */
-        .lbl { font-family: var(--font-title); color: #94a3b8; font-size: 0.75rem; margin-bottom: 5px; letter-spacing: 1px; text-transform: uppercase; }
-        .val { font-size: 1.5rem; font-weight: bold; margin-top: 5px; line-height: 1; }
-        .sub-val { font-size: 0.8rem; color: #888; margin-top: 2px; }
+        /* --- TYPOGRAPHY (TEXTOS GRANDES) --- */
+        .lbl { 
+            font-family: var(--font-title); 
+            color: #94a3b8; 
+            font-size: 1rem; /* Aumentado */
+            margin-bottom: 8px; 
+            letter-spacing: 1px; 
+            text-transform: uppercase; 
+        }
         
+        .val { 
+            font-size: 2.4rem; /* MUY GRANDE */
+            font-weight: 800; 
+            margin-top: 5px; 
+            line-height: 1; 
+            color: white;
+        }
+        
+        .sub-val { 
+            font-size: 1.1rem; /* Aumentado */
+            color: #aaa; 
+            margin-top: 5px; 
+            font-weight: 500;
+        }
+
         .section-header { 
             text-align: center; color: var(--blue); font-family: var(--font-title); 
-            margin: 25px 0 10px 0; font-size: 1rem; letter-spacing: 1px; 
-            border-bottom: 1px solid #334155; padding-bottom: 5px;
+            margin: 30px 0 15px 0; font-size: 1.3rem; letter-spacing: 1px; 
+            border-bottom: 2px solid #334155; padding-bottom: 8px;
         }
         
         /* HEADER UBICACIÓN */
@@ -72,37 +93,37 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 3px solid var(--blue);
+            border-bottom: 4px solid var(--blue);
             text-align: left;
-            padding: 10px 15px;
+            padding: 15px;
         }
-        .loc-title { font-size: 1.2rem; color: white; margin-bottom: 2px; font-family: var(--font-title); }
-        .loc-sub { font-size: 0.8rem; color: #94a3b8; }
+        .loc-title { font-size: 1.5rem; color: white; margin-bottom: 4px; font-family: var(--font-title); }
+        .loc-sub { font-size: 1rem; color: #94a3b8; }
 
         /* PREDICCION DE ESPECIES */
         .prediction-box {
-            background: rgba(56, 189, 248, 0.05);
+            background: rgba(56, 189, 248, 0.08);
             border: 1px solid #334155;
             text-align: left;
-            padding: 10px;
+            padding: 15px;
         }
-        .species-list { font-size: 1rem; color: white; font-weight: 500; margin-top: 5px; }
-        .biome-tag { font-size: 0.7rem; background: var(--blue); color: #000; padding: 2px 6px; border-radius: 4px; font-weight: bold; display: inline-block; margin-bottom: 5px; }
+        .species-list { font-size: 1.2rem; color: white; font-weight: 500; margin-top: 8px; line-height: 1.4; }
+        .biome-tag { font-size: 0.85rem; background: var(--blue); color: #000; padding: 4px 8px; border-radius: 4px; font-weight: bold; display: inline-block; margin-bottom: 5px; }
 
         /* --- GRILLAS --- */
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
 
         .data-box {
             background: var(--card);
-            padding: 10px 5px;
-            border-radius: 10px;
+            padding: 15px 5px;
+            border-radius: 14px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            min-height: 95px;
+            min-height: 110px; /* Más altura para dedos grandes */
         }
 
         /* --- MAREAS --- */
@@ -110,16 +131,17 @@
             background: linear-gradient(135deg, #172554 0%, #0f172a 100%);
             border: 1px solid #1e3a8a;
         }
-        .tide-main { font-size: 1.6rem; font-weight: bold; color: white; margin: 5px 0; }
-        .tide-sub { font-size: 0.75rem; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 10px; }
+        .tide-main { font-size: 1.8rem; font-weight: bold; color: white; margin: 5px 0; }
+        .tide-sub { font-size: 0.9rem; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 10px; }
 
         /* --- BRÚJULA --- */
+        .compass-container { cursor: pointer; } /* Para indicar click en iOS */
         .compass-rose {
-            width: 65px; height: 65px; border-radius: 50%;
-            background: #0f172a; border: 2px solid #475569;
+            width: 70px; height: 70px; border-radius: 50%;
+            background: #0f172a; border: 3px solid #475569;
             position: relative; box-shadow: inset 0 0 10px #000;
         }
-        .cardinal { position: absolute; font-size: 0.6rem; font-weight: bold; color: #64748b; }
+        .cardinal { position: absolute; font-size: 0.75rem; font-weight: bold; color: #64748b; }
         .c-n { top: 2px; left: 50%; transform: translateX(-50%); color: var(--danger); }
         .c-s { bottom: 2px; left: 50%; transform: translateX(-50%); }
         .c-e { right: 4px; top: 50%; transform: translateY(-50%); }
@@ -127,44 +149,60 @@
 
         .compass-needle {
             position: absolute; top: 50%; left: 50%;
-            width: 8px; height: 45px;
+            width: 8px; height: 50px;
             background: linear-gradient(to bottom, var(--danger) 50%, white 50%);
             transform: translate(-50%, -50%) rotate(0deg);
             clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-            transition: transform 0.1s ease-out;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow: 0 0 5px rgba(0,0,0,0.5);
             z-index: 10;
         }
 
         /* --- GUIA PECES --- */
-        .guide-container { padding: 10px; }
-        .tabs { display: flex; margin-bottom: 10px; border-bottom: 1px solid #334155; }
-        .tab { flex: 1; padding: 10px; text-align: center; background: none; border: none; color: #64748b; font-size: 1rem; cursor: pointer; font-family: var(--font-title); }
-        .tab.active { color: var(--blue); border-bottom: 2px solid var(--blue); }
-        select { width: 100%; padding: 10px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 6px; font-size: 1rem; }
-        .fish-details { margin-top: 15px; display: none; padding: 15px; background: #0f172a; border-radius: 6px; }
+        .guide-container { padding: 15px; }
+        .tabs { display: flex; margin-bottom: 15px; border-bottom: 2px solid #334155; }
+        .tab { 
+            flex: 1; padding: 15px; text-align: center; background: none; border: none; 
+            color: #64748b; font-size: 1.2rem; cursor: pointer; font-family: var(--font-title); 
+        }
+        .tab.active { color: var(--blue); border-bottom: 4px solid var(--blue); color: white; }
+        
+        select { 
+            width: 100%; padding: 15px; background: #0f172a; border: 1px solid #334155; 
+            color: white; border-radius: 8px; font-size: 1.2rem; /* Select grande */
+            appearance: none; -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px top 50%;
+            background-size: 12px auto;
+        }
+
+        .fish-details { margin-top: 15px; display: none; padding: 15px; background: #0f172a; border-radius: 10px; border: 1px solid #333; }
         .fish-details.show { display: block; animation: fadeIn 0.3s; }
+        .detail-item { margin-bottom: 15px; }
 
         /* --- BOTONES Y BITACORA --- */
-        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;}
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px;}
         .btn-action {
-            padding: 15px; border: none; border-radius: 10px; color: white;
-            display: flex; align-items: center; justify-content: center; gap: 8px; 
-            font-size: 1.1rem; cursor: pointer; font-family: var(--font-title);
+            padding: 25px; border: none; border-radius: 12px; color: white;
+            display: flex; align-items: center; justify-content: center; gap: 10px; 
+            font-size: 1.3rem; cursor: pointer; font-family: var(--font-title);
+            box-shadow: 0 4px 0 rgba(0,0,0,0.3);
         }
+        .btn-action:active { transform: translateY(4px); box-shadow: none; }
         .btn-torch { background: #475569; }
-        .btn-torch.on { background: #f8fafc; color: black; box-shadow: 0 0 20px white; }
-        .btn-log { background: var(--green); }
+        .btn-torch.on { background: #f8fafc; color: black; box-shadow: 0 0 25px white; }
+        .btn-log { background: var(--green); color: #003300; }
 
-        .log-container { margin-top: 20px; border-top: 1px solid #334155; padding-top: 10px; }
+        .log-container { margin-top: 30px; border-top: 2px solid #334155; padding-top: 15px; }
         .log-item {
-            background: #1e293b; border-left: 4px solid var(--green);
-            padding: 10px; margin-bottom: 8px; border-radius: 4px;
-            display: flex; justify-content: space-between; align-items: center; animation: fadeIn 0.5s;
+            background: #1e293b; border-left: 6px solid var(--green);
+            padding: 15px; margin-bottom: 10px; border-radius: 8px;
+            display: flex; justify-content: space-between; align-items: center; 
         }
-        .log-text { font-size: 0.95rem; color: white; }
-        .log-date { font-size: 0.7rem; color: #94a3b8; display: block; margin-top: 2px; }
-        .btn-delete { background: none; border: none; color: var(--danger); font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
+        .log-text { font-size: 1.1rem; color: white; font-weight: bold; }
+        .log-date { font-size: 0.85rem; color: #94a3b8; display: block; margin-top: 4px; }
+        .btn-delete { background: #331111; border-radius: 5px; color: var(--danger); font-size: 1.5rem; width: 40px; height: 40px; line-height: 40px; border: none; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
@@ -182,19 +220,19 @@
             <div class="loc-title" id="loc-name">📍 Buscando...</div>
             <div class="loc-sub" id="loc-coords">Iniciando GPS</div>
         </div>
-        <button onclick="initApp()" style="background:none; border:none; font-size:2rem; cursor:pointer;">🔄</button>
+        <button onclick="window.location.reload()" style="background:none; border:none; font-size:2.5rem; cursor:pointer;">🔄</button>
     </div>
 
-    <!-- 3. NIVEL 1: CRÍTICO (VIENTO, BRÚJULA, MAREA) -->
+    <!-- 3. NIVEL CRÍTICO: VIENTO / BRUJULA / MAREA -->
     <div class="grid-3">
         <!-- Viento -->
         <div class="data-box">
             <span class="lbl">VIENTO</span>
-            <span class="val" id="wind-speed" style="font-size:1.4rem;">--</span>
+            <span class="val" id="wind-speed">--</span>
             <div class="sub-val" id="wind-dir" style="color: var(--blue); font-weight:bold;">--</div>
         </div>
-        <!-- Brújula -->
-        <div class="data-box" style="padding:5px;">
+        <!-- Brújula (Clickable para permiso iOS) -->
+        <div class="data-box compass-container" onclick="requestCompassPermission()">
             <div class="compass-rose">
                 <span class="cardinal c-n">N</span>
                 <span class="cardinal c-e">E</span>
@@ -202,44 +240,43 @@
                 <span class="cardinal c-o">O</span>
                 <div class="compass-needle" id="compass-needle"></div>
             </div>
-            <div style="font-size:0.6rem; margin-top:5px; color:#666; font-weight:bold;">BRÚJULA</div>
+            <div style="font-size:0.7rem; margin-top:8px; color:#888; font-weight:bold;">TOCA AQUÍ<br>SI NO GIRA</div>
         </div>
         <!-- Mareas -->
         <div class="data-box tide-box">
             <div class="lbl" style="color:#bfdbfe">AGUA</div>
-            <div class="tide-main" id="tide-current" style="font-size:1.3rem;">--</div>
+            <div class="tide-main" id="tide-current" style="font-size:1.6rem;">--</div>
             <div class="tide-sub" id="tide-next">Cargando</div>
         </div>
     </div>
 
-    <!-- 4. NIVEL 2: ACTIVIDAD (PRESIÓN Y LUNA) -->
+    <!-- 4. ACTIVIDAD -->
     <div class="grid-2">
         <div class="data-box">
             <span class="lbl">PRESIÓN (hPa)</span>
             <span class="val" id="press">--</span>
-            <span style="font-size:0.8rem; margin-top:5px; font-weight:bold" id="press-desc">--</span>
+            <span class="sub-val" id="press-desc" style="font-weight:bold">--</span>
         </div>
         <div class="data-box" style="justify-content: space-between;">
             <span class="lbl">FASE LUNAR</span>
-            <div style="font-size:1.8rem; margin:0;" id="moon-icon">🌑</div>
-            <span style="font-weight:bold; font-size:0.8rem; color:white;" id="moon-phase">--</span>
+            <div style="font-size:2.5rem; margin:0;" id="moon-icon">🌑</div>
+            <span style="font-weight:bold; font-size:1rem; color:white;" id="moon-phase">--</span>
         </div>
     </div>
 
-    <!-- 5. NIVEL 3: AMBIENTE (SOL, TEMP, UV) -->
-    <!-- Nueva fila: Horarios del Sol -->
+    <!-- 5. AMBIENTE -->
+    <!-- Sol -->
     <div class="grid-2">
         <div class="data-box">
             <span class="lbl">AMANECER ☀️</span>
-            <span class="val" id="sunrise-time" style="font-size:1.4rem">--:--</span>
+            <span class="val" id="sunrise-time" style="font-size:1.8rem">--:--</span>
         </div>
         <div class="data-box">
             <span class="lbl">PUESTA SOL 🌙</span>
-            <span class="val" id="sunset-time" style="font-size:1.4rem">--:--</span>
+            <span class="val" id="sunset-time" style="font-size:1.8rem">--:--</span>
         </div>
     </div>
-
-    <!-- Temp y UV -->
+    <!-- Temp / UV -->
     <div class="grid-2">
         <div class="data-box">
             <span class="lbl">TEMP</span>
@@ -249,24 +286,22 @@
         <div class="data-box" style="border: 1px solid #334155;">
             <span class="lbl">INDICE UV</span>
             <span class="val" id="uv-val">--</span>
-            <div style="height:4px; width:80%; background:#333; margin-top:5px; border-radius:2px;">
-                <div id="uv-bar" style="height:100%; width:0%; background:var(--green); border-radius:2px; transition:1s;"></div>
+            <div style="height:6px; width:80%; background:#333; margin-top:8px; border-radius:3px;">
+                <div id="uv-bar" style="height:100%; width:0%; background:var(--green); border-radius:3px; transition:1s;"></div>
             </div>
             <div class="sub-val" id="uv-msg">--</div>
         </div>
     </div>
 
-    <!-- 6. NIVEL 4: CONSULTAS -->
+    <!-- 6. CONSULTAS -->
     <div class="section-header">ENCICLOPEDIA TÁCTICA</div>
     
-    <!-- Predicción Automática -->
     <div class="card-box prediction-box" id="bio-box" style="display:none;">
-        <span class="biome-tag" id="bio-region">DETECTANDO ZONA...</span>
-        <div class="lbl">ESPECIES PREDOMINANTES:</div>
+        <span class="biome-tag" id="bio-region">ZONA DETECTADA</span>
+        <div class="lbl" style="margin-top:10px;">ESPECIES PREDOMINANTES:</div>
         <div class="species-list" id="bio-species">--</div>
     </div>
 
-    <!-- Guía Manual -->
     <div class="card-box guide-container">
         <div class="tabs">
             <button class="tab active" onclick="switchTab('rio')">RÍO</button>
@@ -276,17 +311,17 @@
             <!-- JS -->
         </select>
         <div id="fish-info" class="fish-details">
-            <div style="margin-bottom:10px;">
+            <div class="detail-item">
                 <div class="lbl">ANZUELO</div>
-                <div id="fish-hook" style="font-size:1.1rem; color:var(--blue); font-weight:bold;">--</div>
+                <div id="fish-hook" style="font-size:1.3rem; color:var(--blue); font-weight:bold;">--</div>
             </div>
-            <div style="margin-bottom:10px;">
+            <div class="detail-item">
                 <div class="lbl">CARNADA</div>
-                <div id="fish-bait" style="font-size:1.1rem;">--</div>
+                <div id="fish-bait" style="font-size:1.3rem;">--</div>
             </div>
-            <div>
+            <div class="detail-item">
                 <div class="lbl">CONSEJO</div>
-                <div id="fish-tip" style="font-size:1.1rem; color:var(--orange); font-style:italic;">--</div>
+                <div id="fish-tip" style="font-size:1.2rem; color:var(--orange); font-style:italic;">--</div>
             </div>
         </div>
     </div>
@@ -294,18 +329,19 @@
     <!-- 7. HERRAMIENTAS -->
     <div class="action-grid">
         <button id="btn-torch" class="btn-action btn-torch" onclick="toggleFlash()">
-            LINTERNA
+            💡 LINTERNA
         </button>
         <button class="btn-action btn-log" onclick="saveQuickLog()">
-            BITÁCORA
+            📝 BITÁCORA
         </button>
     </div>
 
     <div id="log-history" class="log-container">
-        <div style="text-align:center; color:#666; font-size:0.8rem;">Historial vacío</div>
+        <div style="text-align:center; color:#666; font-size:1rem; padding:10px;">Cargando historial...</div>
     </div>
 
     <script>
+        // --- CONFIG ---
         const fishDB = {
             rio: [
                 {n:"Dorado", h:"5/0 a 8/0 Pata Larga", b:"Anguila, Morena", t:"Usa líder de acero 40lbs."},
@@ -313,20 +349,21 @@
                 {n:"Boga", h:"Simple chico (1 o 2)", b:"Maíz, Masa, Salamín", t:"Clava cuando corre, boca dura."},
                 {n:"Pejerrey", h:"Pequeño (4 o 5)", b:"Mojarra viva", t:"Usa boyas y regula profundidad."},
                 {n:"Tararira", h:"Offset / Triple", b:"Rana goma, Dientudo", t:"Activa con calor, busca yuyos."},
-                {n:"Bagre (Moncholo)", h:"3/0 Común", b:"Lombriz de tierra, Tripa", t:"Pesca de fondo en remansos."}
+                {n:"Bagre (Moncholo)", h:"3/0 Común", b:"Lombriz, Tripa", t:"Pesca de fondo en remansos."}
             ],
             mar: [
                 {n:"Corvina Rubia", h:"3/0 a 5/0", b:"Langostino, Anchoa", t:"Lanza a la 2da canaleta."},
                 {n:"Lenguado", h:"Triple robador", b:"Pejerrey entero", t:"Recogida muy lenta por fondo."},
                 {n:"Pescadilla", h:"2/0 a 3/0", b:"Camarón, Filet", t:"Pica firme, usa destrabe."},
                 {n:"Pejerrey Mar", h:"Largo y fino", b:"Camarón, Filet", t:"Línea de 3 boyas o paternoster."},
-                {n:"Chucho / Raya", h:"6/0 Fuerte", b:"Anchoa entera, Calamar", t:"Pelea pegado al fondo, cuidado con la púa."}
+                {n:"Chucho / Raya", h:"6/0 Fuerte", b:"Anchoa, Calamar", t:"Pelea pegado al fondo."}
             ]
         };
 
         let currentMode = 'rio';
         let torchTrack = null;
 
+        // --- STARTUP ---
         window.onload = () => {
             loadFishMenu();
             calculateMoonPhase();
@@ -335,92 +372,136 @@
             renderLog();
         };
 
-        // --- INTELIGENCIA DE ESPECIES ---
-        function determineSpecies(lat, lon) {
-            const box = document.getElementById('bio-box');
-            const regionLbl = document.getElementById('bio-region');
-            const speciesLbl = document.getElementById('bio-species');
-            
-            box.style.display = 'block';
-            
-            if (lat > -35 && lat < -33 && lon > -60 && lon < -57) {
-                regionLbl.innerText = "ZONA: DELTA / RÍO DE LA PLATA";
-                speciesLbl.innerText = "Dorado, Boga, Tararira, Bagre, Surubí (temporada).";
-            }
-            else if (lat <= -36 && lat > -42 && lon > -60) {
-                regionLbl.innerText = "ZONA: COSTA ATLÁNTICA";
-                speciesLbl.innerText = "Corvina, Pescadilla, Lenguado, Brótola, Pejerrey.";
-            }
-            else if (lat > -33 && lat < -25 && lon > -60) {
-                regionLbl.innerText = "ZONA: LITORAL / PARANÁ ALTO";
-                speciesLbl.innerText = "Dorado Grande, Surubí, Pacú, Manguruyú.";
-            }
-            else if (lat <= -39 && lon < -65) {
-                regionLbl.innerText = "ZONA: PATAGONIA";
-                speciesLbl.innerText = "Trucha Arcoíris, Trucha Marrón, Salmón, Fontinalis.";
-            }
-            else {
-                regionLbl.innerText = "ZONA: GENERAL";
-                speciesLbl.innerText = "Variada local. Consulte guía de especies abajo.";
+        // --- CORE DATA LOGIC ---
+        function initApp() {
+            document.getElementById('loc-name').innerHTML = "Conectando...";
+            if(!navigator.geolocation) { alert("GPS requerido. Activa la ubicación."); return; }
+
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+                document.getElementById('loc-coords').innerText = `${lat.toFixed(3)}, ${lon.toFixed(3)}`;
+
+                determineSpecies(lat, lon);
+
+                // 1. Ubicación (Nominatim)
+                try {
+                    const req = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                    const res = await req.json();
+                    const loc = res.address.city || res.address.town || res.address.village || res.address.county || "Zona de Pesca";
+                    document.getElementById('loc-name').innerText = loc;
+                } catch(e) { document.getElementById('loc-name').innerText = "Ubicación GPS"; }
+
+                // 2. Clima Completo (Open-Meteo)
+                // Usamos una sola llamada robusta
+                const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,surface_pressure,wind_speed_10m,wind_direction_10m,weather_code&hourly=uv_index&daily=sunrise,sunset&timezone=auto`;
+
+                fetch(weatherUrl).then(r=>r.json()).then(data => {
+                    const cur = data.current;
+                    const daily = data.daily;
+
+                    // Temp
+                    document.getElementById('temp').innerText = Math.round(cur.temperature_2m) + "°";
+                    document.getElementById('feels-like').innerText = "ST: " + Math.round(cur.apparent_temperature) + "°";
+                    
+                    // Viento
+                    document.getElementById('wind-speed').innerText = Math.round(cur.wind_speed_10m);
+                    const wDir = cur.wind_direction_10m;
+                    const dirs = ['NORTE', 'NE', 'ESTE', 'SE', 'SUR', 'SO', 'OESTE', 'NO'];
+                    const dirIndex = Math.round(((wDir %= 360) < 0 ? wDir + 360 : wDir) / 45) % 8;
+                    document.getElementById('wind-dir').innerText = "DEL " + dirs[dirIndex];
+
+                    // Presión
+                    const p = Math.round(cur.surface_pressure);
+                    document.getElementById('press').innerText = p;
+                    const pDesc = document.getElementById('press-desc');
+                    if(p < 1008) { pDesc.innerText = "BAJA"; pDesc.style.color = "var(--danger)"; }
+                    else if(p > 1018) { pDesc.innerText = "ALTA"; pDesc.style.color = "var(--green)"; }
+                    else { pDesc.innerText = "ESTABLE"; pDesc.style.color = "#aaa"; }
+
+                    // Sol
+                    if(daily.sunrise && daily.sunset) {
+                        const rise = new Date(daily.sunrise[0]);
+                        const set = new Date(daily.sunset[0]);
+                        const fmt = (d) => d.getHours() + ":" + (d.getMinutes()<10?'0':'') + d.getMinutes();
+                        document.getElementById('sunrise-time').innerText = fmt(rise);
+                        document.getElementById('sunset-time').innerText = fmt(set);
+                    }
+
+                    // UV (Hora Actual)
+                    const now = new Date();
+                    // Buscar hora actual en ISO strings de hourly.time o usar index simple
+                    const currentHour = now.getHours();
+                    const uv = data.hourly.uv_index[currentHour] || 0;
+                    
+                    document.getElementById('uv-val').innerText = uv;
+                    const uvBar = document.getElementById('uv-bar');
+                    const uvMsg = document.getElementById('uv-msg');
+                    
+                    let color = "var(--green)", width = "20%", msg = "Bajo";
+                    if(uv >= 3) { color = "var(--yellow)"; width = "50%"; msg = "Moderado"; }
+                    if(uv >= 6) { color = "var(--orange)"; width = "75%"; msg = "Alto"; }
+                    if(uv >= 8) { color = "var(--danger)"; width = "100%"; msg = "EXTREMO"; }
+                    
+                    uvBar.style.background = color; uvBar.style.width = width; uvMsg.innerText = msg; uvMsg.style.color = color;
+
+                }).catch(e => { console.error("Error clima", e); });
+
+                // 3. Mareas (Marine API) - Separado para que no rompa el resto si falla
+                const marineUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=tide_height&timezone=auto`;
+                fetch(marineUrl).then(r=>r.json()).then(data => {
+                    if(!data.hourly) throw new Error("Sin datos marinos");
+                    const now = new Date();
+                    const h = now.getHours();
+                    const tides = data.hourly.tide_height.slice(h, h+12);
+                    const times = data.hourly.time.slice(h, h+12);
+                    
+                    const trend = tides[1] > tides[0] ? "SUBIENDO ⬆" : "BAJANDO ⬇";
+                    document.getElementById('tide-current').innerText = trend;
+                    
+                    let maxV = -99, maxT = "";
+                    for(let i=0; i<tides.length; i++) { if(tides[i] > maxV) { maxV = tides[i]; maxT = times[i]; } }
+                    const d = new Date(maxT);
+                    const min = d.getMinutes() < 10 ? '0'+d.getMinutes() : d.getMinutes();
+                    document.getElementById('tide-next').innerText = `Pleamar: ${d.getHours()}:${min}`;
+                }).catch(() => {
+                    document.getElementById('tide-current').innerText = "RÍO";
+                    document.getElementById('tide-next').innerText = "Interior / Sin Datos";
+                });
+
+            }, () => alert("Para ver el clima, activa la Ubicación (GPS)."));
+        }
+
+        // --- COMPASS ---
+        function requestCompassPermission() {
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission()
+                    .then(response => {
+                        if (response === 'granted') {
+                            initCompass();
+                        } else { alert("Permiso denegado"); }
+                    })
+                    .catch(console.error);
+            } else {
+                // Android no suele requerir permiso explícito
+                alert("Brújula activa. Si no gira, tu dispositivo no tiene sensor.");
             }
         }
 
-        // --- BITÁCORA ---
-        function saveQuickLog() {
-            const text = prompt("📝 Nueva Captura (Especie - Peso):");
-            if(text) {
-                const now = new Date();
-                const dateStr = now.getDate() + "/" + (now.getMonth()+1) + " " + 
-                                now.getHours() + ":" + (now.getMinutes()<10?'0':'') + now.getMinutes();
-                const newEntry = { id: Date.now(), text: text, date: dateStr };
-                let history = JSON.parse(localStorage.getItem('pescaLog')) || [];
-                history.unshift(newEntry);
-                localStorage.setItem('pescaLog', JSON.stringify(history));
-                renderLog();
-            }
-        }
-
-        function renderLog() {
-            const container = document.getElementById('log-history');
-            const history = JSON.parse(localStorage.getItem('pescaLog')) || [];
-            if (history.length === 0) {
-                container.innerHTML = '<div style="text-align:center; color:#666; font-size:0.8rem; margin-top:10px;">Historial vacío</div>';
-                return;
-            }
-            let html = "";
-            history.forEach(item => {
-                html += `
-                    <div class="log-item">
-                        <div><span class="log-text">${item.text}</span><span class="log-date">${item.date}</span></div>
-                        <button class="btn-delete" onclick="deleteLog(${item.id})">×</button>
-                    </div>`;
-            });
-            container.innerHTML = html;
-        }
-
-        function deleteLog(id) {
-            if(confirm("¿Borrar?")) {
-                let history = JSON.parse(localStorage.getItem('pescaLog')) || [];
-                history = history.filter(item => item.id !== id);
-                localStorage.setItem('pescaLog', JSON.stringify(history));
-                renderLog();
-            }
-        }
-
-        // --- BRÚJULA ---
         function initCompass() {
             if (window.DeviceOrientationEvent) {
                 window.addEventListener("deviceorientation", function(event) {
                     let heading = event.alpha; 
                     if(heading !== null) {
                         const needle = document.getElementById('compass-needle');
+                        // Invertimos rotación para que apunte al norte
                         needle.style.transform = `translate(-50%, -50%) rotate(${360 - heading}deg)`;
                     }
                 }, true);
             }
         }
 
-        // --- DATOS APP ---
+        // --- UTILS ---
         function calculateMoonPhase() {
             const date = new Date();
             const lp = 2551443; 
@@ -440,100 +521,80 @@
             document.getElementById('moon-icon').innerText = icon;
         }
 
-        function initApp() {
-            document.getElementById('loc-name').innerHTML = "Conectando...";
-            if(!navigator.geolocation) { alert("Sin GPS"); return; }
-
-            navigator.geolocation.getCurrentPosition(async (pos) => {
-                const lat = pos.coords.latitude;
-                const lon = pos.coords.longitude;
-                document.getElementById('loc-coords').innerText = `${lat.toFixed(3)}, ${lon.toFixed(3)}`;
-
-                determineSpecies(lat, lon);
-
-                try {
-                    const req = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
-                    const res = await req.json();
-                    document.getElementById('loc-name').innerText = res.address.city || res.address.town || res.address.village || "Zona de Pesca";
-                } catch(e) { document.getElementById('loc-name').innerText = "Ubicación GPS"; }
-
-                const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,surface_pressure,wind_speed_10m,wind_direction_10m,weather_code&hourly=uv_index&daily=sunrise,sunset&timezone=auto`;
-
-                fetch(weatherUrl).then(r=>r.json()).then(data => {
-                    const cur = data.current;
-                    const daily = data.daily;
-
-                    // Temp & Sensación
-                    document.getElementById('temp').innerText = Math.round(cur.temperature_2m) + "°";
-                    document.getElementById('feels-like').innerText = "ST: " + Math.round(cur.apparent_temperature) + "°";
-                    
-                    document.getElementById('weather-desc').innerText = (cur.weather_code < 3 ? "Despejado" : "Nublado/Lluvia");
-                    
-                    // Viento & Dirección
-                    document.getElementById('wind-speed').innerText = Math.round(cur.wind_speed_10m);
-                    const wDir = cur.wind_direction_10m;
-                    const dirs = ['NORTE', 'NE', 'ESTE', 'SE', 'SUR', 'SO', 'OESTE', 'NO'];
-                    // Ajuste de índice para 8 direcciones
-                    const dirIndex = Math.round(((wDir %= 360) < 0 ? wDir + 360 : wDir) / 45) % 8;
-                    document.getElementById('wind-dir').innerText = "DEL " + dirs[dirIndex];
-
-                    // Presión
-                    const p = Math.round(cur.surface_pressure);
-                    document.getElementById('press').innerText = p;
-                    const pDesc = document.getElementById('press-desc');
-                    if(p < 1008) { pDesc.innerText = "BAJA"; pDesc.style.color = "var(--danger)"; }
-                    else if(p > 1018) { pDesc.innerText = "ALTA"; pDesc.style.color = "var(--green)"; }
-                    else { pDesc.innerText = "ESTABLE"; pDesc.style.color = "#aaa"; }
-
-                    // Amanecer y Puesta
-                    if(daily.sunrise && daily.sunset) {
-                        const rise = new Date(daily.sunrise[0]);
-                        const set = new Date(daily.sunset[0]);
-                        const fmt = (d) => d.getHours() + ":" + (d.getMinutes()<10?'0':'') + d.getMinutes();
-                        document.getElementById('sunrise-time').innerText = fmt(rise);
-                        document.getElementById('sunset-time').innerText = fmt(set);
-                    }
-
-                    // UV
-                    const now = new Date();
-                    const uv = data.hourly.uv_index[now.getHours()] || 0;
-                    document.getElementById('uv-val').innerText = uv;
-                    const uvBar = document.getElementById('uv-bar');
-                    const uvMsg = document.getElementById('uv-msg');
-                    let color = "var(--green)", width = "20%", msg = "Bajo";
-                    if(uv >= 3) { color = "var(--yellow)"; width = "50%"; msg = "Moderado"; }
-                    if(uv >= 6) { color = "var(--orange)"; width = "75%"; msg = "Alto"; }
-                    if(uv >= 8) { color = "var(--danger)"; width = "100%"; msg = "Extremo!"; }
-                    uvBar.style.background = color; uvBar.style.width = width; uvMsg.innerText = msg; uvMsg.style.color = color;
-
-                }).catch(e => { console.error(e); });
-
-                const marineUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=tide_height&timezone=auto`;
-                fetch(marineUrl).then(r=>r.json()).then(data => {
-                    if(!data.hourly) throw new Error("No mar");
-                    const now = new Date();
-                    const h = now.getHours();
-                    const tides = data.hourly.tide_height.slice(h, h+12);
-                    const times = data.hourly.time.slice(h, h+12);
-                    const trend = tides[1] > tides[0] ? "SUBIENDO ⬆" : "BAJANDO ⬇";
-                    document.getElementById('tide-current').innerText = trend;
-                    let maxV = -99, maxT = "";
-                    for(let i=0; i<tides.length; i++) { if(tides[i] > maxV) { maxV = tides[i]; maxT = times[i]; } }
-                    const d = new Date(maxT);
-                    const min = d.getMinutes() < 10 ? '0'+d.getMinutes() : d.getMinutes();
-                    document.getElementById('tide-next').innerText = `Pleamar: ${d.getHours()}:${min}`;
-                }).catch(() => {
-                    document.getElementById('tide-current').innerText = "RÍO";
-                    document.getElementById('tide-next').innerText = "Interior";
-                });
-
-            }, () => alert("Activa el GPS"));
+        function determineSpecies(lat, lon) {
+            const box = document.getElementById('bio-box');
+            const regionLbl = document.getElementById('bio-region');
+            const speciesLbl = document.getElementById('bio-species');
+            box.style.display = 'block';
+            
+            if (lat > -35 && lat < -33 && lon > -60 && lon < -57) {
+                regionLbl.innerText = "DELTA / RÍO DE LA PLATA";
+                speciesLbl.innerText = "Dorado, Boga, Tararira, Bagre, Surubí.";
+            } else if (lat <= -36 && lat > -42 && lon > -60) {
+                regionLbl.innerText = "COSTA ATLÁNTICA";
+                speciesLbl.innerText = "Corvina, Pescadilla, Lenguado, Pejerrey.";
+            } else if (lat > -33 && lat < -25 && lon > -60) {
+                regionLbl.innerText = "LITORAL / PARANÁ";
+                speciesLbl.innerText = "Dorado, Surubí, Pacú, Manguruyú.";
+            } else if (lat <= -39 && lon < -65) {
+                regionLbl.innerText = "PATAGONIA";
+                speciesLbl.innerText = "Trucha Arcoíris, Marrón, Salmón.";
+            } else {
+                regionLbl.innerText = "ZONA GENERAL";
+                speciesLbl.innerText = "Variada local. Verifique reglamentación.";
+            }
         }
 
+        // --- UI LOGIC ---
         function switchTab(m){ currentMode=m; document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); event.target.classList.add('active'); loadFishMenu(); }
         function loadFishMenu(){ const s=document.getElementById('fish-selector'); s.innerHTML='<option>Selecciona pez...</option>'; fishDB[currentMode].forEach((f,i)=>{const o=document.createElement('option'); o.value=i; o.innerText=f.n; s.appendChild(o)}); document.getElementById('fish-info').classList.remove('show'); }
         function showFishInfo(){ const i=document.getElementById('fish-selector').value; if(!i)return; const f=fishDB[currentMode][i]; document.getElementById('fish-hook').innerText=f.h; document.getElementById('fish-bait').innerText=f.b; document.getElementById('fish-tip').innerText=f.t; document.getElementById('fish-info').classList.add('show'); }
-        async function toggleFlash(){ const b=document.getElementById('btn-torch'); if(torchTrack){torchTrack.stop(); torchTrack=null; b.classList.remove('on'); return;} try{ const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}}); torchTrack=s.getVideoTracks()[0]; await torchTrack.applyConstraints({advanced:[{torch:true}]}); b.classList.add('on'); }catch(e){alert("Sin permiso o sin flash");} }
+        
+        async function toggleFlash(){ 
+            const b=document.getElementById('btn-torch'); 
+            if(torchTrack){torchTrack.stop(); torchTrack=null; b.classList.remove('on'); return;} 
+            try{ 
+                const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}}); 
+                torchTrack=s.getVideoTracks()[0]; 
+                await torchTrack.applyConstraints({advanced:[{torch:true}]}); 
+                b.classList.add('on'); 
+            }catch(e){alert("Error: Flash no disponible (Requiere HTTPS).");} 
+        }
+
+        // --- LOCALSTORAGE LOG ---
+        function saveQuickLog() {
+            const text = prompt("📝 Captura (Especie - Kg):");
+            if(text) {
+                const now = new Date();
+                const dateStr = now.toLocaleDateString() + " " + now.getHours() + ":" + (now.getMinutes()<10?'0':'')+now.getMinutes();
+                const newEntry = { id: Date.now(), text: text, date: dateStr };
+                let history = JSON.parse(localStorage.getItem('pescaLog')) || [];
+                history.unshift(newEntry);
+                localStorage.setItem('pescaLog', JSON.stringify(history));
+                renderLog();
+            }
+        }
+        function renderLog() {
+            const c = document.getElementById('log-history');
+            const h = JSON.parse(localStorage.getItem('pescaLog')) || [];
+            if (h.length === 0) { c.innerHTML = '<div style="text-align:center; color:#666; font-size:1rem; padding:10px;">Historial vacío</div>'; return; }
+            let html = "";
+            h.forEach(item => {
+                html += `<div class="log-item">
+                        <div><span class="log-text">${item.text}</span><span class="log-date">${item.date}</span></div>
+                        <button class="btn-delete" onclick="deleteLog(${item.id})">×</button>
+                    </div>`;
+            });
+            c.innerHTML = html;
+        }
+        function deleteLog(id) {
+            if(confirm("¿Eliminar?")) {
+                let h = JSON.parse(localStorage.getItem('pescaLog')) || [];
+                h = h.filter(i => i.id !== id);
+                localStorage.setItem('pescaLog', JSON.stringify(h));
+                renderLog();
+            }
+        }
     </script>
 </body>
 </html>
