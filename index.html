@@ -166,14 +166,6 @@
             }
         }
 
-        /* --- MAREAS --- */
-        .tide-box {
-            background: linear-gradient(160deg, #1e3a8a 0%, #0f172a 100%);
-            border: 1px solid #3b82f6;
-        }
-        .tide-main { font-size: 1.7rem; font-weight: bold; color: white; margin: 5px 0; }
-        .tide-sub { font-size: 0.9rem; background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); }
-
         /* --- BRÚJULA --- */
         .compass-container { cursor: pointer; } 
         .compass-rose {
@@ -183,8 +175,8 @@
         }
         .cardinal { position: absolute; font-size: 0.75rem; font-weight: bold; color: #64748b; }
         .c-n { top: 2px; left: 50%; transform: translateX(-50%); color: var(--danger); }
-        .c-s { bottom: 2px; left: 50%; transform: translateX(-50%); }
         .c-e { right: 4px; top: 50%; transform: translateY(-50%); }
+        .c-s { bottom: 2px; left: 50%; transform: translateX(-50%); }
         .c-o { left: 4px; top: 50%; transform: translateY(-50%); }
 
         .compass-needle {
@@ -196,6 +188,108 @@
             box-shadow: 0 0 5px rgba(0,0,0,0.8);
             z-index: 10;
         }
+        
+        /* --- RELOJ ANALÓGICO (NUEVOS ESTILOS) --- */
+        .clock-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .analog-clock {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #0f172a;
+            border: 3px solid #475569;
+            position: relative;
+            box-shadow: inset 0 0 10px #000;
+        }
+
+        .analog-clock::after { /* Center pivot dot */
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background-color: var(--blue);
+            border-radius: 50%;
+            z-index: 5;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .hour-mark {
+            position: absolute;
+            background-color: #64748b; /* Subtle gray for minor marks */
+            z-index: 0; 
+        }
+
+        .mark-12 { top: 2px; left: 50%; transform: translateX(-50%); height: 7px; width: 2px; background-color: var(--text); }
+        .mark-3 { right: 2px; top: 50%; transform: translateY(-50%); width: 7px; height: 2px; background-color: var(--text); }
+        .mark-6 { bottom: 2px; left: 50%; transform: translateX(-50%); height: 7px; width: 2px; background-color: var(--text); }
+        .mark-9 { left: 2px; top: 50%; transform: translateY(-50%); width: 7px; height: 2px; background-color: var(--text); }
+
+        .hand {
+            position: absolute;
+            bottom: 50%; /* Center the pivot point vertically */
+            left: 50%; /* Center the pivot point horizontally */
+            transform-origin: bottom; /* Rotate from the bottom of the hand */
+            transform: translateX(-50%) rotate(0deg); /* Center horizontally and initial rotation */
+            border-radius: 2px;
+            z-index: 1;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .hour-hand {
+            width: 4px;
+            height: 25px;
+            background-color: var(--text);
+            z-index: 3;
+        }
+
+        .minute-hand {
+            width: 3px;
+            height: 30px;
+            background-color: var(--blue);
+            z-index: 2;
+        }
+
+        .second-hand {
+            width: 2px;
+            height: 33px;
+            background-color: var(--danger);
+            z-index: 4;
+            transition: transform 0.05s linear; /* Faster transition for smoother second hand */
+        }
+        /* --- FIN RELOJ ANALÓGICO --- */
+
+        /* --- FASE LUNAR DENTRO DE DATA-BOX --- */
+        .moon-phase-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 5px; /* Adjust padding for content */
+            min-height: 110px;
+        }
+        .moon-phase-box #moon-icon {
+            font-size: 3rem; /* Make icon larger */
+            margin: 0;
+            line-height: 1;
+            margin-bottom: 5px; /* Space between icon and text */
+        }
+        .moon-phase-box #moon-phase {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: white;
+            text-transform: uppercase;
+        }
+        /* --- FIN FASE LUNAR DENTRO DE DATA-BOX --- */
 
         /* --- GUIA PECES --- */
         .guide-container { padding: 15px; }
@@ -298,15 +392,23 @@
         <button onclick="forceReload()" style="background:none; border:none; font-size:2rem; cursor:pointer;">🔄</button>
     </div>
 
-    <!-- 3. NIVEL CRÍTICO (Viento / Brújula / Agua) -->
+    <!-- REORGANIZACIÓN: Reloj / Brújula / Temperatura -->
     <div class="grid-main-3">
-        <!-- Viento -->
-        <div class="data-box">
-            <span class="lbl">VIENTO</span>
-            <span class="val" id="wind-speed">--</span>
-            <div class="sub-val" id="wind-dir" style="color: var(--blue); font-weight:bold;">--</div>
+        <!-- Reloj Analógico -->
+        <div class="data-box" id="analog-clock-box">
+            <span class="lbl">HORA ACTUAL</span>
+            <div class="analog-clock" id="analog-clock">
+                <div class="hour-mark mark-12"></div>
+                <div class="hour-mark mark-3"></div>
+                <div class="hour-mark mark-6"></div>
+                <div class="hour-mark mark-9"></div>
+                <div class="hand hour-hand" id="hour-hand"></div>
+                <div class="hand minute-hand" id="minute-hand"></div>
+                <div class="hand second-hand" id="second-hand"></div>
+            </div>
+            <div class="sub-val" style="font-weight:bold;">Local</div>
         </div>
-        <!-- Brújula -->
+        <!-- Brújula (Movido) -->
         <div class="data-box compass-container" onclick="requestCompassPermission()">
             <div class="compass-rose">
                 <span class="cardinal c-n">N</span>
@@ -317,38 +419,37 @@
             </div>
             <div style="font-size:0.6rem; margin-top:8px; color:#888; font-weight:bold;">BRÚJULA</div>
         </div>
-        <!-- Mareas -->
-        <div class="data-box tide-box">
-            <div class="lbl" style="color:#bfdbfe">AGUA</div>
-            <div class="tide-main" id="tide-current" style="font-size:1.6rem;">--</div>
-            <div class="tide-sub" id="tide-next">--</div>
-        </div>
-    </div>
-
-    <!-- 4. ATMÓSFERA: PRESIÓN Y TEMPERATURA (NUEVA ORGANIZACIÓN) -->
-    <div class="grid-main-3">
-        <div class="data-box">
-            <span class="lbl">PRESIÓN (hPa)</span>
-            <span class="val" id="press">--</span>
-            <span class="sub-val" id="press-desc" style="font-weight:bold">Esperando..</span>
-        </div>
+        <!-- Temperatura (Movido) -->
         <div class="data-box">
             <span class="lbl">TEMP</span>
             <span class="val" id="temp">--°</span>
             <div class="sub-val" id="feels-like">ST: --°</div>
         </div>
     </div>
-    
-    <!-- 5. FASE LUNAR (DESTACADO) -->
-    <div class="card-box">
-        <div style="display:flex; justify-content:space-around; align-items:center;">
-            <div>
-                <span class="lbl" style="display:block;">FASE LUNAR</span>
-                <span style="font-weight:bold; font-size:1.1rem; color:white; text-transform:uppercase;" id="moon-phase">--</span>
-            </div>
-            <div style="font-size:3rem; margin:0; line-height:1;" id="moon-icon">🌑</div>
+
+    <!-- REORGANIZACIÓN: Presión / Viento / Fase Lunar (Ex-Agua) -->
+    <div class="grid-main-3">
+        <!-- Presión HPA (Movido) -->
+        <div class="data-box">
+            <span class="lbl">PRESIÓN (hPa)</span>
+            <span class="val" id="press">--</span>
+            <span class="sub-val" id="press-desc" style="font-weight:bold">Esperando..</span>
+        </div>
+        <!-- Viento (Movido) -->
+        <div class="data-box">
+            <span class="lbl">VIENTO</span>
+            <span class="val" id="wind-speed">--</span>
+            <div class="sub-val" id="wind-dir" style="color: var(--blue); font-weight:bold;">--</div>
+        </div>
+        <!-- Fase Lunar (Movido al lugar de 'Agua') -->
+        <div class="data-box moon-phase-box">
+            <span class="lbl">FASE LUNAR</span>
+            <span id="moon-icon">🌑</span>
+            <div id="moon-phase">--</div>
         </div>
     </div>
+    
+    <!-- La antigua sección de Fase Lunar (card-box) ha sido eliminada. -->
 
     <!-- NUEVA SECCIÓN: CONDICIONES AMBIENTALES -->
     <div class="section-header">CONDICIONES AMBIENTALES</div>
@@ -434,7 +535,7 @@
     </div>
 
     <div id="log-history" class="log-container">
-        <div style="text-align:center; color:#666; font-size:1rem; padding:10px;">Cargando historial...</div>
+        <div style="text-align:center; color:#666; font-size:1rem; padding:10px;">Sin historial</div>
     </div>
     
     <!-- Punto de montaje para la lógica de React (oculto) -->
@@ -469,6 +570,7 @@
         let currentMode = 'rio';
         let torchTrack = null;
         let dataRefreshInterval = null; // Para almacenar el ID del intervalo de refresco
+        let clockInterval = null; // Para almacenar el ID del intervalo del reloj
 
         // Global variable for pressure history
         window.appPressureHistory = [];
@@ -477,10 +579,12 @@
         // --- STARTUP ---
         window.onload = () => {
             loadFishMenu();
-            calculateMoonPhase();
+            calculateMoonPhase(); // Llamar aquí para asegurar que los elementos existan
             initApp(); 
             initCompass();
             renderLog();
+            updateClock(); // Initial call to display time immediately
+            clockInterval = setInterval(updateClock, 1000); // Update clock every second
         };
 
         // --- CORE DATA LOGIC ---
@@ -531,8 +635,13 @@
                     document.getElementById('clouds-val').innerText = '--%';
                     document.getElementById('sunrise-time').innerText = '--:--';
                     document.getElementById('sunset-time').innerText = '--:--';
-                    document.getElementById('tide-current').innerText = "RÍO";
-                    document.getElementById('tide-next').innerText = "Interior / Sin Marea";
+                    // Nota: 'tide-current' y 'tide-next' ahora son para la fase lunar, no para mareas. 
+                    // No hay impacto directo en estos campos por fallo de GPS, excepto si sus datos 
+                    // se obtuvieran de una API que también fallara.
+                    // Se re-establecen a un estado consistente para mostrar ausencia de datos de marea.
+                    // Esto es solo para ser consistente si en el futuro se volviera a tener mareas
+                    // o para evitar errores si el script de mareas intentara acceder a ellos.
+                    // Para la fase lunar, no es necesario resetearlos aquí directamente.
                     fetchData(fallbackLat, fallbackLon, false);
                     // Establecer un intervalo para el modo demo (si aplica)
                     if (dataRefreshInterval) clearInterval(dataRefreshInterval);
@@ -671,59 +780,8 @@
                 document.getElementById('sunset-time').innerText = '--:--';
             });
 
-            // MAREAS
-            const marineUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=tide_height&timezone=auto`;
-            fetch(marineUrl).then(r => {
-                if (!r.ok) {
-                    // Si el status es 400 y es una ubicación en tierra, el error es esperado
-                    if (r.status === 400 && !isReal && lat === -34.6037 && lon === -58.3816) {
-                        console.warn(`API Error (Mareas - expected for land location): HTTP error! status: ${r.status}. Ubicación en tierra no soportada por la API marina.`);
-                    } else {
-                        throw new Error(`HTTP error! status: ${r.status}`);
-                    }
-                }
-                return r.json();
-            }).then(data => {
-                console.log("Marine API Response (Mareas):", data); // Log de la respuesta completa de la API
-                
-                if(!data.hourly || !data.hourly.tide_height || data.hourly.tide_height.length === 0) {
-                    throw new Error("Sin datos de marea o array de tide_height vacío en la respuesta de la API");
-                }
-                
-                const now = new Date();
-                const h = now.getHours();
-                const tides = data.hourly.tide_height.slice(h, h + 12);
-                const times = data.hourly.time.slice(h, h + 12);
-                
-                if (tides.length < 2) { // Necesitamos al menos 2 puntos para determinar la tendencia
-                    document.getElementById('tide-current').innerText = "RÍO";
-                    document.getElementById('tide-next').innerText = "Interior / Sin Marea";
-                    console.warn("No hay suficientes datos de marea para determinar la tendencia.");
-                    return;
-                }
-
-                const trend = tides[1] > tides[0] ? "SUBIENDO ⬆" : "BAJANDO ⬇";
-                document.getElementById('tide-current').innerText = trend;
-                
-                let maxVal = -9999; // Usar un valor muy bajo para asegurar que cualquier marea sea mayor
-                let maxTimeStr = "";
-                for(let i=0; i<tides.length; i++) {
-                    if(tides[i] > maxVal) { maxVal = tides[i]; maxTimeStr = times[i]; }
-                }
-                if (maxTimeStr) {
-                    const d = new Date(maxTimeStr);
-                    const minFormatted = (d.getMinutes()<10?'0':'') + d.getMinutes();
-                    document.getElementById('tide-next').innerText = `Pleamar: ${d.getHours()}:${minFormatted} hs`;
-                } else {
-                    document.getElementById('tide-next').innerText = "Próxima Pleamar: --:--";
-                    console.warn("No se encontró una pleamar válida en los datos de marea.");
-                }
-
-            }).catch((e) => {
-                console.error("API Error (Mareas):", e);
-                document.getElementById('tide-current').innerText = "RÍO";
-                document.getElementById('tide-next').innerText = "Interior / Sin Marea";
-            });
+            // MAREAS (se ha eliminado este fetch, por lo tanto, no se muestran datos de mareas)
+            // La fase lunar se calcula localmente, no depende de una API externa aquí.
         }
 
         // --- CÁLCULO LUNAR ---
@@ -743,8 +801,15 @@
             else if (phase_days >= 22 && phase_days < 24) { phase = "Cuarto Meng."; icon = "🌗"; }
             else if (phase_days >= 24) { phase = "Menguante"; icon = "🌘"; }
             
-            document.getElementById('moon-phase').innerText = phase.toUpperCase();
-            document.getElementById('moon-icon').innerText = icon;
+            const moonPhaseElement = document.getElementById('moon-phase');
+            const moonIconElement = document.getElementById('moon-icon');
+
+            if (moonPhaseElement && moonIconElement) {
+                moonPhaseElement.innerText = phase.toUpperCase();
+                moonIconElement.innerText = icon;
+            } else {
+                console.warn("Elementos de fase lunar no encontrados para actualizar. Asegúrate de que los IDs 'moon-phase' y 'moon-icon' existan en el DOM.");
+            }
         }
 
         function determineSpecies(lat, lon) {
@@ -787,6 +852,32 @@
                     let h = e.alpha; 
                     if(h !== null) { document.getElementById('compass-needle').style.transform = `translate(-50%, -50%) rotate(${360 - h}deg)`; }
                 }, true);
+            }
+        }
+
+        // --- RELOJ ANALÓGICO ---
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            const secondHand = document.getElementById('second-hand');
+            const minuteHand = document.getElementById('minute-hand');
+            const hourHand = document.getElementById('hour-hand');
+
+            if (secondHand && minuteHand && hourHand) {
+                // Calculate rotation for each hand
+                // Seconds: 360 degrees / 60 seconds = 6 degrees per second
+                const secondsDegrees = (seconds / 60) * 360;
+                // Minutes: 360 degrees / 60 minutes = 6 degrees per minute. Add (seconds / 60) * 6 degrees for smooth movement.
+                const minutesDegrees = ((minutes + seconds / 60) / 60) * 360;
+                // Hours: 360 degrees / 12 hours = 30 degrees per hour. Add (minutes / 60) * 30 degrees for smooth movement.
+                const hoursDegrees = ((hours % 12 + minutes / 60) / 12) * 360;
+
+                secondHand.style.transform = `translateX(-50%) rotate(${secondsDegrees}deg)`;
+                minuteHand.style.transform = `translateX(-50%) rotate(${minutesDegrees}deg)`;
+                hourHand.style.transform = `translateX(-50%) rotate(${hoursDegrees}deg)`;
             }
         }
 
