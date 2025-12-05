@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LOLA Pesca - Tactical Ops</title>
+    <title>LOLA Pesca - Tactical Pro</title>
     <style>
         /* --- FUENTE TACTICAL --- */
         @font-face {
@@ -12,88 +12,83 @@
         }
 
         :root {
-            --bg: #0f172a;
+            --bg: #0b1120;
             --card: #1e293b;
             --text: #f1f5f9;
             --blue: #38bdf8;
             --green: #4ade80;
             --yellow: #facc15;
             --orange: #fb923c;
-            --danger: #f87171;
+            --danger: #ef4444;
             --font-title: 'PitchedBattle', sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
             padding: 12px;
-            padding-bottom: 100px;
+            padding-bottom: 120px;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- LOGO CON ENLACE --- */
+        /* --- LOGO --- */
         .brand-header {
             text-align: center;
-            padding: 15px 0;
+            padding: 10px 0;
             display: flex;
             justify-content: center;
         }
-        .brand-link {
-            display: inline-block;
-            width: 50%; /* Zona táctil */
-            transition: transform 0.1s;
-        }
-        .brand-link:active { transform: scale(0.95); opacity: 0.8; }
-        
+        .brand-link { width: 50%; display: block; }
         .brand-logo {
             width: 100%; 
             height: auto;
-            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
-            display: block;
+            filter: drop-shadow(0 0 15px rgba(0,0,0,0.6));
         }
 
         /* --- CONTENEDORES --- */
         .card-box {
             background: var(--card);
             border-radius: 16px;
-            padding: 18px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
             text-align: center;
+            position: relative;
         }
 
-        /* --- TYPOGRAPHY (TEXTOS GRANDES) --- */
+        /* --- TEXTOS --- */
         .lbl { 
             font-family: var(--font-title); 
             color: #94a3b8; 
-            font-size: 1rem; 
-            margin-bottom: 8px; 
+            font-size: 0.85rem; 
+            margin-bottom: 5px; 
             letter-spacing: 1px; 
             text-transform: uppercase; 
         }
         
         .val { 
             font-size: 2.2rem; 
-            font-weight: 800; 
-            margin-top: 5px; 
+            font-weight: 900; 
+            margin-top: 2px; 
             line-height: 1; 
             color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         
         .sub-val { 
-            font-size: 1rem; 
-            color: #aaa; 
+            font-size: 0.9rem; 
+            color: #cbd5e1; 
             margin-top: 5px; 
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .section-header { 
             text-align: center; color: var(--blue); font-family: var(--font-title); 
-            margin: 30px 0 15px 0; font-size: 1.3rem; letter-spacing: 1px; 
-            border-bottom: 2px solid #334155; padding-bottom: 8px;
+            margin: 30px 0 15px 0; font-size: 1.2rem; letter-spacing: 1px; 
+            border-bottom: 2px solid #334155; padding-bottom: 5px;
         }
         
         /* HEADER UBICACIÓN */
@@ -101,55 +96,47 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 4px solid var(--blue);
+            border-left: 5px solid var(--blue);
             text-align: left;
-            padding: 15px;
+            padding: 12px 15px;
+            background: #151e2e;
         }
-        .loc-title { font-size: 1.5rem; color: white; margin-bottom: 4px; font-family: var(--font-title); }
-        .loc-sub { font-size: 1rem; color: #94a3b8; }
-
-        /* PREDICCION DE ESPECIES */
-        .prediction-box {
-            background: rgba(56, 189, 248, 0.08);
-            border: 1px solid #334155;
-            text-align: left;
-            padding: 15px;
-        }
-        .species-list { font-size: 1.2rem; color: white; font-weight: 500; margin-top: 8px; line-height: 1.4; }
-        .biome-tag { font-size: 0.85rem; background: var(--blue); color: #000; padding: 4px 8px; border-radius: 4px; font-weight: bold; display: inline-block; margin-bottom: 5px; }
+        .loc-title { font-size: 1.2rem; color: white; margin-bottom: 2px; font-weight:bold; }
+        .loc-sub { font-size: 0.8rem; color: var(--green); }
 
         /* --- GRILLAS --- */
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
 
         .data-box {
             background: var(--card);
-            padding: 15px 5px;
-            border-radius: 14px;
+            padding: 12px 5px;
+            border-radius: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            min-height: 110px; 
+            min-height: 100px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         /* --- MAREAS --- */
         .tide-box {
-            background: linear-gradient(135deg, #172554 0%, #0f172a 100%);
-            border: 1px solid #1e3a8a;
+            background: linear-gradient(160deg, #1e3a8a 0%, #0f172a 100%);
+            border: 1px solid #3b82f6;
         }
-        .tide-main { font-size: 1.8rem; font-weight: bold; color: white; margin: 5px 0; }
-        .tide-sub { font-size: 0.9rem; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 10px; }
+        .tide-main { font-size: 1.6rem; font-weight: bold; color: white; margin: 5px 0; }
+        .tide-sub { font-size: 0.85rem; background: rgba(0,0,0,0.3); padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); }
 
         /* --- BRÚJULA --- */
         .compass-container { cursor: pointer; } 
         .compass-rose {
-            width: 70px; height: 70px; border-radius: 50%;
+            width: 65px; height: 65px; border-radius: 50%;
             background: #0f172a; border: 3px solid #475569;
             position: relative; box-shadow: inset 0 0 10px #000;
         }
-        .cardinal { position: absolute; font-size: 0.75rem; font-weight: bold; color: #64748b; }
+        .cardinal { position: absolute; font-size: 0.7rem; font-weight: bold; color: #64748b; }
         .c-n { top: 2px; left: 50%; transform: translateX(-50%); color: var(--danger); }
         .c-s { bottom: 2px; left: 50%; transform: translateX(-50%); }
         .c-e { right: 4px; top: 50%; transform: translateY(-50%); }
@@ -157,11 +144,11 @@
 
         .compass-needle {
             position: absolute; top: 50%; left: 50%;
-            width: 8px; height: 50px;
+            width: 8px; height: 45px;
             background: linear-gradient(to bottom, var(--danger) 50%, white 50%);
             transform: translate(-50%, -50%) rotate(0deg);
             transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+            box-shadow: 0 0 5px rgba(0,0,0,0.8);
             z-index: 10;
         }
 
@@ -169,42 +156,49 @@
         .guide-container { padding: 15px; }
         .tabs { display: flex; margin-bottom: 15px; border-bottom: 2px solid #334155; }
         .tab { 
-            flex: 1; padding: 15px; text-align: center; background: none; border: none; 
-            color: #64748b; font-size: 1.2rem; cursor: pointer; font-family: var(--font-title); 
+            flex: 1; padding: 12px; text-align: center; background: none; border: none; 
+            color: #64748b; font-size: 1.1rem; cursor: pointer; font-family: var(--font-title); 
         }
-        .tab.active { color: var(--blue); border-bottom: 4px solid var(--blue); color: white; }
+        .tab.active { color: var(--blue); border-bottom: 3px solid var(--blue); color: white; }
         
         select { 
             width: 100%; padding: 15px; background: #0f172a; border: 1px solid #334155; 
-            color: white; border-radius: 8px; font-size: 1.2rem;
+            color: white; border-radius: 8px; font-size: 1.1rem;
         }
 
-        .fish-details { margin-top: 15px; display: none; padding: 15px; background: #0f172a; border-radius: 10px; border: 1px solid #333; }
+        .fish-details { margin-top: 15px; display: none; padding: 15px; background: #111827; border-radius: 10px; border: 1px solid #374151; }
         .fish-details.show { display: block; animation: fadeIn 0.3s; }
-        .detail-item { margin-bottom: 15px; }
+        .detail-item { margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .detail-item:last-child { border: none; }
 
-        /* --- BOTONES Y BITACORA --- */
+        /* --- PREDICCION ESPECIES --- */
+        .prediction-box { background: rgba(56, 189, 248, 0.1); border: 1px solid #334155; text-align: left; padding: 15px; display: none; }
+        .species-list { font-size: 1.1rem; color: white; font-weight: 500; margin-top: 8px; }
+        .biome-tag { font-size: 0.8rem; background: var(--blue); color: #000; padding: 3px 8px; border-radius: 4px; font-weight: bold; }
+
+        /* --- BOTONES --- */
         .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px;}
         .btn-action {
-            padding: 25px; border: none; border-radius: 12px; color: white;
+            padding: 20px; border: none; border-radius: 12px; color: white;
             display: flex; align-items: center; justify-content: center; gap: 10px; 
-            font-size: 1.3rem; cursor: pointer; font-family: var(--font-title);
-            box-shadow: 0 4px 0 rgba(0,0,0,0.3);
+            font-size: 1.1rem; cursor: pointer; font-family: var(--font-title);
+            box-shadow: 0 4px 0 rgba(0,0,0,0.3); transition: transform 0.1s;
         }
         .btn-action:active { transform: translateY(4px); box-shadow: none; }
         .btn-torch { background: #475569; }
-        .btn-torch.on { background: #f8fafc; color: black; box-shadow: 0 0 25px white; }
-        .btn-log { background: var(--green); color: #003300; }
+        .btn-torch.on { background: #f1f5f9; color: black; box-shadow: 0 0 20px white; }
+        .btn-log { background: var(--green); color: #064e3b; }
 
+        /* --- BITACORA --- */
         .log-container { margin-top: 30px; border-top: 2px solid #334155; padding-top: 15px; }
         .log-item {
-            background: #1e293b; border-left: 6px solid var(--green);
-            padding: 15px; margin-bottom: 10px; border-radius: 8px;
+            background: #1e293b; border-left: 5px solid var(--green);
+            padding: 12px; margin-bottom: 10px; border-radius: 8px;
             display: flex; justify-content: space-between; align-items: center; 
         }
-        .log-text { font-size: 1.1rem; color: white; font-weight: bold; }
-        .log-date { font-size: 0.85rem; color: #94a3b8; display: block; margin-top: 4px; }
-        .btn-delete { background: #331111; border-radius: 5px; color: var(--danger); font-size: 1.5rem; width: 40px; height: 40px; line-height: 40px; border: none; }
+        .log-text { font-size: 1rem; color: white; font-weight: bold; }
+        .log-date { font-size: 0.8rem; color: #94a3b8; display: block; margin-top: 4px; }
+        .btn-delete { background: #450a0a; border-radius: 6px; color: var(--danger); font-size: 1.2rem; width: 35px; height: 35px; border: none; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
@@ -221,13 +215,13 @@
     <!-- 2. UBICACIÓN -->
     <div class="card-box location-bar">
         <div>
-            <div class="loc-title" id="loc-name">📍 Buscando...</div>
-            <div class="loc-sub" id="loc-coords">Iniciando GPS</div>
+            <div class="loc-title" id="loc-name">📍 Cargando...</div>
+            <div class="loc-sub" id="gps-status">Inicializando satélites</div>
         </div>
-        <button onclick="window.location.reload()" style="background:none; border:none; font-size:2.5rem; cursor:pointer;">🔄</button>
+        <button onclick="forceReload()" style="background:none; border:none; font-size:2rem; cursor:pointer;">🔄</button>
     </div>
 
-    <!-- 3. NIVEL CRÍTICO: VIENTO / BRÚJULA / MAREA -->
+    <!-- 3. NIVEL CRÍTICO -->
     <div class="grid-3">
         <!-- Viento -->
         <div class="data-box">
@@ -244,13 +238,13 @@
                 <span class="cardinal c-o">O</span>
                 <div class="compass-needle" id="compass-needle"></div>
             </div>
-            <div style="font-size:0.7rem; margin-top:8px; color:#888; font-weight:bold;">TOCA AQUÍ<br>SI NO GIRA</div>
+            <div style="font-size:0.6rem; margin-top:8px; color:#888; font-weight:bold;">BRÚJULA</div>
         </div>
         <!-- Mareas -->
         <div class="data-box tide-box">
             <div class="lbl" style="color:#bfdbfe">AGUA</div>
-            <div class="tide-main" id="tide-current" style="font-size:1.6rem;">--</div>
-            <div class="tide-sub" id="tide-next">Cargando</div>
+            <div class="tide-main" id="tide-current" style="font-size:1.4rem;">--</div>
+            <div class="tide-sub" id="tide-next">--</div>
         </div>
     </div>
 
@@ -263,8 +257,8 @@
         </div>
         <div class="data-box" style="justify-content: space-between;">
             <span class="lbl">FASE LUNAR</span>
-            <div style="font-size:2.5rem; margin:0;" id="moon-icon">🌑</div>
-            <span style="font-weight:bold; font-size:1rem; color:white;" id="moon-phase">--</span>
+            <div style="font-size:2rem; margin:0;" id="moon-icon">🌑</div>
+            <span style="font-weight:bold; font-size:0.9rem; color:white;" id="moon-phase">--</span>
         </div>
     </div>
 
@@ -272,11 +266,11 @@
     <div class="grid-2">
         <div class="data-box">
             <span class="lbl">AMANECER ☀️</span>
-            <span class="val" id="sunrise-time" style="font-size:2rem">--:--</span>
+            <span class="val" id="sunrise-time" style="font-size:1.8rem">--:--</span>
         </div>
         <div class="data-box">
             <span class="lbl">PUESTA SOL 🌙</span>
-            <span class="val" id="sunset-time" style="font-size:2rem">--:--</span>
+            <span class="val" id="sunset-time" style="font-size:1.8rem">--:--</span>
         </div>
     </div>
     
@@ -300,8 +294,8 @@
     <!-- 6. CONSULTAS -->
     <div class="section-header">ENCICLOPEDIA TÁCTICA</div>
     
-    <div class="card-box prediction-box" id="bio-box" style="display:none;">
-        <span class="biome-tag" id="bio-region">ZONA DETECTADA</span>
+    <div class="card-box prediction-box" id="bio-box">
+        <span class="biome-tag" id="bio-region">ZONA...</span>
         <div class="lbl" style="margin-top:10px;">ESPECIES PREDOMINANTES:</div>
         <div class="species-list" id="bio-species">--</div>
     </div>
@@ -317,15 +311,15 @@
         <div id="fish-info" class="fish-details">
             <div class="detail-item">
                 <div class="lbl">ANZUELO</div>
-                <div id="fish-hook" style="font-size:1.3rem; color:var(--blue); font-weight:bold;">--</div>
+                <div id="fish-hook" style="font-size:1.2rem; color:var(--blue); font-weight:bold;">--</div>
             </div>
             <div class="detail-item">
                 <div class="lbl">CARNADA</div>
-                <div id="fish-bait" style="font-size:1.3rem;">--</div>
+                <div id="fish-bait" style="font-size:1.2rem;">--</div>
             </div>
             <div class="detail-item">
                 <div class="lbl">CONSEJO</div>
-                <div id="fish-tip" style="font-size:1.2rem; color:var(--orange); font-style:italic;">--</div>
+                <div id="fish-tip" style="font-size:1.1rem; color:var(--orange); font-style:italic;">--</div>
             </div>
         </div>
     </div>
@@ -345,7 +339,7 @@
     </div>
 
     <script>
-        // --- CONFIG ---
+        // --- CONFIG & DB ---
         const fishDB = {
             rio: [
                 {n:"Dorado", h:"5/0 a 8/0 Pata Larga", b:"Anguila, Morena", t:"Usa líder de acero 40lbs."},
@@ -371,160 +365,138 @@
         window.onload = () => {
             loadFishMenu();
             calculateMoonPhase();
-            initApp();
+            initApp(); // Intenta GPS
             initCompass();
             renderLog();
         };
 
         // --- CORE DATA LOGIC ---
+        function forceReload() {
+            document.getElementById('loc-name').innerHTML = "Reiniciando...";
+            initApp();
+        }
+
         function initApp() {
-            document.getElementById('loc-name').innerHTML = "Conectando...";
-            if(!navigator.geolocation) { alert("GPS requerido. Activa la ubicación."); return; }
+            // Ubicación por defecto (Buenos Aires / Rio de la Plata) en caso de fallo
+            const defaultLat = -34.6037;
+            const defaultLon = -58.3816;
 
-            navigator.geolocation.getCurrentPosition(async (pos) => {
-                const lat = pos.coords.latitude;
-                const lon = pos.coords.longitude;
-                document.getElementById('loc-coords').innerText = `${lat.toFixed(3)}, ${lon.toFixed(3)}`;
+            if(!navigator.geolocation) {
+                alert("Navegador sin soporte GPS. Usando ubicación por defecto.");
+                fetchData(defaultLat, defaultLon, false);
+                return;
+            }
 
-                determineSpecies(lat, lon);
-
-                // 1. Ubicación (Nominatim)
-                try {
-                    const req = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
-                    const res = await req.json();
-                    const loc = res.address.city || res.address.town || res.address.village || res.address.county || "Zona de Pesca";
-                    document.getElementById('loc-name').innerText = loc;
-                } catch(e) { document.getElementById('loc-name').innerText = "Ubicación GPS"; }
-
-                // 2. Clima Completo (API ROBUSTA: PRESIÓN MSL, DIARIO PARA SOL, HORARIO PARA UV)
-                const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,pressure_msl,wind_speed_10m,wind_direction_10m,weather_code&hourly=uv_index&daily=sunrise,sunset&timezone=auto`;
-
-                fetch(weatherUrl).then(r=>r.json()).then(data => {
-                    if(!data.current) throw new Error("Sin datos clima");
-
-                    const cur = data.current;
-                    const daily = data.daily;
-
-                    // Temp & Sensación
-                    document.getElementById('temp').innerText = Math.round(cur.temperature_2m) + "°";
-                    document.getElementById('feels-like').innerText = "ST: " + Math.round(cur.apparent_temperature) + "°";
-                    
-                    // Viento
-                    document.getElementById('wind-speed').innerText = Math.round(cur.wind_speed_10m);
-                    const wDir = cur.wind_direction_10m;
-                    const dirs = ['NORTE', 'NE', 'ESTE', 'SE', 'SUR', 'SO', 'OESTE', 'NO'];
-                    const dirIndex = Math.round(((wDir %= 360) < 0 ? wDir + 360 : wDir) / 45) % 8;
-                    document.getElementById('wind-dir').innerText = "DEL " + dirs[dirIndex];
-
-                    // Presión (USAMOS MSL: Mean Sea Level, más preciso para pesca)
-                    const p = Math.round(cur.pressure_msl);
-                    document.getElementById('press').innerText = p;
-                    const pDesc = document.getElementById('press-desc');
-                    if(p < 1008) { pDesc.innerText = "BAJA"; pDesc.style.color = "var(--danger)"; }
-                    else if(p > 1018) { pDesc.innerText = "ALTA"; pDesc.style.color = "var(--green)"; }
-                    else { pDesc.innerText = "ESTABLE"; pDesc.style.color = "#aaa"; }
-
-                    // Sol (Extraer hora de ISO string)
-                    if(daily && daily.sunrise && daily.sunset) {
-                        const rise = new Date(daily.sunrise[0]);
-                        const set = new Date(daily.sunset[0]);
-                        // Función helper para hora local
-                        const fmt = (d) => d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                        document.getElementById('sunrise-time').innerText = fmt(rise);
-                        document.getElementById('sunset-time').innerText = fmt(set);
-                    }
-
-                    // UV (Hora Actual)
-                    const now = new Date();
-                    const currentHour = now.getHours();
-                    // Proteccion si el array no está listo
-                    const uv = (data.hourly && data.hourly.uv_index) ? data.hourly.uv_index[currentHour] : 0;
-                    
-                    document.getElementById('uv-val').innerText = uv;
-                    const uvBar = document.getElementById('uv-bar');
-                    const uvMsg = document.getElementById('uv-msg');
-                    
-                    let color = "var(--green)", width = "20%", msg = "Bajo";
-                    if(uv >= 3) { color = "var(--yellow)"; width = "50%"; msg = "Moderado"; }
-                    if(uv >= 6) { color = "var(--orange)"; width = "75%"; msg = "Alto"; }
-                    if(uv >= 8) { color = "var(--danger)"; width = "100%"; msg = "EXTREMO"; }
-                    
-                    uvBar.style.background = color; uvBar.style.width = width; uvMsg.innerText = msg; uvMsg.style.color = color;
-
-                }).catch(e => { console.error("Error clima", e); });
-
-                // 3. Mareas
-                const marineUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=tide_height&timezone=auto`;
-                fetch(marineUrl).then(r=>r.json()).then(data => {
-                    if(!data.hourly) throw new Error("Sin datos marinos");
-                    const now = new Date();
-                    const h = now.getHours();
-                    const tides = data.hourly.tide_height.slice(h, h+12);
-                    const times = data.hourly.time.slice(h, h+12);
-                    
-                    const trend = tides[1] > tides[0] ? "SUBIENDO ⬆" : "BAJANDO ⬇";
-                    document.getElementById('tide-current').innerText = trend;
-                    
-                    let maxV = -99, maxT = "";
-                    for(let i=0; i<tides.length; i++) { if(tides[i] > maxV) { maxV = tides[i]; maxT = times[i]; } }
-                    const d = new Date(maxT);
-                    const min = d.getMinutes() < 10 ? '0'+d.getMinutes() : d.getMinutes();
-                    document.getElementById('tide-next').innerText = `Pleamar: ${d.getHours()}:${min}`;
-                }).catch(() => {
-                    document.getElementById('tide-current').innerText = "RÍO";
-                    document.getElementById('tide-next').innerText = "Interior / Sin Datos";
-                });
-
-            }, () => alert("Para ver el clima, activa la Ubicación (GPS)."));
+            // Timeout de 5 segundos para GPS, si no, carga defecto
+            const gpsOptions = { timeout: 5000, enableHighAccuracy: true };
+            
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    fetchData(pos.coords.latitude, pos.coords.longitude, true);
+                }, 
+                (err) => {
+                    console.warn("Error GPS:", err);
+                    fetchData(defaultLat, defaultLon, false); // Carga fallback
+                }, 
+                gpsOptions
+            );
         }
 
-        // --- COMPASS ---
-        function requestCompassPermission() {
-            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission()
-                    .then(response => {
-                        if (response === 'granted') {
-                            initCompass();
-                        } else { alert("Permiso denegado"); }
-                    })
-                    .catch(console.error);
+        function fetchData(lat, lon, isLive) {
+            // UI Feedback
+            document.getElementById('gps-status').innerText = isLive ? "🟢 GPS ACTIVO" : "🔴 MODO DEMO (SIN GPS)";
+            document.getElementById('gps-status').style.color = isLive ? "var(--green)" : "var(--danger)";
+
+            // 1. Nombre Ciudad (Nominatim)
+            if(isLive) {
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+                .then(r=>r.json())
+                .then(d => {
+                    document.getElementById('loc-name').innerText = d.address.city || d.address.town || d.address.village || "Zona Detectada";
+                }).catch(()=> document.getElementById('loc-name').innerText = "Coordenadas GPS");
             } else {
-                alert("Brújula activa. Si no gira, tu dispositivo no tiene sensor.");
+                document.getElementById('loc-name').innerText = "Buenos Aires (Default)";
             }
-        }
 
-        function initCompass() {
-            if (window.DeviceOrientationEvent) {
-                window.addEventListener("deviceorientation", function(event) {
-                    let heading = event.alpha; 
-                    if(heading !== null) {
-                        const needle = document.getElementById('compass-needle');
-                        needle.style.transform = `translate(-50%, -50%) rotate(${360 - heading}deg)`;
-                    }
-                }, true);
-            }
+            // Predicción Especies
+            determineSpecies(lat, lon);
+
+            // 2. CLIMA, SOL, UV, PRESIÓN (Open-Meteo)
+            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,pressure_msl,wind_speed_10m,wind_direction_10m,weather_code&hourly=uv_index&daily=sunrise,sunset&timezone=auto`;
+
+            fetch(weatherUrl).then(r=>r.json()).then(data => {
+                const cur = data.current;
+                const daily = data.daily;
+
+                // Temp
+                document.getElementById('temp').innerText = Math.round(cur.temperature_2m) + "°";
+                document.getElementById('feels-like').innerText = "ST: " + Math.round(cur.apparent_temperature) + "°";
+
+                // Viento
+                document.getElementById('wind-speed').innerText = Math.round(cur.wind_speed_10m);
+                const wDir = cur.wind_direction_10m;
+                const dirs = ['NORTE', 'NE', 'ESTE', 'SE', 'SUR', 'SO', 'OESTE', 'NO'];
+                const dirIndex = Math.round(((wDir %= 360) < 0 ? wDir + 360 : wDir) / 45) % 8;
+                document.getElementById('wind-dir').innerText = "DEL " + dirs[dirIndex];
+
+                // Presión
+                const p = Math.round(cur.pressure_msl);
+                document.getElementById('press').innerText = p;
+                const pDesc = document.getElementById('press-desc');
+                if(p < 1008) { pDesc.innerText = "BAJA"; pDesc.style.color = "var(--danger)"; }
+                else if(p > 1018) { pDesc.innerText = "ALTA"; pDesc.style.color = "var(--green)"; }
+                else { pDesc.innerText = "ESTABLE"; pDesc.style.color = "#aaa"; }
+
+                // Sol (Parseo Robustecido)
+                if(daily && daily.sunrise && daily.sunset) {
+                    const rise = new Date(daily.sunrise[0]);
+                    const set = new Date(daily.sunset[0]);
+                    const timeOpt = {hour: '2-digit', minute:'2-digit', hour12: false};
+                    document.getElementById('sunrise-time').innerText = rise.toLocaleTimeString([], timeOpt);
+                    document.getElementById('sunset-time').innerText = set.toLocaleTimeString([], timeOpt);
+                }
+
+                // UV (Hora Exacta)
+                const now = new Date();
+                const hourIndex = now.getHours(); 
+                const uv = (data.hourly && data.hourly.uv_index) ? data.hourly.uv_index[hourIndex] : 0;
+                
+                document.getElementById('uv-val').innerText = uv;
+                const uvBar = document.getElementById('uv-bar');
+                const uvMsg = document.getElementById('uv-msg');
+                let color = "var(--green)", width = "20%", msg = "BAJO";
+                if(uv >= 3) { color = "var(--yellow)"; width = "50%"; msg = "MODERADO"; }
+                if(uv >= 6) { color = "var(--orange)"; width = "75%"; msg = "ALTO"; }
+                if(uv >= 8) { color = "var(--danger)"; width = "100%"; msg = "EXTREMO"; }
+                uvBar.style.background = color; uvBar.style.width = width; uvMsg.innerText = msg; uvMsg.style.color = color;
+
+            }).catch(e => console.error("Error Clima:", e));
+
+            // 3. MAREAS (API Marina)
+            const marineUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=tide_height&timezone=auto`;
+            fetch(marineUrl).then(r=>r.json()).then(data => {
+                if(!data.hourly) throw new Error("Tierra firme");
+                
+                const now = new Date();
+                const h = now.getHours();
+                const tides = data.hourly.tide_height.slice(h, h+12);
+                const times = data.hourly.time.slice(h, h+12);
+                
+                const trend = tides[1] > tides[0] ? "SUBIENDO ⬆" : "BAJANDO ⬇";
+                document.getElementById('tide-current').innerText = trend;
+                
+                let maxV = -99, maxT = "";
+                for(let i=0; i<tides.length; i++) { if(tides[i] > maxV) { maxV = tides[i]; maxT = times[i]; } }
+                const d = new Date(maxT);
+                const min = d.getMinutes() < 10 ? '0'+d.getMinutes() : d.getMinutes();
+                document.getElementById('tide-next').innerText = `Pleamar: ${d.getHours()}:${min}`;
+            }).catch(() => {
+                document.getElementById('tide-current').innerText = "RÍO";
+                document.getElementById('tide-next').innerText = "Interior / Sin Datos";
+            });
         }
 
         // --- UTILS ---
-        function calculateMoonPhase() {
-            const date = new Date();
-            const lp = 2551443; 
-            const now = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 20, 35, 0);
-            const new_moon = new Date(1970, 0, 7, 20, 35, 0);
-            const phase_total = ((now.getTime() - new_moon.getTime()) / 1000) % lp;
-            const phase_days = Math.floor(phase_total / (24 * 3600)) + 1;
-            let phase = "Nueva", icon = "🌑";
-            if (phase_days >= 2 && phase_days < 8) { phase = "Creciente"; icon = "🌒"; }
-            else if (phase_days >= 8 && phase_days < 10) { phase = "Cuarto Crec."; icon = "🌓"; }
-            else if (phase_days >= 10 && phase_days < 14) { phase = "Gibosa"; icon = "🌔"; }
-            else if (phase_days >= 14 && phase_days < 16) { phase = "LLENA"; icon = "🌕"; }
-            else if (phase_days >= 16 && phase_days < 22) { phase = "Menguante"; icon = "🌖"; }
-            else if (phase_days >= 22 && phase_days < 24) { phase = "Cuarto Meng."; icon = "🌗"; }
-            else if (phase_days >= 24) { phase = "Menguante"; icon = "🌘"; }
-            document.getElementById('moon-phase').innerText = phase;
-            document.getElementById('moon-icon').innerText = icon;
-        }
-
         function determineSpecies(lat, lon) {
             const box = document.getElementById('bio-box');
             const regionLbl = document.getElementById('bio-region');
@@ -549,11 +521,46 @@
             }
         }
 
+        function calculateMoonPhase() {
+            const date = new Date();
+            const lp = 2551443; 
+            const now = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 20, 35, 0);
+            const new_moon = new Date(1970, 0, 7, 20, 35, 0);
+            const phase_total = ((now.getTime() - new_moon.getTime()) / 1000) % lp;
+            const phase_days = Math.floor(phase_total / (24 * 3600)) + 1;
+            let phase = "Nueva", icon = "🌑";
+            if (phase_days >= 2 && phase_days < 8) { phase = "Creciente"; icon = "🌒"; }
+            else if (phase_days >= 8 && phase_days < 10) { phase = "Cuarto Crec."; icon = "🌓"; }
+            else if (phase_days >= 10 && phase_days < 14) { phase = "Gibosa"; icon = "🌔"; }
+            else if (phase_days >= 14 && phase_days < 16) { phase = "LLENA"; icon = "🌕"; }
+            else if (phase_days >= 16 && phase_days < 22) { phase = "Menguante"; icon = "🌖"; }
+            else if (phase_days >= 22 && phase_days < 24) { phase = "Cuarto Meng."; icon = "🌗"; }
+            else if (phase_days >= 24) { phase = "Menguante"; icon = "🌘"; }
+            document.getElementById('moon-phase').innerText = phase;
+            document.getElementById('moon-icon').innerText = icon;
+        }
+
         // --- UI LOGIC ---
         function switchTab(m){ currentMode=m; document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); event.target.classList.add('active'); loadFishMenu(); }
         function loadFishMenu(){ const s=document.getElementById('fish-selector'); s.innerHTML='<option>Selecciona pez...</option>'; fishDB[currentMode].forEach((f,i)=>{const o=document.createElement('option'); o.value=i; o.innerText=f.n; s.appendChild(o)}); document.getElementById('fish-info').classList.remove('show'); }
         function showFishInfo(){ const i=document.getElementById('fish-selector').value; if(!i)return; const f=fishDB[currentMode][i]; document.getElementById('fish-hook').innerText=f.h; document.getElementById('fish-bait').innerText=f.b; document.getElementById('fish-tip').innerText=f.t; document.getElementById('fish-info').classList.add('show'); }
         
+        // --- BRUJULA & HERRAMIENTAS ---
+        function requestCompassPermission() {
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission()
+                .then(r => { if (r==='granted') initCompass(); else alert("Permiso denegado"); })
+                .catch(console.error);
+            } else { alert("Brújula activa. Si no gira, no hay sensor."); }
+        }
+        function initCompass() {
+            if (window.DeviceOrientationEvent) {
+                window.addEventListener("deviceorientation", function(e) {
+                    let h = e.alpha; 
+                    if(h !== null) { document.getElementById('compass-needle').style.transform = `translate(-50%, -50%) rotate(${360 - h}deg)`; }
+                }, true);
+            }
+        }
         async function toggleFlash(){ 
             const b=document.getElementById('btn-torch'); 
             if(torchTrack){torchTrack.stop(); torchTrack=null; b.classList.remove('on'); return;} 
@@ -562,37 +569,37 @@
                 torchTrack=s.getVideoTracks()[0]; 
                 await torchTrack.applyConstraints({advanced:[{torch:true}]}); 
                 b.classList.add('on'); 
-            }catch(e){alert("Error: Flash no disponible (Requiere HTTPS).");} 
+            }catch(e){alert("Error: Flash requiere permiso de cámara.");} 
         }
 
-        // --- LOCALSTORAGE LOG ---
+        // --- LOCALSTORAGE ---
         function saveQuickLog() {
             const text = prompt("📝 Captura (Especie - Kg):");
             if(text) {
                 const now = new Date();
-                const dateStr = now.toLocaleDateString() + " " + now.getHours() + ":" + (now.getMinutes()<10?'0':'')+now.getMinutes();
-                const newEntry = { id: Date.now(), text: text, date: dateStr };
-                let history = JSON.parse(localStorage.getItem('pescaLog')) || [];
-                history.unshift(newEntry);
-                localStorage.setItem('pescaLog', JSON.stringify(history));
+                const dStr = now.getDate() + "/" + (now.getMonth()+1) + " " + now.getHours() + ":" + (now.getMinutes()<10?'0':'')+now.getMinutes();
+                const item = { id: Date.now(), text: text, date: dStr };
+                let h = JSON.parse(localStorage.getItem('pescaLog')) || [];
+                h.unshift(item);
+                localStorage.setItem('pescaLog', JSON.stringify(h));
                 renderLog();
             }
         }
         function renderLog() {
             const c = document.getElementById('log-history');
             const h = JSON.parse(localStorage.getItem('pescaLog')) || [];
-            if (h.length === 0) { c.innerHTML = '<div style="text-align:center; color:#666; font-size:1rem; padding:10px;">Historial vacío</div>'; return; }
+            if (h.length === 0) { c.innerHTML = '<div style="text-align:center; color:#666; font-size:1rem; padding:10px;">Sin historial</div>'; return; }
             let html = "";
-            h.forEach(item => {
+            h.forEach(i => {
                 html += `<div class="log-item">
-                        <div><span class="log-text">${item.text}</span><span class="log-date">${item.date}</span></div>
-                        <button class="btn-delete" onclick="deleteLog(${item.id})">×</button>
+                        <div><span class="log-text">${i.text}</span><span class="log-date">${i.date}</span></div>
+                        <button class="btn-delete" onclick="deleteLog(${i.id})">×</button>
                     </div>`;
             });
             c.innerHTML = html;
         }
         function deleteLog(id) {
-            if(confirm("¿Eliminar?")) {
+            if(confirm("¿Borrar?")) {
                 let h = JSON.parse(localStorage.getItem('pescaLog')) || [];
                 h = h.filter(i => i.id !== id);
                 localStorage.setItem('pescaLog', JSON.stringify(h));
