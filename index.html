@@ -11,7 +11,8 @@
     "react/": "https://aistudiocdn.com/react@^19.2.1/",
     "react": "https://aistudiocdn.com/react@^19.2.1",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0"
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
+    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.1"
   }
 }
 </script>
@@ -118,9 +119,9 @@
         .loc-sub { font-size: 0.8rem; color: var(--green); }
 
         /* --- GRILLAS --- */
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-
+        /* Eliminamos .grid-2 y .grid-3 para dar más control con clases específicas */
+        .grid-main-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        
         .data-box {
             background: var(--card);
             padding: 15px 5px;
@@ -132,6 +133,37 @@
             text-align: center;
             min-height: 110px;
             border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* Nuevos estilos para los cuadros de condiciones ambientales más pequeños y la grilla */
+        .ambient-data-box {
+            min-height: 65px; /* Altura mínima reducida */
+            padding: 8px 4px; /* Padding reducido */
+        }
+        .ambient-data-box .val {
+            font-size: 1.8rem; /* Tamaño de fuente más pequeño para el valor principal */
+        }
+        .ambient-data-box .lbl {
+            font-size: 0.7rem; /* Tamaño de fuente más pequeño para la etiqueta */
+            margin-bottom: 1px;
+        }
+        .ambient-data-box .sub-val {
+            font-size: 0.7rem; /* Tamaño de fuente más pequeño para el sub-valor */
+            margin-top: 2px;
+        }
+
+        /* Contenedor de la grilla para las condiciones ambientales */
+        .ambient-grid-parent {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2 columnas en móviles por defecto */
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        @media (min-width: 600px) {
+            .ambient-grid-parent {
+                grid-template-columns: repeat(4, 1fr); /* 4 columnas en pantallas más anchas */
+            }
         }
 
         /* --- MAREAS --- */
@@ -267,7 +299,7 @@
     </div>
 
     <!-- 3. NIVEL CRÍTICO (Viento / Brújula / Agua) -->
-    <div class="grid-3">
+    <div class="grid-main-3">
         <!-- Viento -->
         <div class="data-box">
             <span class="lbl">VIENTO</span>
@@ -294,7 +326,7 @@
     </div>
 
     <!-- 4. ATMÓSFERA: PRESIÓN Y TEMPERATURA (NUEVA ORGANIZACIÓN) -->
-    <div class="grid-2">
+    <div class="grid-main-3">
         <div class="data-box">
             <span class="lbl">PRESIÓN (hPa)</span>
             <span class="val" id="press">--</span>
@@ -321,43 +353,43 @@
     <!-- NUEVA SECCIÓN: CONDICIONES AMBIENTALES -->
     <div class="section-header">CONDICIONES AMBIENTALES</div>
 
-    <div class="grid-2">
+    <div class="ambient-grid-parent">
         <!-- Humedad -->
-        <div class="data-box">
+        <div class="data-box ambient-data-box">
             <span class="lbl">HUMEDAD</span>
             <span class="val" id="humidity-val">--%</span>
             <span class="sub-val" style="font-weight:bold"></span>
         </div>
         <!-- Nubes -->
-        <div class="data-box">
+        <div class="data-box ambient-data-box">
             <span class="lbl">NUBES</span>
             <span class="val" id="clouds-val">--%</span>
             <span class="sub-val" style="font-weight:bold"></span>
         </div>
-    </div>
-
-    <div class="grid-2">
         <!-- Amanecer -->
-        <div class="data-box">
+        <div class="data-box ambient-data-box">
             <span class="lbl">AMANECER</span>
             <span class="val" id="sunrise-time">--:--</span>
             <span class="sub-val" style="font-weight:bold"></span>
         </div>
         <!-- Atardecer -->
-        <div class="data-box">
+        <div class="data-box ambient-data-box">
             <span class="lbl">ATARDECER</span>
             <span class="val" id="sunset-time">--:--</span>
             <span class="sub-val" style="font-weight:bold"></span>
         </div>
     </div>
 
+    <!-- NUEVA SECCIÓN: GRÁFICO DE PRESIÓN -->
+    <div id="pressure-chart-container"></div>
+    
     <!-- 6. CONSULTAS -->
     <div class="section-header">ENCICLOPEDIA TÁCTICA</div>
 
     <!-- TICKER (TEXTO PASANTE) DE ESTRATEGIAS -->
     <div class="ticker-wrap">
         <div class="ticker">
-            ⚠️ SIGILO: Evita ruidos en la costa • 🌬️ VIENTO: Pesca donde golpea la ola, ahí está la comida • 🔪 AFILA: Revisa el filo del anzuelo siempre • 🦅 OBSERVA: Si hay gaviotas tirándose, hay cardumen • 🌑 LUNAS: Nueva y Llena mueven más agua • 📉 PRESIÓN: Si baja de golpe, el pique se corta • ⚙️ FRENO: Regula la estrella antes de tirar • 🪵 ESTRUCTURA: Busca palos y piedras, ahí acecha el predador • 🩸 SANGRE: Cebo fresco es clave • 🧵 NYLON: Revisa los últimos metros, si está rasposo cortá • 🐟 DEVOLUCIÓN: Cuidá el recurso • 🌊 REPUNTE: El mejor momento es el cambio de marea • 🧼 LIMPIEZA: El pez huele el tabaco y combustible en tus manos.
+            ⚠️ SIGILO: Evita ruidos en la costa • 🌬️ VIENTO: Pesca donde golpea la ola, ahí está la comida • 🔪 AFILA: Revisa el filo del anzuelo siempre • 🦅 OBSERVA: Si hay gaviotas tirándose, hay cardumen • 🌑 LUNAS: Nueva y Llena mueven más agua • 📉 PRESIÓN: Si baja de golpe, el pique se corta • ⚙️ FRENO: Regula la estrella antes de tirar • 🪵 ESTRUCTURA: Busca palos y piedras, ahí acecha el predador •🩸 SANGRE: Cebo fresco es clave • 🧵 NYLON: Revisa los últimos metros, si está rasposo cortá • 🐟 DEVOLUCIÓN: Cuidá el recurso • 🌊 REPUNTE: El mejor momento es el cambio de marea • 🧼 LIMPIEZA: El pez huele el tabaco y combustible en tus manos.
         </div>
     </div>
     
@@ -436,6 +468,11 @@
 
         let currentMode = 'rio';
         let torchTrack = null;
+        let dataRefreshInterval = null; // Para almacenar el ID del intervalo de refresco
+
+        // Global variable for pressure history
+        window.appPressureHistory = [];
+        const MAX_PRESSURE_HISTORY_POINTS = 20; // Keep up to 20 points in history
 
         // --- STARTUP ---
         window.onload = () => {
@@ -449,6 +486,7 @@
         // --- CORE DATA LOGIC ---
         function forceReload() {
             document.getElementById('loc-name').innerHTML = "Reiniciando...";
+            if (dataRefreshInterval) clearInterval(dataRefreshInterval); // Limpiar el intervalo existente
             initApp();
         }
 
@@ -473,6 +511,9 @@
                 (pos) => {
                     clearTimeout(safetyTimeout);
                     fetchData(pos.coords.latitude, pos.coords.longitude, true);
+                    // Establecer un intervalo para actualizar los datos cada 5 minutos (300000 ms)
+                    if (dataRefreshInterval) clearInterval(dataRefreshInterval);
+                    dataRefreshInterval = setInterval(() => fetchData(pos.coords.latitude, pos.coords.longitude, true), 300000);
                 }, 
                 (err) => {
                     clearTimeout(safetyTimeout);
@@ -493,6 +534,9 @@
                     document.getElementById('tide-current').innerText = "RÍO";
                     document.getElementById('tide-next').innerText = "Interior / Sin Marea";
                     fetchData(fallbackLat, fallbackLon, false);
+                    // Establecer un intervalo para el modo demo (si aplica)
+                    if (dataRefreshInterval) clearInterval(dataRefreshInterval);
+                    dataRefreshInterval = setInterval(() => fetchData(fallbackLat, fallbackLon, false), 300000);
                 }, 
                 gpsOptions
             );
@@ -542,7 +586,7 @@
 
                 // Viento
                 document.getElementById('wind-speed').innerText = cur?.wind_speed_10m !== undefined && cur?.wind_speed_10m !== null ? Math.round(cur.wind_speed_10m).toString() : '--';
-                let wDir = cur?.wind_direction_10m; // Cambiado de 'const' a 'let'
+                let wDir = cur?.wind_direction_10m; 
                 if (wDir !== undefined && wDir !== null) {
                     const dirs = ['NORTE', 'NE', 'ESTE', 'SE', 'SUR', 'SO', 'OESTE', 'NO'];
                     const dirIndex = Math.round(((wDir %= 360) < 0 ? wDir + 360 : wDir) / 45) % 8;
@@ -551,10 +595,42 @@
                     document.getElementById('wind-dir').innerText = '--';
                 }
 
-                // Presión (React la manejará en tiempo real)
-                // Se mantiene el placeholder para que React lo sobreescriba.
-                document.getElementById('press').innerText = "--";
-                document.getElementById('press-desc').innerText = "Cargando...";
+                // Presión HPA (Ahora manejado aquí con datos reales)
+                const pressureHPA = cur?.pressure_msl;
+                const pressElement = document.getElementById('press');
+                const pDescElement = document.getElementById('press-desc');
+
+                if (pressElement && pDescElement && pressureHPA !== undefined && pressureHPA !== null) {
+                    pressElement.innerText = Math.round(pressureHPA).toString();
+                    let descText: string;
+                    let descColor: string;
+                    if (pressureHPA <= 1009) {
+                        descText = "BAJA";
+                        descColor = "var(--danger)";
+                    } else if (pressureHPA >= 1016) {
+                        descText = "ALTA";
+                        descColor = "var(--green)";
+                    } else {
+                        descText = "ESTABLE";
+                        descColor = "#aaa";
+                    }
+                    pDescElement.innerText = descText;
+                    pDescElement.style.color = descColor;
+
+                    // Update global pressure history and notify React
+                    window.appPressureHistory.push({
+                        time: new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
+                        hpa: Math.round(pressureHPA)
+                    });
+                    if (window.appPressureHistory.length > MAX_PRESSURE_HISTORY_POINTS) {
+                        window.appPressureHistory.shift(); // Remove oldest point
+                    }
+                    window.dispatchEvent(new CustomEvent('newPressureData'));
+
+                } else {
+                    if (pressElement) pressElement.innerText = "--";
+                    if (pDescElement) pDescElement.innerText = "Sin Datos";
+                }
 
                 // Humedad
                 const humidityVal = cur?.relative_humidity_2m;

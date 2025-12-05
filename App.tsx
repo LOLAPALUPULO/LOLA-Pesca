@@ -1,64 +1,47 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom'; // Add this import
+import PressureChart from './components/PressureChart';
 
-// Constantes para la simulación de HPA (inlined del antiguo constants.ts)
-const SIMULATION_INTERVAL_MS = 1500; // Actualizar cada 1.5 segundos
-const BASE_HPA_PRESSURE = 1013.25; // Presión atmosférica estándar en hPa
-const HPA_FLUCTUATION_RANGE = 2; // Rango de fluctuación máximo +/- 2 hPa
-
-// Utilidad para simular datos de presión HPA
-const simulateHPA = (lastHPA: number): number => {
-  const fluctuation = (Math.random() - 0.5) * HPA_FLUCTUATION_RANGE * 2; // -HPA_FLUCTUATION_RANGE a +HPA_FLUCTUATION_RANGE
-  let newHPA = lastHPA + fluctuation;
-
-  // Mantener la presión dentro de un rango razonable (ej. 980-1050 hPa para presión atmosférica)
-  if (newHPA < 980) newHPA = 980 + Math.random() * 5;
-  if (newHPA > 1050) newHPA = 1050 - Math.random() * 5;
-
-  return newHPA;
-};
+// Define el tipo para los datos de presión, que se almacenan en el historial global
+declare global {
+  interface Window {
+    appPressureHistory: { time: string; hpa: number }[];
+  }
+}
 
 const App: React.FC = () => {
-  const [currentHPA, setCurrentHPA] = useState<number>(BASE_HPA_PRESSURE);
+  const [pressureHistory, setPressureHistory] = useState<{ time: string; hpa: number }[]>([]);
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentHPA((prevHPA) => {
-        const newHPA = simulateHPA(prevHPA);
-        
-        // Actualiza el elemento #press en el DOM
-        const pressElement = document.getElementById('press');
-        if (pressElement) {
-          pressElement.innerText = newHPA.toFixed(0); // Redondeado para el display original
-        }
+    // Inicializa el historial de presión al montar el componente
+    setPressureHistory(window.appPressureHistory || []);
 
-        // Actualiza el elemento #press-desc y su color en el DOM
-        const pDescElement = document.getElementById('press-desc');
-        if (pDescElement) {
-          let descText: string;
-          let descColor: string;
-          if (newHPA <= 1009) {
-            descText = "BAJA";
-            descColor = "var(--danger)"; // Usa la variable CSS definida en index.html
-          } else if (newHPA >= 1016) {
-            descText = "ALTA";
-            descColor = "var(--green)"; // Usa la variable CSS definida en index.html
-          } else {
-            descText = "ESTABLE";
-            descColor = "#aaa"; // Color predeterminado o de estabilidad
-          }
-          pDescElement.innerText = descText;
-          pDescElement.style.color = descColor;
-        }
+    // Define el listener para el evento de actualización de presión
+    const handleNewPressureData = () => {
+      setPressureHistory([...window.appPressureHistory]); // Actualiza el estado con una copia del historial global
+    };
 
-        return newHPA;
-      });
-    }, SIMULATION_INTERVAL_MS);
+    // Agrega el listener al objeto window
+    window.addEventListener('newPressureData', handleNewPressureData);
 
-    return () => clearInterval(intervalId);
-  }, []); // El array de dependencias vacío asegura que se ejecuta una sola vez al montar
+    // Limpia el listener al desmontar el componente
+    return () => {
+      window.removeEventListener('newPressureData', handleNewPressureData);
+    };
+  }, []);
 
-  // El componente App no renderiza nada visible, solo maneja la lógica y las actualizaciones del DOM
-  return null;
+  // Busca el contenedor en index.html donde montar el gráfico de presión
+  const chartContainer = document.getElementById('pressure-chart-container');
+  if (!chartContainer) {
+    console.error("Could not find pressure-chart-container element to mount PressureChart to");
+    return null;
+  }
+
+  // Renderiza el componente PressureChart dentro del div específico
+  return ReactDOM.createPortal(
+    <PressureChart data={pressureHistory} />,
+    chartContainer
+  );
 };
 
 export default App;
