@@ -192,10 +192,9 @@
             padding-left: 100%;
             animation: ticker-scroll 160s linear infinite;
             color: var(--yellow);
-            /* FUENTE DEFAULT PARA LAS NOTICIAS (SOLICITADO) */
-            font-family: var(--font-default); 
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-family: var(--font-default); /* Tipografía default solicitada */
+            font-size: 0.9rem; /* Texto más chico solicitado */
+            font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -282,39 +281,28 @@
         </div>
     </div>
 
-    <!-- 4. ACTIVIDAD: PRESIÓN Y LUNA -->
+    <!-- 4. ATMÓSFERA: PRESIÓN Y TEMPERATURA (NUEVA ORGANIZACIÓN) -->
     <div class="grid-2">
         <div class="data-box">
             <span class="lbl">PRESIÓN (hPa)</span>
             <span class="val" id="press">--</span>
             <span class="sub-val" id="press-desc" style="font-weight:bold">Esperando..</span>
         </div>
-        <div class="data-box" style="justify-content: space-between;">
-            <span class="lbl">FASE LUNAR</span>
-            <div style="font-size:2rem; margin:0;" id="moon-icon">🌑</div>
-            <span style="font-weight:bold; font-size:0.9rem; color:white;" id="moon-phase">--</span>
-        </div>
-    </div>
-    
-    <!-- 5. AMBIENTE: TEMP Y HUMEDAD -->
-    <div class="grid-2">
         <div class="data-box">
             <span class="lbl">TEMP</span>
             <span class="val" id="temp">--°</span>
             <div class="sub-val" id="feels-like">ST: --°</div>
         </div>
-        <div class="data-box">
-            <span class="lbl">AMBIENTE</span>
-            <div class="grid-2" style="width:100%; margin:0; gap:2px;">
-                <div>
-                    <div style="font-size:1.4rem; color:white; font-weight:bold;" id="humidity">--%</div>
-                    <div style="font-size:0.7rem; color:#aaa;">HUMEDAD</div>
-                </div>
-                <div>
-                    <div style="font-size:1.4rem; color:white; font-weight:bold;" id="clouds">--%</div>
-                    <div style="font-size:0.7rem; color:#aaa;">NUBES</div>
-                </div>
+    </div>
+    
+    <!-- 5. FASE LUNAR (DESTACADO) -->
+    <div class="card-box">
+        <div style="display:flex; justify-content:space-around; align-items:center;">
+            <div>
+                <span class="lbl" style="display:block;">FASE LUNAR</span>
+                <span style="font-weight:bold; font-size:1.1rem; color:white; text-transform:uppercase;" id="moon-phase">--</span>
             </div>
+            <div style="font-size:3rem; margin:0; line-height:1;" id="moon-icon">🌑</div>
         </div>
     </div>
 
@@ -463,9 +451,8 @@
 
             determineSpecies(lat, lon);
 
-            // API CLIMA (SOLUCIÓN: Parámetros explícitos para presión, humedad y nubes)
-            // Se solicita 'pressure_msl' Y 'surface_pressure' como backup.
-            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,cloud_cover&timezone=auto`;
+            // API CLIMA (SOLUCIÓN: Parámetros de presión corregidos para MSL)
+            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m&timezone=auto`;
 
             fetch(weatherUrl).then(r => r.json()).then(data => {
                 const cur = data.current;
@@ -481,31 +468,30 @@
                 const dirIndex = Math.round(((wDir %= 360) < 0 ? wDir + 360 : wDir) / 45) % 8;
                 document.getElementById('wind-dir').innerText = "DEL " + dirs[dirIndex];
 
-                // Presión (SOLUCIÓN: Usa MSL, si no hay, usa Surface, sino 1013 por defecto)
-                const p = Math.round(cur.pressure_msl || cur.surface_pressure || 1013);
+                // PRESIÓN (SOLUCIÓN: Prioridad a MSL, luego Surface, luego 1013)
+                // Esto asegura que cargue datos reales y no "NaN" o "--"
+                let p = 1013;
+                if (cur.pressure_msl) {
+                    p = Math.round(cur.pressure_msl);
+                } else if (cur.surface_pressure) {
+                    p = Math.round(cur.surface_pressure);
+                }
+                
                 document.getElementById('press').innerText = p;
                 
                 const pDesc = document.getElementById('press-desc');
-                if(p < 1008) { 
+                if(p <= 1009) { 
                     pDesc.innerText = "BAJA"; pDesc.style.color = "var(--danger)"; 
-                } else if(p > 1018) { 
+                } else if(p >= 1016) { 
                     pDesc.innerText = "ALTA"; pDesc.style.color = "var(--green)"; 
                 } else { 
                     pDesc.innerText = "ESTABLE"; pDesc.style.color = "#aaa"; 
                 }
 
-                // Humedad y Nubes (SOLUCIÓN: Variables corregidas desde 'current')
-                // Verifica que los datos existan antes de mostrarlos
-                const hum = cur.relative_humidity_2m !== undefined ? cur.relative_humidity_2m : "--";
-                const cld = cur.cloud_cover !== undefined ? cur.cloud_cover : "--";
-
-                document.getElementById('humidity').innerText = hum + "%";
-                document.getElementById('clouds').innerText = cld + "%";
-
             }).catch(e => {
                 console.error("API Error:", e);
                 document.getElementById('press').innerText = "--";
-                document.getElementById('press-desc').innerText = "Error Datos";
+                document.getElementById('press-desc').innerText = "Sin Datos";
             });
 
             // MAREAS
