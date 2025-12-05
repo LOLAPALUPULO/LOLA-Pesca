@@ -21,10 +21,11 @@
             --orange: #fb923c;
             --danger: #ef4444;
             --font-title: 'PitchedBattle', sans-serif;
+            --font-default: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: var(--font-default);
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
@@ -32,7 +33,7 @@
             padding-bottom: 120px;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
-            overflow-x: hidden; /* Evita scroll lateral por la animación */
+            overflow-x: hidden;
         }
 
         /* --- LOGO --- */
@@ -177,8 +178,8 @@
             width: 100%;
             overflow: hidden;
             background-color: #1e293b;
-            padding-top: 10px;
-            padding-bottom: 10px;
+            padding-top: 12px;
+            padding-bottom: 12px;
             white-space: nowrap;
             box-sizing: border-box;
             border-top: 1px solid #334155;
@@ -189,12 +190,14 @@
         .ticker {
             display: inline-block;
             padding-left: 100%;
-            animation: ticker-scroll 160s linear infinite; /* VELOCIDAD REDUCIDA PARA LECTURA */
+            animation: ticker-scroll 160s linear infinite;
             color: var(--yellow);
-            font-family: var(--font-title);
-            font-size: 1.2rem;
+            /* FUENTE DEFAULT PARA LAS NOTICIAS (SOLICITADO) */
+            font-family: var(--font-default); 
+            font-size: 1.1rem;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
 
         @keyframes ticker-scroll {
@@ -460,8 +463,9 @@
 
             determineSpecies(lat, lon);
 
-            // API CLIMA (Con Humedad y Nubes)
-            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,pressure_msl,wind_speed_10m,wind_direction_10m,relative_humidity_2m,cloud_cover&timezone=auto`;
+            // API CLIMA (SOLUCIÓN: Parámetros explícitos para presión, humedad y nubes)
+            // Se solicita 'pressure_msl' Y 'surface_pressure' como backup.
+            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,cloud_cover&timezone=auto`;
 
             fetch(weatherUrl).then(r => r.json()).then(data => {
                 const cur = data.current;
@@ -477,7 +481,7 @@
                 const dirIndex = Math.round(((wDir %= 360) < 0 ? wDir + 360 : wDir) / 45) % 8;
                 document.getElementById('wind-dir').innerText = "DEL " + dirs[dirIndex];
 
-                // Presión
+                // Presión (SOLUCIÓN: Usa MSL, si no hay, usa Surface, sino 1013 por defecto)
                 const p = Math.round(cur.pressure_msl || cur.surface_pressure || 1013);
                 document.getElementById('press').innerText = p;
                 
@@ -490,13 +494,18 @@
                     pDesc.innerText = "ESTABLE"; pDesc.style.color = "#aaa"; 
                 }
 
-                // Humedad y Nubes
-                document.getElementById('humidity').innerText = cur.relative_humidity_2m + "%";
-                document.getElementById('clouds').innerText = cur.cloud_cover + "%";
+                // Humedad y Nubes (SOLUCIÓN: Variables corregidas desde 'current')
+                // Verifica que los datos existan antes de mostrarlos
+                const hum = cur.relative_humidity_2m !== undefined ? cur.relative_humidity_2m : "--";
+                const cld = cur.cloud_cover !== undefined ? cur.cloud_cover : "--";
+
+                document.getElementById('humidity').innerText = hum + "%";
+                document.getElementById('clouds').innerText = cld + "%";
 
             }).catch(e => {
                 console.error("API Error:", e);
-                document.getElementById('press-desc').innerText = "Sin Datos";
+                document.getElementById('press').innerText = "--";
+                document.getElementById('press-desc').innerText = "Error Datos";
             });
 
             // MAREAS
