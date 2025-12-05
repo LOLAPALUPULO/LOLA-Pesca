@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom'; // Add this import
+import * as ReactDOM from 'react-dom'; // Corrected import for createPortal
 import PressureChart from './components/PressureChart';
 
 // Define el tipo para los datos de presión, que se almacenan en el historial global

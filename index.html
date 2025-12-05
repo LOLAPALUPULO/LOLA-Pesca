@@ -12,7 +12,7 @@
     "react": "https://aistudiocdn.com/react@^19.2.1",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
     "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
-    "react-dom": "https://aistudiocdn.com/react-dom@^1.31.0"
+    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.1"
   }
 }
 </script>
@@ -24,10 +24,13 @@
         }
 
         :root {
-            --bg: #030a13; /* Even darker background */
-            --card: #152238; /* Deeper blue-grey for cards */
-            --text: #e0f2fe; /* Lighter, subtle blue for main text */
-            --text-light: #94a3b8; /* For labels */
+            /* Dark Mode Defaults */
+            --bg: #030a13;
+            --bg-rgb: 3, 10, 19;
+            --bg-lighter: #0a1420; /* Slightly lighter for top of gradient */
+            --card: #152238;
+            --text: #e0f2fe;
+            --text-light: #94a3b8;
             --blue: #38bdf8;
             --green: #4ade80;
             --yellow: #facc15;
@@ -36,20 +39,85 @@
             --font-title: 'PitchedBattle', sans-serif;
             --font-default: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
-            /* New variables for WebGL-like effects */
+            /* RGB versions for rgba() functions */
+            --blue-rgb: 56, 189, 248;
+            --green-rgb: 74, 222, 128;
+            --yellow-rgb: 252, 205, 21;
+            --orange-rgb: 251, 146, 60;
+            --danger-rgb: 239, 68, 68;
+            --text-rgb: 224, 242, 254; /* e0f2fe */
+            --card-rgb: 21, 34, 56; /* 152238 */
+            --text-light-rgb: 148, 163, 184; /* 94a3b8 */
+
+
+            /* WebGL-like effects */
             --shadow-dark: rgba(0, 0, 0, 0.7);
-            --shadow-light: rgba(56, 189, 248, 0.2); /* Subtle blue glow */
+            --shadow-light: rgba(var(--blue-rgb), 0.2);
             --shadow-inner: rgba(0, 0, 0, 0.3);
-            --border-glow: rgba(56, 189, 248, 0.5); /* For glowing borders */
+            --border-glow: rgba(var(--blue-rgb), 0.5);
             --gradient-card: linear-gradient(145deg, #152238 0%, #0e1a2d 100%);
-            --gradient-button: linear-gradient(145deg, #38bdf8 0%, #258cdb 100%); /* For action buttons */
+            --gradient-button: linear-gradient(145deg, #38bdf8 0%, #258cdb 100%);
+            --button-shadow-color: #258cdb; /* Darker blue for button 3D effect */
+            --border-line-color: #334155;
+            --torch-bg-start: #475569;
+            --torch-bg-end: #3a4759;
+            --torch-shadow: #3a4759;
+            --log-delete-bg: #551c1c;
+            --log-delete-bg-hover: #6a2525;
+            --log-delete-color: var(--danger);
+            --log-button-shadow-color: #30b05b;
+
+            /* Icon Glow */
+            --icon-default-glow: 0 0 8px rgba(var(--blue-rgb), 0.7);
+        }
+
+        /* Light Mode Variables */
+        :root[data-theme="light"] {
+            --bg: #f0f2f5;
+            --bg-rgb: 240, 242, 245;
+            --bg-lighter: #ffffff; /* Even lighter for light mode */
+            --card: #ffffff;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --blue: #2563eb;
+            --green: #22c55e;
+            --yellow: #fbbf24;
+            --orange: #f97316;
+            --danger: #dc2626;
+
+            /* RGB versions for rgba() functions - Light Mode */
+            --blue-rgb: 37, 99, 235;
+            --green-rgb: 34, 197, 94;
+            --yellow-rgb: 251, 191, 36;
+            --orange-rgb: 249, 115, 22;
+            --danger-rgb: 220, 38, 38;
+            --text-rgb: 31, 41, 55; /* 1f2937 */
+            --card-rgb: 255, 255, 255; /* ffffff */
+            --text-light-rgb: 107, 114, 128; /* 6b7280 */
+
+
+            --shadow-dark: rgba(0, 0, 0, 0.2);
+            --shadow-light: rgba(var(--blue-rgb), 0.1);
+            --shadow-inner: rgba(0, 0, 0, 0.05);
+            --border-glow: rgba(var(--blue-rgb), 0.3);
+            --gradient-card: linear-gradient(145deg, #f9fafb 0%, #ffffff 100%);
+            --gradient-button: linear-gradient(145deg, #3b82f6 0%, #2563eb 100%);
+            --button-shadow-color: #2563eb;
+            --border-line-color: #e2e8f0;
+            --torch-bg-start: #e0e7ee;
+            --torch-bg-end: #cfd8e3;
+            --torch-shadow: #cfd8e3;
+            --log-delete-bg: #ef4444;
+            --log-delete-bg-hover: #dc2626;
+            --log-delete-color: white;
+            --log-button-shadow-color: #22c55e;
+
+            /* Icon Glow for Light Mode */
+            --icon-default-glow: 0 0 8px rgba(var(--blue-rgb), 0.5);
         }
 
         body {
             font-family: var(--font-default);
-            background-color: var(--bg);
-            background-image: radial-gradient(circle at top left, rgba(56, 189, 248, 0.05) 0%, transparent 50%),
-                              radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.02) 0%, transparent 70%);
             color: var(--text);
             margin: 0;
             padding: 12px;
@@ -57,7 +125,15 @@
             user-select: none;
             -webkit-tap-highlight-color: transparent;
             overflow-x: hidden;
-            text-shadow: 0 0 2px var(--shadow-inner); /* Global subtle text shadow */
+
+            /* Main background gradient: Lighter variant of --bg at top, blending to --bg at bottom */
+            background-image:
+                linear-gradient(to bottom, var(--bg-lighter) 0%, var(--bg) 100%),
+                radial-gradient(circle at top left, rgba(var(--blue-rgb), 0.08) 0%, transparent 40%),
+                radial-gradient(circle at bottom right, rgba(var(--text-rgb), 0.03) 0%, transparent 60%);
+            background-attachment: fixed; /* Keep background fixed when scrolling */
+            background-size: cover;
+            background-color: var(--bg); /* Fallback */
         }
 
         /* --- LOGO --- */
@@ -71,57 +147,56 @@
         .brand-logo {
             width: 100%; 
             height: auto;
-            filter: drop-shadow(0 0 15px rgba(0,0,0,0.6));
+            filter: drop-shadow(0 0 15px var(--shadow-dark)) drop-shadow(0 0 8px var(--blue)); /* Enhanced glow */
         }
 
         /* --- CONTENEDORES --- */
         .card-box, .data-box {
-            background: var(--gradient-card); /* Apply gradient */
+            background: var(--gradient-card);
             border-radius: 16px;
             padding: 15px;
             margin-bottom: 12px;
-            box-shadow: 0 5px 15px var(--shadow-dark), /* Outer shadow */
-                        inset 0 0 8px rgba(56, 189, 248, 0.08); /* Inner glow effect */
+            box-shadow: 0 5px 15px var(--shadow-dark),
+                        inset 0 0 8px rgba(var(--blue-rgb), 0.08);
             text-align: center;
             position: relative;
-            transition: all 0.2s ease-out; /* Smooth transitions for interaction */
-            border: 1px solid rgba(56, 189, 248, 0.1); /* Subtle blue border */
+            transition: all 0.2s ease-out;
+            border: 1px solid rgba(var(--blue-rgb), 0.1);
         }
 
         .data-box {
-            padding: 15px 5px; /* Adjust padding for data-box */
+            padding: 15px 5px;
             min-height: 110px;
         }
-        /* Hover effect for interactive elements like data-box */
         .data-box:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 20px var(--shadow-dark),
                         0 0 15px var(--shadow-light),
-                        inset 0 0 10px rgba(56, 189, 248, 0.15);
+                        inset 0 0 10px rgba(var(--blue-rgb), 0.15);
         }
 
         /* --- TEXTOS --- */
         .lbl { 
             font-family: var(--font-title); 
-            color: var(--text-light); /* Adjusted color */
+            color: var(--text-light);
             font-size: 0.9rem; 
             margin-bottom: 5px; 
             letter-spacing: 1px; 
             text-transform: uppercase; 
-            text-shadow: none; /* No shadow on labels for clarity */
+            text-shadow: none; /* No shadow on labels */
         }
         
-        /* New style for labels that include icons */
         .lbl-with-icon {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 5px; /* space between icon and text */
+            gap: 5px;
         }
 
         .lbl-icon {
-            font-size: 1.1em; /* Relative to parent lbl font size */
+            font-size: 1.1em;
             line-height: 1;
+            text-shadow: var(--icon-default-glow); /* Default glow for all general icons */
         }
 
         .val { 
@@ -129,13 +204,13 @@
             font-weight: 900; 
             margin-top: 2px; 
             line-height: 1; 
-            color: var(--text); /* Adjusted color */
-            text-shadow: 0 0 10px var(--blue); /* Stronger glow for main values */
+            color: var(--text);
+            text-shadow: none; /* Removed glow from main values */
         }
         
         .sub-val { 
             font-size: 1rem; 
-            color: #a7bedc; /* Slightly brighter sub-value text */
+            color: var(--text-light); /* Adjusted for theme */
             margin-top: 6px; 
             font-weight: 600;
         }
@@ -147,9 +222,9 @@
             margin: 30px 0 15px 0; 
             font-size: 1.4rem; 
             letter-spacing: 1px; 
-            border-bottom: 2px solid #334155; 
+            border-bottom: 2px solid var(--border-line-color); 
             padding-bottom: 8px;
-            text-shadow: 0 0 8px var(--blue); /* Glow for section headers */
+            text-shadow: none; /* Removed glow from section headers */
         }
         
         /* HEADER UBICACIÓN */
@@ -160,62 +235,92 @@
             border-left: 6px solid var(--blue);
             text-align: left;
             padding: 15px;
-            background: linear-gradient(90deg, #1f314a 0%, #152238 100%);
+            background: linear-gradient(90deg, rgba(var(--card-rgb), 0.8) 0%, var(--card) 100%);
             box-shadow: 0 3px 10px var(--shadow-dark);
         }
-        .loc-title { font-size: 1.4rem; color: var(--text); margin-bottom: 2px; font-weight:bold; font-family: var(--font-title); }
+        
+        .loc-title { 
+            font-size: 1.4rem; 
+            color: var(--text); 
+            margin-bottom: 2px; 
+            font-weight:bold; 
+            font-family: var(--font-title); 
+            text-shadow: none; /* Removed glow from location title */
+        }
         .loc-sub { font-size: 0.8rem; color: var(--green); }
+
+        .location-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .location-controls button {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text);
+            padding: 0;
+            line-height: 1;
+            transition: transform 0.1s ease-out, color 0.1s ease-out;
+            text-shadow: 0 0 10px rgba(var(--blue-rgb), 0.7); /* Stronger button icon glow */
+        }
+        .location-controls button:hover {
+            transform: scale(1.1);
+            color: var(--blue);
+            text-shadow: 0 0 12px var(--blue); /* Stronger hover glow */
+        }
 
         /* --- GRILLAS --- */
         .grid-main-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         
-        /* Nuevos estilos para los cuadros de condiciones ambientales más pequeños y la grilla */
         .ambient-data-box {
-            min-height: 65px; /* Altura mínima reducida */
-            padding: 8px 4px; /* Padding reducido */
+            min-height: 65px;
+            padding: 8px 4px;
         }
         .ambient-data-box .val {
-            font-size: 1.8rem; /* Tamaño de fuente más pequeño para el valor principal */
+            font-size: 1.8rem;
         }
         .ambient-data-box .lbl {
-            font-size: 0.85rem; /* Aumentado el tamaño de la fuente para la etiqueta */
+            font-size: 0.85rem;
             margin-bottom: 1px;
         }
         .ambient-data-box .sub-val {
-            font-size: 0.7rem; /* Tamaño de fuente más pequeño para el sub-valor */
+            font-size: 0.7rem;
             margin-top: 2px;
         }
 
-        /* Contenedor de la grilla para las condiciones ambientales */
         .ambient-grid-parent {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* 2 columnas en móviles por defecto */
+            grid-template-columns: 1fr 1fr;
             gap: 10px;
             margin-bottom: 10px;
         }
 
         @media (min-width: 600px) {
             .ambient-grid-parent {
-                grid-template-columns: repeat(4, 1fr); /* 4 columnas en pantallas más anchas */
+                grid-template-columns: repeat(4, 1fr);
             }
         }
 
         /* --- BRÚJULA --- */
         .compass-container { cursor: pointer; } 
-        .compass-label { /* Nuevo estilo para la etiqueta de la brújula */
+        .compass-label { 
             font-family: var(--font-title); 
-            font-size: 0.9rem; /* Tamaño ajustado */
-            color: var(--text); /* Color más visible, igual que HORA */
-            margin-bottom: 8px; /* Espacio debajo del texto */
+            font-size: 0.9rem;
+            color: var(--text); /* Matches HORA ACTUAL text color */
+            margin-bottom: 8px;
+            text-shadow: none; /* Removed glow from compass label */
         }
         .compass-rose {
             width: 70px; height: 70px; border-radius: 50%;
-            background: linear-gradient(145deg, #1c2e4a 0%, #101c2e 100%);
-            border: 3px solid #475569;
+            background: linear-gradient(145deg, rgba(var(--card-rgb), 0.8) 0%, rgba(var(--card-rgb), 0.5) 100%);
+            border: 3px solid #475569; /* This can also be a variable if desired */
             position: relative; 
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.8), 0 0 8px rgba(56, 189, 248, 0.1); /* Deeper shadow and subtle glow */
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8), 0 0 8px rgba(var(--blue-rgb), 0.1);
         }
-        .cardinal { position: absolute; font-size: 0.75rem; font-weight: bold; color: #64748b; }
+        
+        .cardinal { position: absolute; font-size: 0.75rem; font-weight: bold; color: var(--text-light); }
         .c-n { top: 2px; left: 50%; transform: translateX(-50%); color: var(--danger); }
         .c-e { right: 4px; top: 50%; transform: translateY(-50%); }
         .c-s { bottom: 2px; left: 50%; transform: translateX(-50%); }
@@ -224,10 +329,10 @@
         .compass-needle {
             position: absolute; top: 50%; left: 50%;
             width: 8px; height: 50px;
-            background: linear-gradient(to bottom, var(--danger) 50%, white 50%);
+            background: linear-gradient(to bottom, var(--danger) 50%, var(--text) 50%);
             transform: translate(-50%, -50%) rotate(0deg);
             transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 0 8px rgba(0,0,0,0.9); /* Stronger shadow */
+            box-shadow: 0 0 8px var(--shadow-dark);
             z-index: 10;
         }
         
@@ -245,13 +350,13 @@
             width: 70px;
             height: 70px;
             border-radius: 50%;
-            background: linear-gradient(145deg, #1c2e4a 0%, #101c2e 100%);
-            border: 3px solid #475569;
+            background: linear-gradient(145deg, rgba(var(--card-rgb), 0.8) 0%, rgba(var(--card-rgb), 0.5) 100%);
+            border: 3px solid #475569; /* This can also be a variable if desired */
             position: relative;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.8), 0 0 8px rgba(56, 189, 248, 0.1); /* Deeper shadow and subtle glow */
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8), 0 0 8px rgba(var(--blue-rgb), 0.1);
         }
-
-        .analog-clock::after { /* Center pivot dot */
+        
+        .analog-clock::after {
             content: '';
             position: absolute;
             top: 50%;
@@ -262,41 +367,39 @@
             background-color: var(--blue);
             border-radius: 50%;
             z-index: 5;
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 0 8px var(--blue); /* Glow for the pivot */
+            border: 1px solid rgba(var(--text-rgb), 0.3);
+            box-shadow: 0 0 8px var(--blue);
         }
 
-        /* Estilos para los números del reloj */
         .clock-number {
             position: absolute;
-            font-size: 0.6rem; /* Pequeño para encajar */
+            font-size: 0.6rem;
             font-weight: bold;
             color: var(--text);
-            transform: translate(-50%, -50%); /* Centra el número */
-            z-index: 1; /* Detrás de las manecillas, delante de la base */
-            text-shadow: 0 0 2px rgba(0,0,0,0.5);
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            text-shadow: 0 0 2px var(--shadow-inner); /* Subtle text shadow kept */
         }
-
-        /* Posicionamiento específico para cada número del reloj (ajustado para '12' y orden del HTML) */
-        .clock-number:nth-child(1) { top: 5%; left: 50%; } /* 12 */
-        .clock-number:nth-child(2) { top: 15%; left: 69%; } /* 1 */
-        .clock-number:nth-child(3) { top: 25%; left: 85%; } /* 2 */
-        .clock-number:nth-child(4) { top: 46%; left: 95%; } /* 3 */
-        .clock-number:nth-child(5) { top: 69%; left: 85%; } /* 4 */
-        .clock-number:nth-child(6) { top: 83%; left: 69%; } /* 5 */
-        .clock-number:nth-child(7) { top: 90%; left: 49%; } /* 6 */
-        .clock-number:nth-child(8) { top: 83%; left: 29%; } /* 7 */
-        .clock-number:nth-child(9) { top: 69%; left: 13%; } /* 8 */
-        .clock-number:nth-child(10) { top: 46%; left: 4%; } /* 9 */
-        .clock-number:nth-child(11) { top: 25%; left: 13%; } /* 10 */
-        .clock-number:nth-child(12) { top: 15%; left: 29%; } /* 11 */
+        
+        .clock-number:nth-child(1) { top: 5%; left: 50%; }
+        .clock-number:nth-child(2) { top: 15%; left: 69%; }
+        .clock-number:nth-child(3) { top: 25%; left: 85%; }
+        .clock-number:nth-child(4) { top: 46%; left: 95%; }
+        .clock-number:nth-child(5) { top: 69%; left: 85%; }
+        .clock-number:nth-child(6) { top: 83%; left: 69%; }
+        .clock-number:nth-child(7) { top: 90%; left: 49%; }
+        .clock-number:nth-child(8) { top: 83%; left: 29%; }
+        .clock-number:nth-child(9) { top: 69%; left: 13%; }
+        .clock-number:nth-child(10) { top: 46%; left: 4%; }
+        .clock-number:nth-child(11) { top: 25%; left: 13%; }
+        .clock-number:nth-child(12) { top: 15%; left: 29%; }
         
         .hand {
             position: absolute;
-            bottom: 50%; /* Center the pivot point vertically */
-            left: 50%; /* Center the pivot point horizontally */
-            transform-origin: bottom; /* Rotate from the bottom of the hand */
-            transform: translateX(-50%) rotate(0deg); /* Center horizontally and initial rotation */
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom;
+            transform: translateX(-50%) rotate(0deg);
             border-radius: 2px;
             z-index: 1;
             transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -316,18 +419,17 @@
             z-index: 2;
         }
 
-        /* Nueva aguja de segundos con el logo */
         .second-hand-logo {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 30px; /* Tamaño ajustado para el reloj de 70px */
+            width: 30px;
             height: auto;
-            transform-origin: 50% 50%; /* Gira sobre su centro */
-            transform: translate(-50%, -50%) rotate(0deg); /* Centra la imagen y aplica rotación */
+            transform-origin: 50% 50%;
+            transform: translate(-50%, -50%) rotate(0deg);
             z-index: 4;
-            transition: transform 0.05s linear; /* Transición suave */
-            filter: drop-shadow(0 0 5px rgba(56, 189, 248, 0.5)); /* Glow for the logo hand */
+            transition: transform 0.05s linear;
+            filter: drop-shadow(0 0 8px var(--blue)); /* Stronger glow for logo hand */
         }
         /* --- FIN RELOJ ANALÓGICO --- */
 
@@ -337,21 +439,22 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 10px 5px; /* Adjust padding for content */
+            padding: 10px 5px;
             min-height: 110px;
         }
         .moon-phase-box #moon-icon {
-            font-size: 3rem; /* Make icon larger */
+            font-size: 3rem;
             margin: 0;
             line-height: 1;
-            margin-bottom: 5px; /* Space between icon and text */
-            text-shadow: 0 0 10px var(--text); /* Moon icon glow */
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(var(--text-rgb), 0.8); /* Stronger moon icon glow */
         }
         .moon-phase-box #moon-phase {
             font-weight: bold;
             font-size: 1.1rem;
             color: var(--text);
             text-transform: uppercase;
+            text-shadow: none; /* Removed glow from moon phase text */
         }
         /* --- FIN FASE LUNAR DENTRO DE DATA-BOX --- */
 
@@ -360,59 +463,60 @@
         .tabs { 
             display: flex; 
             margin-bottom: 15px; 
-            border-bottom: 2px solid #334155; 
-            box-shadow: inset 0 -2px 5px rgba(0,0,0,0.5); /* Inner shadow for the tab bar */
+            border-bottom: 2px solid var(--border-line-color); 
+            box-shadow: inset 0 -2px 5px var(--shadow-dark);
         }
         .tab { 
             flex: 1; padding: 15px; text-align: center; background: none; border: none; 
-            color: var(--text-light); /* Adjusted color */
+            color: var(--text-light);
             font-size: 1.2rem; cursor: pointer; font-family: var(--font-title); 
             transition: all 0.2s ease;
+            text-shadow: none; /* No shadow on tabs */
         }
         .tab.active { 
             color: var(--blue); 
             border-bottom: 3px solid var(--blue); 
-            text-shadow: 0 0 5px var(--blue); /* Glow for active tab */
+            text-shadow: none; /* Removed glow from active tab text */
         }
         .tab:hover {
             color: var(--blue);
-            text-shadow: 0 0 3px var(--blue);
+            text-shadow: none; /* Removed glow from hover tab text */
         }
         
         select { 
             width: 100%; padding: 15px; 
-            background: #0d1622; /* Darker background */
-            border: 1px solid #334155; 
+            background: var(--card); /* Adapted to theme variable */
+            border: 1px solid var(--border-line-color); 
             color: var(--text); 
             border-radius: 8px; 
             font-size: 1.2rem;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); /* Inner shadow for input field */
+            box-shadow: inset 0 1px 3px var(--shadow-inner);
         }
 
         .fish-details { 
             margin-top: 15px; display: none; padding: 15px; 
-            background: linear-gradient(145deg, #111827 0%, #0c121b 100%); /* Gradient background */
+            background: var(--gradient-card);
             border-radius: 10px; 
-            border: 1px solid rgba(56, 189, 248, 0.15); /* Subtle blue border */
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.5); /* Inner shadow */
+            border: 1px solid rgba(var(--blue-rgb), 0.15);
+            box-shadow: inset 0 0 5px var(--shadow-inner);
         }
         .fish-details.show { display: block; animation: fadeIn 0.3s; }
-        .detail-item { margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .detail-item { margin-bottom: 15px; border-bottom: 1px solid var(--border-line-color); padding-bottom: 10px; }
         .detail-item:last-child { border: none; }
 
         /* --- TICKER ANIMATION (ESTRATEGIAS) --- */
         .ticker-wrap {
             width: 100%;
             overflow: hidden;
-            background-color: #0d1622; /* Darker background for ticker */
+            background-color: var(--card);
             padding-top: 12px;
             padding-bottom: 12px;
             white-space: nowrap;
             box-sizing: border-box;
-            border-top: 1px solid rgba(56, 189, 248, 0.1); /* Subtle blue border */
-            border-bottom: 1px solid rgba(56, 189, 248, 0.1); /* Subtle blue border */
+            border-top: 1px solid rgba(var(--blue-rgb), 0.1);
+            border-bottom: 1px solid rgba(var(--blue-rgb), 0.1);
             margin-bottom: 12px;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5), inset 0 -1px 3px rgba(0,0,0,0.5); /* Inner shadow */
+            box-shadow: inset 0 1px 3px var(--shadow-inner), inset 0 -1px 3px var(--shadow-inner);
         }
 
         .ticker {
@@ -425,7 +529,7 @@
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            text-shadow: 0 0 5px rgba(252, 205, 21, 0.4); /* Glow for ticker text */
+            text-shadow: none; /* Removed glow from ticker text */
         }
 
         @keyframes ticker-scroll {
@@ -435,12 +539,12 @@
 
         /* --- PREDICCION ESPECIES --- */
         .prediction-box { 
-            background: rgba(56, 189, 248, 0.1); 
-            border: 1px solid #334155; 
+            background: rgba(var(--blue-rgb), 0.1);
+            border: 1px solid var(--border-line-color); 
             text-align: left; 
             padding: 15px; 
             display: none; 
-            box-shadow: 0 0 10px rgba(56, 189, 248, 0.15); /* Subtle box glow */
+            box-shadow: 0 0 10px rgba(var(--blue-rgb), 0.15);
         }
         .species-list { font-size: 1.1rem; color: var(--text); font-weight: 500; margin-top: 8px; line-height: 1.4; }
         .biome-tag { 
@@ -450,88 +554,98 @@
             padding: 4px 8px; 
             border-radius: 4px; 
             font-weight: bold; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3); /* Tag shadow */
+            box-shadow: 0 2px 5px var(--shadow-dark);
         }
 
         /* --- BOTONES --- */
         .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px;}
         .btn-action {
             padding: 22px; border: none; border-radius: 12px; 
-            color: white; /* Ensure text is visible */
+            color: white;
             display: flex; align-items: center; justify-content: center; gap: 10px; 
             font-size: 1.2rem; cursor: pointer; font-family: var(--font-title);
-            box-shadow: 0 6px 0 #258cdb, 0 0 15px rgba(56, 189, 248, 0.3); /* Stronger 3D effect + glow */
+            box-shadow: 0 6px 0 var(--button-shadow-color), 0 0 15px rgba(var(--blue-rgb), 0.3);
             transition: all 0.15s ease;
-            background: var(--gradient-button); /* Default blue gradient */
-            text-shadow: 0 0 5px rgba(255,255,255,0.5); /* Button text glow */
+            background: var(--gradient-button);
+            text-shadow: none; /* Removed glow from button text */
         }
+        
         .btn-action:active { 
             transform: translateY(3px); 
-            box-shadow: 0 3px 0 #258cdb, 0 0 10px rgba(56, 189, 248, 0.2);
+            box-shadow: 0 3px 0 var(--button-shadow-color), 0 0 10px rgba(var(--blue-rgb), 0.2);
         }
         .btn-torch { 
-            background: linear-gradient(145deg, #475569 0%, #3a4759 100%); /* Grey gradient */
-            box-shadow: 0 6px 0 #3a4759, 0 0 10px rgba(71, 85, 105, 0.3);
+            background: linear-gradient(145deg, var(--torch-bg-start) 0%, var(--torch-bg-end) 100%);
+            box-shadow: 0 6px 0 var(--torch-shadow), 0 0 10px rgba(var(--text-light-rgb), 0.3);
+            color: var(--text); /* Ensure text is readable in both themes */
+            text-shadow: none; /* No text shadow unless active */
         }
+        
         .btn-torch.on { 
             background: linear-gradient(145deg, #f1f5f9 0%, #e0e7ee 100%);
             color: #0b1120;
-            box-shadow: 0 6px 0 #c2c9d0, 0 0 25px white; /* Stronger white glow */
+            box-shadow: 0 6px 0 #c2c9d0, 0 0 25px white;
+            text-shadow: none; /* Removed glow from active torch button text */
         }
+        
         .btn-log { 
-            background: linear-gradient(145deg, var(--green) 0%, #30b05b 100%);
-            box-shadow: 0 6px 0 #30b05b, 0 0 15px rgba(74, 222, 128, 0.3); /* Green glow */
-            color: #064e3b; /* Darker text for contrast */
+            background: linear-gradient(145deg, var(--green) 0%, var(--log-button-shadow-color) 100%);
+            box-shadow: 0 6px 0 var(--log-button-shadow-color), 0 0 15px rgba(var(--green-rgb), 0.3);
+            color: #064e3b;
         }
+        
 
         /* --- BITÁCORA --- */
-        .log-container { margin-top: 30px; border-top: 2px solid #334155; padding-top: 15px; }
+        .log-container { margin-top: 30px; border-top: 2px solid var(--border-line-color); padding-top: 15px; }
         .log-item {
-            background: linear-gradient(145deg, #1e293b 0%, #182335 100%); /* Gradient background */
+            background: var(--gradient-card);
             border-left: 5px solid var(--green);
             padding: 12px; margin-bottom: 10px; border-radius: 8px;
             display: flex; justify-content: space-between; align-items: center; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3); /* Subtle shadow */
+            box-shadow: 0 2px 5px var(--shadow-dark);
         }
         .log-text { font-size: 1rem; color: var(--text); font-weight: bold; }
         .log-date { font-size: 0.85rem; color: var(--text-light); display: block; margin-top: 4px; }
         .btn-delete { 
-            background: #551c1c; /* Darker red */
+            background: var(--log-delete-bg);
             border-radius: 6px; 
-            color: var(--danger); 
+            color: var(--log-delete-color); 
             font-size: 1.3rem; 
             width: 40px; height: 40px; border: none; 
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); /* Inner shadow */
+            box-shadow: inset 0 1px 3px var(--shadow-inner);
             transition: background-color 0.15s ease;
+            text-shadow: 0 0 8px rgba(var(--danger-rgb), 0.7); /* Glow for delete icon */
         }
+        
         .btn-delete:hover {
-            background-color: #6a2525;
+            background-color: var(--log-delete-bg-hover);
         }
+        
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* Scrollbar styling for a high-tech look */
         ::-webkit-scrollbar {
             width: 8px;
-            background-color: transparent; /* Make scrollbar track transparent */
+            background-color: transparent;
         }
 
         ::-webkit-scrollbar-thumb {
-            background-color: var(--card); /* Darker thumb */
+            background-color: var(--card);
             border-radius: 4px;
-            border: 1px solid var(--blue); /* Blue border for glow */
-            box-shadow: 0 0 5px var(--blue); /* Glow effect */
+            border: 1px solid var(--blue);
+            box-shadow: 0 0 5px var(--blue);
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background-color: var(--blue); /* Brighter on hover */
+            background-color: var(--blue);
             box-shadow: 0 0 8px var(--blue);
         }
 
     </style>
 <link rel="stylesheet" href="/index.css">
 </head>
-<body>
+<body data-theme="dark">
 
     <!-- 1. LOGO CON ENLACE -->
     <div class="brand-header">
@@ -546,7 +660,14 @@
             <div class="loc-title" id="loc-name">📍 Buscando GPS...</div>
             <div class="loc-sub" id="gps-status">Estableciendo conexión...</div>
         </div>
-        <button onclick="forceReload()" style="background:none; border:none; font-size:2rem; cursor:pointer; color: var(--text);">🔄</button>
+        <div class="location-controls">
+            <button onclick="toggleTheme()" id="theme-toggle" aria-label="Toggle light/dark mode">
+                <span id="theme-icon">⚫</span>
+            </button>
+            <button onclick="forceReload()" aria-label="Reload data">
+                🔄
+            </button>
+        </div>
     </div>
 
     <!-- REORGANIZACIÓN: Reloj / Brújula / Temperatura -->
@@ -574,7 +695,7 @@
         </div>
         <!-- Brújula (Movido) -->
         <div class="data-box compass-container" onclick="requestCompassPermission()">
-            <div class="compass-label">BRÚJULA</div> <!-- Etiqueta movida y con nueva clase -->
+            <div class="compass-label">BRÚJULA</div>
             <div class="compass-rose">
                 <span class="cardinal c-n">N</span>
                 <span class="cardinal c-e">E</span>
@@ -733,28 +854,56 @@
 
         let currentMode = 'rio';
         let torchTrack = null;
-        let dataRefreshInterval = null; // Para almacenar el ID del intervalo de refresco
-        let clockInterval = null; // Para almacenar el ID del intervalo del reloj
+        let dataRefreshInterval = null;
+        let clockInterval = null;
 
-        // Global variable for pressure history
         window.appPressureHistory = [];
-        const MAX_PRESSURE_HISTORY_POINTS = 20; // Keep up to 20 points in history
+        const MAX_PRESSURE_HISTORY_POINTS = 20;
+
+        // --- THEME TOGGLE LOGIC ---
+        function applyTheme(theme) {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            if (theme === 'light') {
+                body.setAttribute('data-theme', 'light');
+                if (themeIcon) themeIcon.innerText = '💡'; // Light bulb for light mode
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                if (themeIcon) themeIcon.innerText = '⚫'; // Dark circle for dark mode
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme(newTheme);
+        }
 
         // --- STARTUP ---
         window.onload = () => {
+            // Initialize theme first
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                applyTheme(savedTheme);
+            } else {
+                // Default to dark mode if no preference saved
+                applyTheme('dark'); 
+            }
+
             loadFishMenu();
-            calculateMoonPhase(); // Llamar aquí para asegurar que los elementos existan
+            calculateMoonPhase();
             initApp(); 
             initCompass();
             renderLog();
-            updateClock(); // Initial call to display time immediately
-            clockInterval = setInterval(updateClock, 1000); // Update clock every second
+            updateClock();
+            clockInterval = setInterval(updateClock, 1000);
         };
 
         // --- CORE DATA LOGIC ---
         function forceReload() {
             document.getElementById('loc-name').innerHTML = "Reiniciando...";
-            if (dataRefreshInterval) clearInterval(dataRefreshInterval); // Limpiar el intervalo existente
+            if (dataRefreshInterval) clearInterval(dataRefreshInterval);
             initApp();
         }
 
@@ -770,7 +919,7 @@
 
             const gpsOptions = { timeout: 8000, enableHighAccuracy: true };
             const safetyTimeout = setTimeout(() => {
-                console.warn("GPS tardó mucho. Usando ubicación de respaldo.");
+                console.info("GPS tardó mucho. Usando ubicación de respaldo."); // Changed to info
                 document.getElementById('gps-status').innerText = "Tiempo agotado. Modo Respaldo.";
                 fetchData(fallbackLat, fallbackLon, false);
             }, 9000);
@@ -779,20 +928,20 @@
                 (pos) => {
                     clearTimeout(safetyTimeout);
                     fetchData(pos.coords.latitude, pos.coords.longitude, true);
-                    // Establecer un intervalo para actualizar los datos cada 5 minutos (300000 ms)
                     if (dataRefreshInterval) clearInterval(dataRefreshInterval);
                     dataRefreshInterval = setInterval(() => fetchData(pos.coords.latitude, pos.coords.longitude, true), 300000);
                 }, 
                 (err) => {
                     clearTimeout(safetyTimeout);
-                    console.error("GPS Falló:", err.message); // Log del mensaje de error original para depuración
                     let statusMessage = "GPS FALLO. Intentando modo DEMO.";
                     if (err.code === err.PERMISSION_DENIED) {
                         statusMessage = "GPS DENEGADO. Active en configuración.";
+                        console.info(`GPS Falló: Permiso denegado por el usuario. Usando ubicación de respaldo. Detalle: ${err.message}`); // Changed to info
+                    } else {
+                        console.info(`GPS Falló: Error de adquisición (${err.message}). Usando ubicación de respaldo.`); // Changed to info
                     }
                     document.getElementById('gps-status').innerText = `🔴 ${statusMessage}`;
                     document.getElementById('gps-status').style.color = "var(--danger)";
-                    // Asegurar que los datos del clima se reseteen también
                     document.getElementById('temp').innerText = "--°";
                     document.getElementById('feels-like').innerText = "ST: --°";
                     document.getElementById('wind-speed').innerText = "--";
@@ -803,15 +952,7 @@
                     document.getElementById('clouds-val').innerText = '--%';
                     document.getElementById('sunrise-time').innerText = '--:--';
                     document.getElementById('sunset-time').innerText = '--:--';
-                    // Nota: 'tide-current' y 'tide-next' ahora son para la fase lunar, no para mareas. 
-                    // No hay impacto directo en estos campos por fallo de GPS, excepto si sus datos 
-                    // se obtuvieran de una API que también fallara.
-                    // Se re-establecen a un estado consistente para mostrar ausencia de datos de marea.
-                    // Esto es solo para ser consistente si en el futuro se volviera a tener mareas
-                    // o para evitar errores si el script de mareas intentara acceder a ellos.
-                    // Para la fase lunar, no es necesario resetearlos aquí directamente.
                     fetchData(fallbackLat, fallbackLon, false);
-                    // Establecer un intervalo para el modo demo (si aplica)
                     if (dataRefreshInterval) clearInterval(dataRefreshInterval);
                     dataRefreshInterval = setInterval(() => fetchData(fallbackLat, fallbackLon, false), 300000);
                 }, 
@@ -838,10 +979,6 @@
 
             determineSpecies(lat, lon);
 
-            // API CLIMA (SOLUCIÓN: Parámetros de presión corregidos para MSL)
-            // Agregamos relative_humidity_2m, cloud_cover para 'current'
-            // Y sunrise, sunset para 'daily'
-            // ¡NUEVO! Añadimos windspeed_unit=kmh para obtener la velocidad del viento en km/h
             const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,relative_humidity_2m,cloud_cover&daily=sunrise,sunset&timezone=auto&windspeed_unit=kmh`;
 
             fetch(weatherUrl)
@@ -852,9 +989,8 @@
                     return r.json();
                 })
                 .then(data => {
-                console.log("Open-Meteo API Response (Clima/Ambiente):", data); // Log de la respuesta completa de la API
+                console.log("Open-Meteo API Response (Clima/Ambiente):", data);
 
-                // Asegura que cur y daily sean objetos para evitar errores al acceder a propiedades
                 const cur = data.current || {};
                 const daily = data.daily || {};
 
@@ -862,23 +998,28 @@
                 const currentTemp = cur?.temperature_2m;
                 const tempElement = document.getElementById('temp');
                 const feelsLikeElement = document.getElementById('feels-like');
-                const tempIconElement = document.getElementById('temp-icon'); // Get the temperature icon
+                const tempIconElement = document.getElementById('temp-icon');
 
                 if (currentTemp !== undefined && currentTemp !== null) {
                     tempElement.innerText = `${Math.round(currentTemp)}°`;
-                    // Dynamic color for temperature icon
                     if (tempIconElement) {
-                        if (currentTemp < 10) { // Cold
+                        if (currentTemp < 10) {
                             tempIconElement.style.color = "var(--blue)";
-                        } else if (currentTemp > 25) { // Hot
+                            tempIconElement.style.textShadow = "0 0 10px var(--blue)"; /* Stronger glow */
+                        } else if (currentTemp > 25) {
                             tempIconElement.style.color = "var(--danger)";
-                        } else { // Neutral
+                            tempIconElement.style.textShadow = "0 0 10px var(--danger)"; /* Stronger glow */
+                        } else {
                             tempIconElement.style.color = "var(--yellow)";
+                            tempIconElement.style.textShadow = "0 0 10px var(--yellow)"; /* Stronger glow */
                         }
                     }
                 } else {
                     tempElement.innerText = "--°";
-                    if (tempIconElement) tempIconElement.style.color = "var(--yellow)"; // Default neutral color
+                    if (tempIconElement) {
+                        tempIconElement.style.color = "var(--text-light)"; // Default neutral color, no strong glow if no data
+                        tempIconElement.style.textShadow = "none";
+                    }
                 }
                 
                 feelsLikeElement.innerText = cur?.apparent_temperature !== undefined && cur?.apparent_temperature !== null ? `ST: ${Math.round(cur.apparent_temperature)}°` : 'ST: --°';
@@ -894,7 +1035,7 @@
                     document.getElementById('wind-dir').innerText = '--';
                 }
 
-                // Presión HPA (Ahora manejado aquí con datos reales)
+                // Presión HPA
                 const pressureHPA = cur?.pressure_msl;
                 const pressElement = document.getElementById('press');
                 const pDescElement = document.getElementById('press-desc');
@@ -911,18 +1052,17 @@
                         descColor = "var(--green)";
                     } else {
                         descText = "ESTABLE";
-                        descColor = "#aaa";
+                        descColor = "var(--text-light)";
                     }
                     pDescElement.innerText = descText;
                     pDescElement.style.color = descColor;
 
-                    // Update global pressure history and notify React
                     window.appPressureHistory.push({
                         time: new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
                         hpa: Math.round(pressureHPA)
                     });
                     if (window.appPressureHistory.length > MAX_PRESSURE_HISTORY_POINTS) {
-                        window.appPressureHistory.shift(); // Remove oldest point
+                        window.appPressureHistory.shift();
                     }
                     window.dispatchEvent(new CustomEvent('newPressureData'));
 
@@ -942,7 +1082,7 @@
                 if (cloudsVal === undefined || cloudsVal === null) console.warn("Cobertura de nubes no disponible o es null en la respuesta de la API.");
 
                 // Amanecer y Atardecer
-                if (daily?.sunrise?.[0] && daily?.sunset?.[0]) { // Comprobación más robusta
+                if (daily?.sunrise?.[0] && daily?.sunset?.[0]) {
                     const sunriseTime = new Date(daily.sunrise[0]).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
                     const sunsetTime = new Date(daily.sunset[0]).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
                     document.getElementById('sunrise-time').innerText = sunriseTime;
@@ -957,7 +1097,6 @@
 
             }).catch(e => {
                 console.error("API Error (Clima/Ambiente):", e);
-                // Asegura que todos los campos relevantes muestren "Sin Datos" o "--" en caso de error de la API
                 document.getElementById('temp').innerText = "--°";
                 document.getElementById('feels-like').innerText = "ST: --°";
                 document.getElementById('wind-speed').innerText = "--";
@@ -969,13 +1108,12 @@
                 document.getElementById('sunrise-time').innerText = '--:--';
                 document.getElementById('sunset-time').innerText = '--:--';
                 
-                // Reset temp icon color on API error
                 const tempIconElement = document.getElementById('temp-icon');
-                if (tempIconElement) tempIconElement.style.color = "var(--yellow)"; // Default neutral color
+                if (tempIconElement) {
+                    tempIconElement.style.color = "var(--text-light)";
+                    tempIconElement.style.textShadow = "none";
+                }
             });
-
-            // MAREAS (se ha eliminado este fetch, por lo tanto, no se muestran datos de mareas)
-            // La fase lunar se calcula localmente, no depende de una API externa aquí.
         }
 
         // --- CÁLCULO LUNAR ---
@@ -1061,12 +1199,8 @@
             const hourHand = document.getElementById('hour-hand');
 
             if (secondHandLogo && minuteHand && hourHand) {
-                // Calculate rotation for each hand
-                // Seconds: 360 degrees / 60 seconds = 6 degrees per second
                 const secondsDegrees = (seconds / 60) * 360;
-                // Minutes: 360 degrees / 60 minutes = 6 degrees per minute. Add (seconds / 60) * 6 degrees for smooth movement.
                 const minutesDegrees = ((minutes + seconds / 60) / 60) * 360;
-                // Hours: 360 degrees / 12 hours = 30 degrees per hour. Add (minutes / 60) * 30 degrees for smooth movement.
                 const hoursDegrees = ((hours % 12 + minutes / 60) / 12) * 360;
 
                 secondHandLogo.style.transform = `translate(-50%, -50%) rotate(${secondsDegrees}deg)`;
