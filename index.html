@@ -12,7 +12,7 @@
     "react": "https://aistudiocdn.com/react@^19.2.1",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
     "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
-    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.1"
+    "react-dom": "https://aistudiocdn.com/react-dom@^1.31.0"
   }
 }
 </script>
@@ -83,6 +83,19 @@
             text-transform: uppercase; 
         }
         
+        /* New style for labels that include icons */
+        .lbl-with-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px; /* space between icon and text */
+        }
+
+        .lbl-icon {
+            font-size: 1.1em; /* Relative to parent lbl font size */
+            line-height: 1;
+        }
+
         .val { 
             font-size: 2.4rem; 
             font-weight: 900; 
@@ -453,7 +466,7 @@
         </div>
         <!-- Temperatura (Movido) -->
         <div class="data-box">
-            <span class="lbl">TEMP</span>
+            <span class="lbl lbl-with-icon"><span class="lbl-icon" id="temp-icon">🌡️</span> TEMP</span>
             <span class="val" id="temp">--°</span>
             <div class="sub-val" id="feels-like">ST: --°</div>
         </div>
@@ -463,13 +476,13 @@
     <div class="grid-main-3">
         <!-- Presión HPA (Movido) -->
         <div class="data-box">
-            <span class="lbl">PRESIÓN (hPa)</span>
+            <span class="lbl lbl-with-icon"><span class="lbl-icon">📈</span> PRESIÓN (hPa)</span>
             <span class="val" id="press">--</span>
             <span class="sub-val" id="press-desc" style="font-weight:bold">Esperando..</span>
         </div>
         <!-- Viento (Movido) -->
         <div class="data-box">
-            <span class="lbl">VIENTO</span>
+            <span class="lbl lbl-with-icon"><span class="lbl-icon">🌬️</span> VIENTO</span>
             <span class="val" id="wind-speed">--</span>
             <div class="sub-val" id="wind-dir" style="color: var(--blue); font-weight:bold;">--</div>
         </div>
@@ -489,25 +502,25 @@
     <div class="ambient-grid-parent">
         <!-- Humedad -->
         <div class="data-box ambient-data-box">
-            <span class="lbl">HUMEDAD</span>
+            <span class="lbl lbl-with-icon"><span class="lbl-icon">💧</span> HUMEDAD</span>
             <span class="val" id="humidity-val">--%</span>
             <span class="sub-val" style="font-weight:bold"></span>
         </div>
         <!-- Nubes -->
         <div class="data-box ambient-data-box">
-            <span class="lbl">NUBES</span>
+            <span class="lbl lbl-with-icon"><span class="lbl-icon">☁️</span> NUBES</span>
             <span class="val" id="clouds-val">--%</span>
             <span class="sub-val" style="font-weight:bold"></span>
         </div>
         <!-- Amanecer -->
         <div class="data-box ambient-data-box">
-            <span class="lbl">AMANECER</span>
+            <span class="lbl lbl-with-icon"><span class="lbl-icon">☀️</span> AMANECER</span>
             <span class="val" id="sunrise-time">--:--</span>
             <span class="sub-val" style="font-weight:bold"></span>
         </div>
         <!-- Atardecer -->
         <div class="data-box ambient-data-box">
-            <span class="lbl">ATARDECER</span>
+            <span class="lbl lbl-with-icon"><span class="lbl-icon">🌙</span> ATARDECER</span>
             <span class="val" id="sunset-time">--:--</span>
             <span class="sub-val" style="font-weight:bold"></span>
         </div>
@@ -709,7 +722,8 @@
             // API CLIMA (SOLUCIÓN: Parámetros de presión corregidos para MSL)
             // Agregamos relative_humidity_2m, cloud_cover para 'current'
             // Y sunrise, sunset para 'daily'
-            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,relative_humidity_2m,cloud_cover&daily=sunrise,sunset&timezone=auto`;
+            // ¡NUEVO! Añadimos windspeed_unit=kmh para obtener la velocidad del viento en km/h
+            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,relative_humidity_2m,cloud_cover&daily=sunrise,sunset&timezone=auto&windspeed_unit=kmh`;
 
             fetch(weatherUrl)
                 .then(r => {
@@ -726,11 +740,32 @@
                 const daily = data.daily || {};
 
                 // Temp
-                document.getElementById('temp').innerText = cur?.temperature_2m !== undefined && cur?.temperature_2m !== null ? `${Math.round(cur.temperature_2m)}°` : '--°';
-                document.getElementById('feels-like').innerText = cur?.apparent_temperature !== undefined && cur?.apparent_temperature !== null ? `ST: ${Math.round(cur.apparent_temperature)}°` : 'ST: --°';
+                const currentTemp = cur?.temperature_2m;
+                const tempElement = document.getElementById('temp');
+                const feelsLikeElement = document.getElementById('feels-like');
+                const tempIconElement = document.getElementById('temp-icon'); // Get the temperature icon
+
+                if (currentTemp !== undefined && currentTemp !== null) {
+                    tempElement.innerText = `${Math.round(currentTemp)}°`;
+                    // Dynamic color for temperature icon
+                    if (tempIconElement) {
+                        if (currentTemp < 10) { // Cold
+                            tempIconElement.style.color = "var(--blue)";
+                        } else if (currentTemp > 25) { // Hot
+                            tempIconElement.style.color = "var(--danger)";
+                        } else { // Neutral
+                            tempIconElement.style.color = "var(--yellow)";
+                        }
+                    }
+                } else {
+                    tempElement.innerText = "--°";
+                    if (tempIconElement) tempIconElement.style.color = "var(--yellow)"; // Default neutral color
+                }
+                
+                feelsLikeElement.innerText = cur?.apparent_temperature !== undefined && cur?.apparent_temperature !== null ? `ST: ${Math.round(cur.apparent_temperature)}°` : 'ST: --°';
 
                 // Viento
-                document.getElementById('wind-speed').innerText = cur?.wind_speed_10m !== undefined && cur?.wind_speed_10m !== null ? Math.round(cur.wind_speed_10m).toString() : '--';
+                document.getElementById('wind-speed').innerText = cur?.wind_speed_10m !== undefined && cur?.wind_speed_10m !== null ? `${Math.round(cur.wind_speed_10m)} km/h` : '--';
                 let wDir = cur?.wind_direction_10m; 
                 if (wDir !== undefined && wDir !== null) {
                     const dirs = ['NORTE', 'NE', 'ESTE', 'SE', 'SUR', 'SO', 'OESTE', 'NO'];
@@ -814,6 +849,10 @@
                 document.getElementById('clouds-val').innerText = '--%';
                 document.getElementById('sunrise-time').innerText = '--:--';
                 document.getElementById('sunset-time').innerText = '--:--';
+                
+                // Reset temp icon color on API error
+                const tempIconElement = document.getElementById('temp-icon');
+                if (tempIconElement) tempIconElement.style.color = "var(--yellow)"; // Default neutral color
             });
 
             // MAREAS (se ha eliminado este fetch, por lo tanto, no se muestran datos de mareas)
