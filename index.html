@@ -281,8 +281,8 @@
             }
         }
 
-        /* --- BRÚJULA --- */
-        .compass-container { cursor: pointer; } 
+        /* --- BRÚJULA (ESTILOS ANTIGUOS - AHORA NO SE USA) --- */
+        .compass-container { cursor: pointer; display: none; } /* Ocultar completamente */
         .compass-label { 
             font-family: var(--font-title); 
             font-size: 0.9rem;
@@ -349,6 +349,7 @@
             border-right: 10px solid transparent;
             border-top: 20px solid var(--text); /* Triangle pointing down */
         }
+        /* --- FIN BRÚJULA --- */
         
         /* --- RELOJ ANALÓGICO (NUEVOS ESTILOS) --- */
         .clock-container {
@@ -471,6 +472,44 @@
             text-shadow: none; /* Removed glow from moon phase text */
         }
         /* --- FIN FASE LUNAR DENTRO DE DATA-BOX --- */
+
+        /* --- TABLA DE MAREAS (Nuevo estilo para el enlace) --- */
+        .tides-link-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%; /* Asegura que ocupe todo el espacio disponible */
+            padding: 10px;
+        }
+
+        .tides-info-text {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .tides-link {
+            display: inline-block;
+            background: var(--blue);
+            color: #0d0d0d; /* Texto oscuro sobre azul vibrante */
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-family: var(--font-title);
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(var(--blue-rgb), 0.4);
+        }
+
+        .tides-link:hover {
+            background: var(--text);
+            color: var(--blue);
+            box-shadow: 0 6px 15px rgba(var(--blue-rgb), 0.6);
+            transform: translateY(-2px);
+        }
 
         /* --- GUIA PECES --- */
         .guide-container { padding: 15px; }
@@ -705,15 +744,14 @@
                 <img src="https://raw.githubusercontent.com/LOLAPALUPULO/LOLA-Pesca/refs/heads/main/lolapesca.svg" alt="LOLA Pesca" class="second-hand-logo" id="second-hand-logo">
             </div>
         </div>
-        <!-- Brújula (Movido) -->
-        <div class="data-box compass-container" onclick="requestCompassPermission()">
-            <div class="compass-label">BRÚJULA</div>
-            <div class="compass-rose">
-                <span class="cardinal c-n">N</span>
-                <span class="cardinal c-e">E</span>
-                <span class="cardinal c-s">S</span>
-                <span class="cardinal c-o">O</span>
-                <div class="compass-needle" id="compass-needle"></div>
+        <!-- TABLA DE MAREAS (Reemplaza a la brújula y muestra enlace) -->
+        <div class="data-box" id="tides-box">
+            <span class="lbl lbl-with-icon"><span class="lbl-icon">🌊</span> TABLA DE MAREAS</span>
+            <div class="tides-link-container">
+                <p class="tides-info-text">Consulta la información oficial de mareas para tu ubicación actual.</p>
+                <a href="https://www.hidro.gov.ar/oceanografia/alturashorarias.asp" target="_blank" rel="noopener noreferrer" class="tides-link">
+                    VER TABLA DE MAREAS
+                </a>
             </div>
         </div>
         <!-- Temperatura (Movido) -->
@@ -877,7 +915,6 @@
             loadFishMenu();
             calculateMoonPhase();
             initApp(); 
-            initCompass();
             renderLog();
             updateClock();
             clockInterval = setInterval(updateClock, 1000);
@@ -912,7 +949,9 @@
                     clearTimeout(safetyTimeout);
                     fetchData(pos.coords.latitude, pos.coords.longitude, true);
                     if (dataRefreshInterval) clearInterval(dataRefreshInterval);
-                    dataRefreshInterval = setInterval(() => fetchData(pos.coords.latitude, pos.coords.longitude, true), 300000);
+                    dataRefreshInterval = setInterval(() => {
+                        fetchData(pos.coords.latitude, pos.coords.longitude, true);
+                    }, 300000);
                 }, 
                 (err) => {
                     clearTimeout(safetyTimeout);
@@ -937,7 +976,9 @@
                     document.getElementById('sunset-time').innerText = '--:--';
                     fetchData(fallbackLat, fallbackLon, false);
                     if (dataRefreshInterval) clearInterval(dataRefreshInterval);
-                    dataRefreshInterval = setInterval(() => fetchData(fallbackLat, fallbackLon, false), 300000);
+                    dataRefreshInterval = setInterval(() => {
+                        fetchData(fallbackLat, fallbackLon, false);
+                    }, 300000);
                 }, 
                 gpsOptions
             );
@@ -1148,24 +1189,8 @@
             }
         }
 
-        // --- COMPASS ---
-        function requestCompassPermission() {
-            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission()
-                .then(r => { if (r==='granted') initCompass(); else alert("Permiso denegado"); })
-                .catch(console.error);
-            } else {
-                alert("Brújula activa. Si no gira, gire el celular.");
-            }
-        }
-        function initCompass() {
-            if (window.DeviceOrientationEvent) {
-                window.addEventListener("deviceorientation", function(e) {
-                    let h = e.alpha; 
-                    if(h !== null) { document.getElementById('compass-needle').style.transform = `translate(-50%, -50%) rotate(${360 - h}deg)`; }
-                }, true);
-            }
-        }
+        // --- TABLA DE MAREAS (Funciones eliminadas, ahora solo enlace) ---
+        // function fetchTidesData(lat, lon) { /* ... */ }
 
         // --- RELOJ ANALÓGICO ---
         function updateClock() {
