@@ -171,10 +171,20 @@
             gap: 5px;
         }
 
-        .lbl-icon {
-            font-size: 1.1em;
-            line-height: 1;
-            text-shadow: var(--icon-default-glow); /* Default glow for all general icons */
+        /* Base SVG icon styling */
+        .svg-icon {
+            width: 1.1em; /* Adjusted for better visual balance */
+            height: 1.1em;
+            vertical-align: middle;
+            fill: currentColor; /* Inherit color from parent for thematic consistency */
+            transition: transform 0.2s ease-out, filter 0.2s ease-out;
+            filter: drop-shadow(0 0 5px rgba(var(--text-rgb), 0.3)); /* Subtle white/text-color glow by default */
+            animation: iconPulse 3s infinite ease-in-out alternate;
+        }
+
+        /* Specific overrides for lbl-icon elements that had custom colors/glows */
+        .lbl-icon .svg-icon {
+            filter: drop-shadow(0 0 8px currentColor); /* Stronger glow for labeled icons, color inherited dynamically */
         }
 
         .val { 
@@ -247,6 +257,19 @@
             transform: scale(1.1);
             color: var(--blue);
             text-shadow: 0 0 12px var(--blue); /* Stronger hover glow */
+        }
+
+        /* Reload button icon */
+        .location-controls button .svg-icon {
+            width: 1.8em; /* Larger for reload button */
+            height: 1.8em;
+            animation: none; /* No pulse for interactive buttons */
+            filter: drop-shadow(0 0 10px rgba(var(--blue-rgb), 0.7)); /* Initial glow matching button text shadow */
+        }
+
+        .location-controls button:hover .svg-icon {
+            transform: scale(1.1) rotate(15deg); /* More pronounced hover for reload */
+            filter: drop-shadow(0 0 15px var(--blue));
         }
 
         /* --- GRILLAS --- */
@@ -457,14 +480,16 @@
             padding: 10px 5px;
             min-height: 110px;
         }
-        .moon-phase-box #moon-icon {
-            font-size: 3rem;
+        .moon-phase-box #moon-icon { /* This ID is now on the SVG element */
+            width: 2.5em; /* Larger moon */
+            height: 2.5em;
+            animation: moonGlow 5s infinite ease-in-out alternate;
+            filter: drop-shadow(0 0 15px rgba(var(--text-rgb), 0.8)); /* Stronger moon glow */
             margin: 0;
             line-height: 1;
             margin-bottom: 5px;
-            text-shadow: 0 0 10px rgba(var(--text-rgb), 0.8); /* Stronger moon icon glow */
         }
-        .moon-phase-box #moon-phase {
+        .moon-phase-box #moon-phase-text { /* New ID for the text span */
             font-weight: bold;
             font-size: 1.1rem;
             color: var(--text);
@@ -667,15 +692,38 @@
             width: 40px; height: 40px; border: none; 
             box-shadow: inset 0 1px 3px var(--shadow-inner);
             transition: background-color 0.15s ease;
-            text-shadow: 0 0 8px rgba(var(--danger-rgb), 0.7); /* Glow for delete icon */
+            animation: none; /* No pulse for interactive buttons */
         }
         
+        .btn-delete .svg-icon {
+            width: 1.3em;
+            height: 1.3em;
+            animation: none;
+            filter: drop-shadow(0 0 8px rgba(var(--danger-rgb), 0.7));
+        }
+
         .btn-delete:hover {
             background-color: var(--log-delete-bg-hover);
         }
+
+        .btn-delete:hover .svg-icon {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 12px rgba(var(--danger-rgb), 1.0));
+        }
         
 
+        /* Animations */
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        @keyframes iconPulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.02); }
+        }
+
+        @keyframes moonGlow {
+            0% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(var(--text-rgb), 0.8)); }
+            100% { transform: scale(1.05); filter: drop-shadow(0 0 25px rgba(var(--text-rgb), 1.0)); }
+        }
 
         /* Scrollbar styling for a high-tech look */
         ::-webkit-scrollbar {
@@ -699,6 +747,61 @@
 <link rel="stylesheet" href="/index.css">
 </head>
 <body>
+    <!-- SVG Icon Definitions (Sprite) -->
+    <div style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg">
+            <symbol id="icon-location" viewBox="0 0 24 24">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </symbol>
+            <symbol id="icon-reload" viewBox="0 0 24 24">
+                <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+            </symbol>
+            <symbol id="icon-thermometer" viewBox="0 0 24 24">
+                <path d="M15 13V5c0-1.66-1.34-3-3-3S9 3.34 9 5v8c-1.21.91-2 2.35-2 4 0 2.76 2.24 5 5 5s5-2.24 5-5c0-1.65-.79-3.09-2-4zm-4-8c0-.55.45-1 1-1s1 .45 1 1v.79l-2-.01V5zm3.5 14c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+            </symbol>
+            <symbol id="icon-tides" viewBox="0 0 24 24">
+                <path d="M12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm4.27 12.96c-.32.32-.84.32-1.16 0L12 14.83l-3.11 3.13c-.32.32-.84.32-1.16 0s-.32-.84 0-1.16L10.83 12 7.7 8.87c-.32-.32-.32-.84 0-1.16s.84-.32 1.16 0L12 9.17l3.11-3.13c.32-.32.84-.32 1.16 0s.32.84 0 1.16L13.17 12l3.13 3.11c.32.32.32.84 0 1.16z"/>
+            </symbol>
+            <symbol id="icon-pressure" viewBox="0 0 24 24">
+                <path d="M16 11c-.55 0-1 .45-1 1v3H9v-3c0-.55-.45-1-1-1s-1 .45-1 1v4c0 .55.45 1 1 1h8c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1zM20 7H4c-.55 0-1 .45-1 1s.45 1 1 1h16c.55 0 1-.45 1-1s-.45-1-1-1zM4 17h16c.55 0 1-.45 1-1s-.45-1-1-1H4c-.55 0-1 .45-1 1s.45 1 1 1z"/>
+            </symbol>
+            <symbol id="icon-wind" viewBox="0 0 24 24">
+                <path d="M12.43 2.05c-.06 0-.12.02-.17.06-.11.08-.15.22-.11.34l.8 2.4c-2.43 1.25-4.14 3.73-4.14 6.65 0 3.86 3.14 7 7 7 3.86 0 7-3.14 7-7 0-2.48-1.28-4.66-3.22-5.93l.8-2.4c.04-.12 0-.26-.11-.34-.1-.08-.24-.09-.34-.02l-4.22 2.2zM12 18c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
+            </symbol>
+            <symbol id="icon-moon" viewBox="0 0 24 24">
+                <path d="M12 2.5c-4.42 0-8 3.58-8 8 0 4.42 3.58 8 8 8 1.48 0 2.87-.41 4.07-1.12C15.93 19.38 14.05 20 12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8c1.66 0 3.2.5 4.5 1.35C14.87 3.03 13.51 2.5 12 2.5zm0 15c-3.03 0-5.5-2.47-5.5-5.5S8.97 6.5 12 6.5c2.31 0 4.25 1.43 5.09 3.42C16.08 11.23 14.15 12 12 12c-3.03 0-5.5 2.47-5.5 5.5z"/>
+            </symbol>
+            <symbol id="icon-humidity" viewBox="0 0 24 24">
+                <path d="M12 2c-3.87 0-7 3.13-7 7 0 3.87 7 13 7 13s7-9.13 7-13c0-3.87-3.13-7-7-7zm0 10.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </symbol>
+            <symbol id="icon-clouds" viewBox="0 0 24 24">
+                <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4c-2.82 0-5.32 1.45-6.84 3.69l-.17.22-1.42.23C2.86 8.35 1 10.03 1 12c0 2.21 1.79 4 4 4h14c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/>
+            </symbol>
+            <symbol id="icon-sunrise" viewBox="0 0 24 24">
+                <path d="M13 14h-2V7h2v7zm8-6c0-1.66-1.34-3-3-3s-3 1.34-3 3h-2v1.5c0 .28-.22.5-.5.5s-.5-.22-.5-.5V8c0-2.21 1.79-4 4-4s4 1.79 4 4zm-4 10h-2v-4h2v4zM2 16h2v-4H2v4zM12 22c5.52 0 10-4.48 10-10h-2c0 4.41-3.59 8-8 8s-8-3.59-8-8H2c0 5.52 4.48 10 10 10z"/>
+            </symbol>
+            <symbol id="icon-sunset" viewBox="0 0 24 24">
+                <path d="M12 18c5.52 0 10-4.48 10-10h-2c0 4.41-3.59 8-8 8s-8-3.59-8-8H2c0 5.52 4.48 10 10 10zm-1-8V2h2v6.18c-.41.38-1.04.82-2 1.4V10zm5-4c0 1.66-1.34 3-3 3s-3-1.34-3-3h-2c0 2.21 1.79 4 4 4s4-1.79 4-4h-2zM4 14h2v4H4zM18 14h2v4h-2z"/>
+            </symbol>
+            <symbol id="icon-torch" viewBox="0 0 24 24">
+                <path d="M10 4c0-1.1-.9-2-2-2s-2 .9-2 2 .9 2 2 2 2-.9 2-2zm0 18c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM12 12c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0 8c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0-16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm-4 8c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+                <path d="M10 2l-2 2 2 2 2-2-2-2zM10 22l-2-2 2-2 2 2-2 2zM12 10l-2 2 2 2 2-2-2-2zM12 18l-2-2 2-2 2 2-2 2zM12 2l-2-2 2-2 2 2-2 2zM12 22l-2 2 2 2 2-2-2-2zM10 12l-2-2 2-2 2 2-2 2zM10 20l-2-2 2-2 2 2-2 2zM10 4l-2 2 2 2 2-2-2-2z"/>
+                <circle cx="8" cy="4" r="2"/>
+                <circle cx="8" cy="20" r="2"/>
+                <circle cx="12" cy="12" r="2"/>
+                <circle cx="12" cy="20" r="2"/>
+                <circle cx="12" cy="4" r="2"/>
+                <circle cx="16" cy="12" r="2"/>
+            </symbol>
+            <symbol id="icon-log" viewBox="0 0 24 24">
+                <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 16H5V5h14v14z"/>
+                <path d="M7 15h10v2H7zM7 11h10v2H7zM7 7h10v2H7z"/>
+            </symbol>
+            <symbol id="icon-delete" viewBox="0 0 24 24">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+            </symbol>
+        </svg>
+    </div>
 
     <!-- 1. LOGO CON ENLACE -->
     <div class="brand-header">
@@ -710,13 +813,14 @@
     <!-- 2. UBICACIÓN -->
     <div class="card-box location-bar">
         <div>
-            <div class="loc-title" id="loc-name">📍 Buscando GPS...</div>
+            <div class="loc-title" id="loc-name">
+                <svg class="svg-icon" style="width: 1.4em; height: 1.4em; vertical-align: bottom;"><use xlink:href="#icon-location"></use></svg> Buscando GPS...
+            </div>
             <div class="loc-sub" id="gps-status">Estableciendo conexión...</div>
         </div>
         <div class="location-controls">
-            <!-- Removed theme toggle button -->
             <button onclick="forceReload()" aria-label="Reload data">
-                🔄
+                <svg class="svg-icon"><use xlink:href="#icon-reload"></use></svg>
             </button>
         </div>
     </div>
@@ -746,7 +850,7 @@
         </div>
         <!-- TABLA DE MAREAS (Reemplaza a la brújula y muestra enlace) -->
         <div class="data-box" id="tides-box">
-            <span class="lbl lbl-with-icon"><span class="lbl-icon">🌊</span> TABLA DE MAREAS</span>
+            <span class="lbl lbl-with-icon"><svg class="svg-icon"><use xlink:href="#icon-tides"></use></svg> TABLA DE MAREAS</span>
             <div class="tides-link-container">
                 <p class="tides-info-text">Consulta la información oficial de mareas para tu ubicación actual.</p>
                 <a href="https://www.hidro.gov.ar/oceanografia/alturashorarias.asp" target="_blank" rel="noopener noreferrer" class="tides-link">
@@ -756,7 +860,7 @@
         </div>
         <!-- Temperatura (Movido) -->
         <div class="data-box">
-            <span class="lbl lbl-with-icon"><span class="lbl-icon" id="temp-icon">🌡️</span> TEMP</span>
+            <span class="lbl lbl-with-icon" id="temp-icon-container"><svg class="svg-icon" id="temp-icon"><use xlink:href="#icon-thermometer"></use></svg> TEMP</span>
             <span class="val" id="temp">--°</span>
             <div class="sub-val" id="feels-like">ST: --°</div>
         </div>
@@ -766,21 +870,21 @@
     <div class="grid-main-3">
         <!-- Presión HPA (Movido) -->
         <div class="data-box">
-            <span class="lbl lbl-with-icon"><span class="lbl-icon">📈</span> PRESIÓN (hPa)</span>
+            <span class="lbl lbl-with-icon"><svg class="svg-icon"><use xlink:href="#icon-pressure"></use></svg> PRESIÓN (hPa)</span>
             <span class="val" id="press">--</span>
             <span class="sub-val" id="press-desc" style="font-weight:bold">Esperando..</span>
         </div>
         <!-- Viento (Movido) -->
         <div class="data-box">
-            <span class="lbl lbl-with-icon"><span class="lbl-icon">🌬️</span> VIENTO</span>
+            <span class="lbl lbl-with-icon"><svg class="svg-icon"><use xlink:href="#icon-wind"></use></svg> VIENTO</span>
             <span class="val" id="wind-speed">--</span>
             <div class="sub-val" id="wind-dir" style="color: var(--blue); font-weight:bold;">--</div>
         </div>
         <!-- Fase Lunar (Movido al lugar de 'Agua') -->
         <div class="data-box moon-phase-box">
             <span class="lbl">FASE LUNAR</span>
-            <span id="moon-icon">🌑</span>
-            <div id="moon-phase">--</div>
+            <svg class="svg-icon" id="moon-icon"><use xlink:href="#icon-moon"></use></svg>
+            <div id="moon-phase-text">--</div>
         </div>
     </div>
     
@@ -792,25 +896,25 @@
     <div class="ambient-grid-parent">
         <!-- Humedad -->
         <div class="data-box ambient-data-box">
-            <span class="lbl lbl-with-icon"><span class="lbl-icon">💧</span> HUMEDAD</span>
+            <span class="lbl lbl-with-icon"><svg class="svg-icon"><use xlink:href="#icon-humidity"></use></svg> HUMEDAD</span>
             <span class="val" id="humidity-val">--%</span>
             <span class="sub-val" style="font-weight:bold"></span>
         </div>
         <!-- Nubes -->
         <div class="data-box ambient-data-box">
-            <span class="lbl lbl-with-icon"><span class="lbl-icon">☁️</span> NUBES</span>
+            <span class="lbl lbl-with-icon"><svg class="svg-icon"><use xlink:href="#icon-clouds"></use></svg> NUBES</span>
             <span class="val" id="clouds-val">--%</span>
             <span class="sub-val" style="font-weight:bold"></span>
         </div>
         <!-- Amanecer -->
         <div class="data-box ambient-data-box">
-            <span class="lbl lbl-with-icon"><span class="lbl-icon">☀️</span> AMANECER</span>
+            <span class="lbl lbl-with-icon"><svg class="svg-icon"><use xlink:href="#icon-sunrise"></use></svg> AMANECER</span>
             <span class="val" id="sunrise-time">--:--</span>
             <span class="sub-val" style="font-weight:bold"></span>
         </div>
         <!-- Atardecer -->
         <div class="data-box ambient-data-box">
-            <span class="lbl lbl-with-icon"><span class="lbl-icon">🌙</span> ATARDECER</span>
+            <span class="lbl lbl-with-icon"><svg class="svg-icon"><use xlink:href="#icon-sunset"></use></svg> ATARDECER</span>
             <span class="val" id="sunset-time">--:--</span>
             <span class="sub-val" style="font-weight:bold"></span>
         </div>
@@ -862,10 +966,10 @@
     <!-- 7. HERRAMIENTAS -->
     <div class="action-grid">
         <button id="btn-torch" class="btn-action btn-torch" onclick="toggleFlash()">
-            💡 LINTERNA
+            <svg class="svg-icon" style="width: 1.4em; height: 1.4em;"><use xlink:href="#icon-torch"></use></svg> LINTERNA
         </button>
         <button class="btn-action btn-log" onclick="saveQuickLog()">
-            📝 BITÁCORA
+            <svg class="svg-icon" style="width: 1.4em; height: 1.4em;"><use xlink:href="#icon-log"></use></svg> BITÁCORA
         </button>
     </div>
 
@@ -922,7 +1026,7 @@
 
         // --- CORE DATA LOGIC ---
         function forceReload() {
-            document.getElementById('loc-name').innerHTML = "Reiniciando...";
+            document.getElementById('loc-name').innerHTML = `<svg class="svg-icon" style="width: 1.4em; height: 1.4em; vertical-align: bottom;"><use xlink:href="#icon-location"></use></svg> Reiniciando...`;
             if (dataRefreshInterval) clearInterval(dataRefreshInterval);
             initApp();
         }
@@ -992,13 +1096,13 @@
                 fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
                 .then(r=>r.json())
                 .then(d => {
-                    document.getElementById('loc-name').innerText = "📍 " + (d.address.city || d.address.town || d.address.village || "Zona Detectada");
+                    document.getElementById('loc-name').innerHTML = `<svg class="svg-icon" style="width: 1.4em; height: 1.4em; vertical-align: bottom;"><use xlink:href="#icon-location"></use></svg> ` + (d.address.city || d.address.town || d.address.village || "Zona Detectada");
                 }).catch((e)=> {
                     console.error("Error al obtener nombre de ubicación:", e);
-                    document.getElementById('loc-name').innerText = "📍 Zona de Pesca (Nombre no disponible)";
+                    document.getElementById('loc-name').innerHTML = `<svg class="svg-icon" style="width: 1.4em; height: 1.4em; vertical-align: bottom;"><use xlink:href="#icon-location"></use></svg> Zona de Pesca (Nombre no disponible)`;
                 });
             } else {
-                document.getElementById('loc-name').innerText = "📍 Buenos Aires (Defecto)";
+                document.getElementById('loc-name').innerHTML = `<svg class="svg-icon" style="width: 1.4em; height: 1.4em; vertical-align: bottom;"><use xlink:href="#icon-location"></use></svg> Buenos Aires (Defecto)`;
             }
 
             determineSpecies(lat, lon);
@@ -1022,27 +1126,23 @@
                 const currentTemp = cur?.temperature_2m;
                 const tempElement = document.getElementById('temp');
                 const feelsLikeElement = document.getElementById('feels-like');
-                const tempIconElement = document.getElementById('temp-icon');
+                const tempIconContainer = document.getElementById('temp-icon-container'); // Get the container
 
                 if (currentTemp !== undefined && currentTemp !== null) {
                     tempElement.innerText = `${Math.round(currentTemp)}°`;
-                    if (tempIconElement) {
+                    if (tempIconContainer) { // Apply color to the container, SVG inherits
                         if (currentTemp < 10) {
-                            tempIconElement.style.color = "var(--blue)";
-                            tempIconElement.style.textShadow = "0 0 10px var(--blue)"; /* Stronger glow */
+                            tempIconContainer.style.color = "var(--blue)";
                         } else if (currentTemp > 25) {
-                            tempIconElement.style.color = "var(--danger)";
-                            tempIconElement.style.textShadow = "0 0 10px var(--danger)"; /* Stronger glow */
+                            tempIconContainer.style.color = "var(--danger)";
                         } else {
-                            tempIconElement.style.color = "var(--yellow)";
-                            tempIconElement.style.textShadow = "0 0 10px var(--yellow)"; /* Stronger glow */
+                            tempIconContainer.style.color = "var(--yellow)";
                         }
                     }
                 } else {
                     tempElement.innerText = "--°";
-                    if (tempIconElement) {
-                        tempIconElement.style.color = "var(--text-light)"; // Default neutral color, no strong glow if no data
-                        tempIconElement.style.textShadow = "none";
+                    if (tempIconContainer) {
+                        tempIconContainer.style.color = "var(--text-light)"; // Default neutral color
                     }
                 }
                 
@@ -1132,10 +1232,9 @@
                 document.getElementById('sunrise-time').innerText = '--:--';
                 document.getElementById('sunset-time').innerText = '--:--';
                 
-                const tempIconElement = document.getElementById('temp-icon');
-                if (tempIconElement) {
-                    tempIconElement.style.color = "var(--text-light)";
-                    tempIconElement.style.textShadow = "none";
+                const tempIconContainer = document.getElementById('temp-icon-container');
+                if (tempIconContainer) {
+                    tempIconContainer.style.color = "var(--text-light)";
                 }
             });
         }
@@ -1148,23 +1247,21 @@
             const phase_total = ((date.getTime() - new_moon.getTime()) / 1000) % lp;
             const phase_days = Math.floor(phase_total / (24 * 3600)) + 1;
             
-            let phase = "Nueva", icon = "🌑";
-            if (phase_days >= 2 && phase_days < 8) { phase = "Creciente"; icon = "🌒"; }
-            else if (phase_days >= 8 && phase_days < 10) { phase = "Cuarto Crec."; icon = "🌓"; }
-            else if (phase_days >= 10 && phase_days < 14) { phase = "Gibosa"; icon = "🌔"; }
-            else if (phase_days >= 14 && phase_days < 16) { phase = "LLENA"; icon = "🌕"; }
-            else if (phase_days >= 16 && phase_days < 22) { phase = "Menguante"; icon = "🌖"; }
-            else if (phase_days >= 22 && phase_days < 24) { phase = "Cuarto Meng."; icon = "🌗"; }
-            else if (phase_days >= 24) { phase = "Menguante"; icon = "🌘"; }
+            let phase = "Nueva";
+            if (phase_days >= 2 && phase_days < 8) { phase = "Creciente"; }
+            else if (phase_days >= 8 && phase_days < 10) { phase = "Cuarto Crec."; }
+            else if (phase_days >= 10 && phase_days < 14) { phase = "Gibosa"; }
+            else if (phase_days >= 14 && phase_days < 16) { phase = "LLENA"; }
+            else if (phase_days >= 16 && phase_days < 22) { phase = "Menguante"; }
+            else if (phase_days >= 22 && phase_days < 24) { phase = "Cuarto Meng."; }
+            else if (phase_days >= 24) { phase = "Menguante"; }
             
-            const moonPhaseElement = document.getElementById('moon-phase');
-            const moonIconElement = document.getElementById('moon-icon');
+            const moonPhaseTextElement = document.getElementById('moon-phase-text');
 
-            if (moonPhaseElement && moonIconElement) {
-                moonPhaseElement.innerText = phase.toUpperCase();
-                moonIconElement.innerText = icon;
+            if (moonPhaseTextElement) {
+                moonPhaseTextElement.innerText = phase.toUpperCase();
             } else {
-                console.warn("Elementos de fase lunar no encontrados para actualizar. Asegúrate de que los IDs 'moon-phase' y 'moon-icon' existan en el DOM.");
+                console.warn("Elemento de texto de fase lunar no encontrado para actualizar. Asegúrate de que el ID 'moon-phase-text' exista en el DOM.");
             }
         }
 
@@ -1249,7 +1346,7 @@
             if (h.length === 0) { c.innerHTML = '<div style="text-align:center; color:#666; font-size:1rem; padding:10px;">Sin historial</div>'; return; }
             let html = "";
             h.forEach(i => {
-                html += `<div class="log-item"><div><span class="log-text">${i.text}</span><span class="log-date">${i.date}</span></div><button class="btn-delete" onclick="deleteLog(${i.id})">×</button></div>`;
+                html += `<div class="log-item"><div><span class="log-text">${i.text}</span><span class="log-date">${i.date}</span></div><button class="btn-delete" onclick="deleteLog(${i.id})"><svg class="svg-icon"><use xlink:href="#icon-delete"></use></svg></button></div>`;
             });
             c.innerHTML = html;
         }
