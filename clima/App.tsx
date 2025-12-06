@@ -3,8 +3,8 @@ import { fetchWeatherWithGemini } from './services/geminiService';
 import { WeatherData, GeolocationCoordinates } from './types';
 import Button from './components/Button';
 import LoadingSpinner from './components/LoadingSpinner';
-import WeatherIconDisplay from './components/WeatherIconDisplay'; // Import new component
-import Markdown from 'react-markdown'; // For rendering markdown content
+import WeatherIconDisplay from './components/WeatherIconDisplay';
+import Markdown from 'react-markdown'; // Still imported for LinkRenderer, but summary markdown is removed.
 
 // Helper component for rendering links
 interface LinkRendererProps {
@@ -42,6 +42,22 @@ function App() {
     const match = summary.match(/^(soleado|despejado|nublado|lluvia|chubascos|nieve|nevada|tormenta)/i);
     if (match) return match[1].toLowerCase();
     return 'desconocido';
+  };
+
+  const getDisplayConditionText = (condition: string): string => {
+    switch(condition) {
+      case 'soleado': return 'Soleado';
+      case 'despejado': return 'Despejado';
+      case 'nublado': return 'Nublado';
+      case 'nubes': return 'Nublado'; // Group 'nubes' with 'nublado' for display
+      case 'lluvia': return 'Lluvia';
+      case 'chubascos': return 'Chubascos';
+      case 'nieve': return 'Nieve';
+      case 'nevada': return 'Nevada';
+      case 'tormenta': return 'Tormenta';
+      case 'cargando': return 'Cargando...';
+      default: return 'Desconocido';
+    }
   };
 
 
@@ -105,7 +121,7 @@ function App() {
 
   return (
     <div className="bg-white rounded-xl shadow-2xl p-6 md:p-10 max-w-lg w-full transform transition-all duration-300 hover:scale-105">
-      <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 text-center mb-6">
+      <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 <mb-6></mb-6> text-center mb-6">
         Predicción del Clima
       </h1>
 
@@ -151,12 +167,10 @@ function App() {
           <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
             Pronóstico Actual
           </h2>
-          <WeatherIconDisplay condition={currentWeatherCondition} /> {/* Integrated WeatherIconDisplay */}
-          <div className="prose max-w-none text-gray-700 leading-relaxed mb-4">
-            <Markdown components={{ a: LinkRenderer }}>
-              {weatherData.summary}
-            </Markdown>
-          </div>
+          <WeatherIconDisplay condition={currentWeatherCondition} />
+          <p className="text-xl md:text-2xl font-bold text-gray-700 text-center mb-4" aria-live="polite">
+            {getDisplayConditionText(currentWeatherCondition)}
+          </p>
 
           {weatherData.sources.length > 0 && (
             <div className="border-t border-indigo-300 pt-4 mt-4">
