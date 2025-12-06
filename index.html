@@ -10,8 +10,9 @@
     "recharts": "https://aistudiocdn.com/recharts@^2.12.7",
     "react/": "https://aistudiocdn.com/react@^19.2.1/",
     "react": "https://aistudiocdn.com/react@^19.2.1",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^1.31.0",
-    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.1"
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.1",
+    "react-dom/client": "https://aistudiocdn.com/react-dom@^19.2.1/client"
   }
 }
 </script>
@@ -186,7 +187,20 @@
         .data-box:not(.expanded) .main-content { display: block; }
         .data-box.expanded .main-content { display: none; }
         .data-box:not(.expanded) .expanded-detail { display: none; }
-        .data-box.expanded .expanded-detail { display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; width: 100%;}
+        .data-box.expanded .expanded-detail { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            flex-grow: 1; 
+            width: 100%; /* Take full width of the expanded card */
+            max-width: 70%; /* Limit content width to 70% of the card */
+            max-height: 100%; /* Allow content to use available height within the card */
+            overflow-y: auto; /* Allow scrolling if content overflows its area */
+            margin: auto; /* Center horizontally */
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
 
 
         /* Overlay for expanded card */
@@ -267,12 +281,23 @@
             color: var(--text);
             text-shadow: none; /* Removed glow from main values */
         }
+
+        .data-box.expanded .val {
+            font-size: 3.5rem; /* Larger value in expanded card */
+            line-height: 1.2;
+        }
         
         .sub-val { 
             font-size: 1rem; 
             color: var(--text-light); /* Adjusted for theme */
             margin-top: 6px; 
             font-weight: 500; /* Adjusted for less thickness */
+        }
+
+        .data-box.expanded .sub-val {
+            font-size: 1.2rem; /* Larger sub-value in expanded card */
+            line-height: 1.5;
+            max-width: 90%; /* Limit width for readability */
         }
 
         .section-header { 
@@ -997,7 +1022,6 @@
                 <div class="val" id="expanded-press-val">-- hPa</div>
                 <div class="sub-val" id="expanded-press-desc">--</div>
                 <p class="sub-val" id="pressure-trend-desc" style="margin-top: 10px; max-width: 80%;">--</p>
-                <div class="sub-val" style="margin-top: 10px; font-size: 0.8rem;">Consulta el gráfico para el historial completo.</div>
             </div>
         </div>
         <!-- Viento (Movido) -->
@@ -1027,9 +1051,7 @@
                 <span class="lbl" style="margin-top: 15px;">FASE LUNAR ACTUAL</span>
                 <div class="val" id="expanded-moon-phase-text" style="font-weight:600">--</div>
                 <div class="sub-val" id="expanded-moon-date">--/--/----</div>
-                <p class="sub-val" style="margin-top: 10px; max-width: 80%;">
-                    Las fases lunares influyen en las mareas y el comportamiento de algunas especies marinas.
-                </p>
+                <p class="sub-val" id="moon-tidal-influence" style="margin-top: 10px; max-width: 80%; text-align: center; line-height: 1.6;">--</p>
             </div>
         </div>
     </div>
@@ -1205,6 +1227,9 @@
             sunrise: null,
             sunset: null
         };
+
+        // Store precise moon phase globally
+        window.moonPhasePrecise = '';
 
 
         // --- STARTUP ---
@@ -1456,25 +1481,48 @@
             const lp = 2551443; 
             const new_moon = new Date(1970, 0, 7, 20, 35, 0);
             const phase_total = ((date.getTime() - new_moon.getTime()) / 1000) % lp;
-            const phase_days = Math.floor(phase_total / (24 * 3600)) + 1;
+            const phase_days = Math.floor(phase_total / (24 * 3600)); // Days since new moon (0-29)
             
-            let phase = "Nueva";
-            if (phase_days >= 2 && phase_days < 8) { phase = "Creciente"; }
-            else if (phase_days >= 8 && phase_days < 10) { phase = "Cuarto Crec."; }
-            else if (phase_days >= 10 && phase_days < 14) { phase = "Gibosa"; }
-            else if (phase_days >= 14 && phase_days < 16) { phase = "LLENA"; }
-            else if (phase_days >= 16 && phase_days < 22) { phase = "Menguante"; }
-            else if (phase_days >= 22 && phase_days < 24) { phase = "Cuarto Meng."; }
-            else if (phase_days >= 24) { phase = "Menguante"; }
+            let phaseSimple = "Nueva"; // For main display
+            let phasePrecise = "Nueva"; // For expanded detail
+
+            if (phase_days >= 0 && phase_days < 2) {
+                phaseSimple = "Nueva";
+                phasePrecise = "Luna Nueva";
+            } else if (phase_days >= 2 && phase_days < 7.4) {
+                phaseSimple = "Creciente";
+                phasePrecise = "Luna Creciente";
+            } else if (phase_days >= 7.4 && phase_days < 8.1) {
+                phaseSimple = "Cuarto Crec.";
+                phasePrecise = "Cuarto Creciente";
+            } else if (phase_days >= 8.1 && phase_days < 14.7) {
+                phaseSimple = "Gibosa";
+                phasePrecise = "Luna Gibosa Creciente";
+            } else if (phase_days >= 14.7 && phase_days < 15.5) {
+                phaseSimple = "LLENA";
+                phasePrecise = "Luna Llena";
+            } else if (phase_days >= 15.5 && phase_days < 22.1) {
+                phaseSimple = "Menguante";
+                phasePrecise = "Luna Gibosa Menguante";
+            } else if (phase_days >= 22.1 && phase_days < 23) {
+                phaseSimple = "Cuarto Meng.";
+                phasePrecise = "Cuarto Menguante";
+            } else if (phase_days >= 23 && phase_days < 29.5) { // Full cycle is about 29.5 days
+                phaseSimple = "Menguante";
+                phasePrecise = "Luna Creciente Menguante";
+            }
+
+            // Store both simple and precise
+            window.moonPhasePrecise = phasePrecise;
             
             const moonPhaseTextElement = document.getElementById('moon-phase-text');
             const expandedMoonPhaseTextElement = document.getElementById('expanded-moon-phase-text');
 
             if (moonPhaseTextElement) {
-                moonPhaseTextElement.innerText = phase.toUpperCase();
+                moonPhaseTextElement.innerText = phaseSimple.toUpperCase();
             }
             if (expandedMoonPhaseTextElement) {
-                expandedMoonPhaseTextElement.innerText = phase.toUpperCase();
+                expandedMoonPhaseTextElement.innerText = phasePrecise.toUpperCase();
             }
 
             const expandedMoonDateElement = document.getElementById('expanded-moon-date');
@@ -1486,6 +1534,30 @@
                 console.warn("Elemento de texto de fase lunar no encontrado para actualizar. Asegúrate de que el ID 'moon-phase-text' exista en el DOM.");
             }
         }
+
+        function getMoonInfluenceText(precisePhase) {
+            switch (precisePhase) {
+                case "Luna Nueva":
+                    return "Durante la Luna Nueva, el Sol y la Luna están alineados en el mismo lado de la Tierra, combinando sus fuerzas gravitacionales para crear MAREAS VIVAS, con mareas altas más altas y mareas bajas más bajas. Este período es excelente para la actividad de muchos peces costeros y de estuario debido a las fuertes corrientes.";
+                case "Luna Creciente":
+                    return "La Luna Creciente se aleja de la alineación directa. Las mareas comienzan a moderarse a medida que las fuerzas gravitacionales del Sol y la Luna se separan un poco, pero todavía hay un aumento gradual hacia las mareas vivas. La actividad de los peces puede ser buena, especialmente al amanecer y atardecer.";
+                case "Cuarto Creciente":
+                    return "En Cuarto Creciente, el Sol y la Luna están en ángulo recto con la Tierra. Sus fuerzas gravitacionales se anulan parcialmente, resultando en MAREAS MUERTAS, con menos diferencia entre mareas altas y bajas. La pesca puede ser más desafiante debido a la menor corriente, pero ciertas especies de fondo aún pueden picar.";
+                case "Luna Gibosa Creciente":
+                    return "La Luna Gibosa Creciente se acerca a la Luna Llena. Las fuerzas gravitacionales comienzan a alinearse de nuevo, y las mareas se hacen más fuertes, encaminándose hacia las mareas vivas. Es un buen período para buscar presas activas, ya que las corrientes se intensifican progresivamente.";
+                case "Luna Llena":
+                    return "Durante la Luna Llena, el Sol y la Luna están alineados en lados opuestos de la Tierra, pero sus fuerzas gravitacionales se combinan nuevamente para crear MAREAS VIVAS, con la mayor diferencia entre mareas altas y bajas. Los depredadores suelen estar muy activos y buscan alimento en las fuertes corrientes.";
+                case "Luna Gibosa Menguante":
+                    return "La Luna Gibosa Menguante se aleja de la alineación de la Luna Llena. Las mareas comienzan a moderarse a medida que las fuerzas gravitacionales del Sol y la Luna se separan un poco. La actividad pesquera sigue siendo favorable, con un buen flujo de agua.";
+                case "Cuarto Menguante":
+                    return "En Cuarto Menguante, similar al Cuarto Creciente, el Sol y la Luna están en ángulo recto. Sus fuerzas se oponen parcialmente, lo que resulta en MAREAS MUERTAS, con la menor variación de altura. La corriente débil puede hacer la pesca más lenta, favoreciendo la pesca en aguas tranquilas.";
+                case "Luna Creciente Menguante":
+                    return "La Luna Creciente Menguante se acerca a la Luna Nueva. Las mareas comienzan a fortalecerse nuevamente, acercándose a la próxima fase de mareas vivas. Los peces pueden empezar a prepararse para la mayor actividad de la Luna Nueva, buscando zonas de forrajeo.";
+                default:
+                    return "La fase lunar influye significativamente en las mareas y el comportamiento de los peces. ¡Mantente atento a los cambios para optimizar tu jornada de pesca!";
+            }
+        }
+
 
         function determineSpecies(lat, lon) {
             const box = document.getElementById('bio-box');
@@ -1535,10 +1607,10 @@
             // Update expanded clock details if visible
             const expandedCurrentTime = document.getElementById('expanded-current-time');
             const expandedCurrentDate = document.getElementById('expanded-current-date');
-            if (expandedCurrentTime) {
+            if (expandedCurrentTime && expandedCardElement?.id === 'analog-clock-box') {
                 expandedCurrentTime.innerText = now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             }
-            if (expandedCurrentDate) {
+            if (expandedCurrentDate && expandedCardElement?.id === 'analog-clock-box') {
                 expandedCurrentDate.innerText = now.toLocaleDateString('es-AR');
             }
         }
@@ -1601,30 +1673,52 @@
                         else if (currentTemp >= 30) comfortDesc = 'Sensación de CALOR extremo. Evita la exposición prolongada.';
                     }
                     document.getElementById('temp-comfort-desc').innerText = comfortDesc;
-                    document.getElementById('expanded-temp-icon').style.color = document.getElementById('temp-icon-container').style.color; // Keep dynamic color
+                    // Ensure icon color is updated as well
+                    const tempIconElement = document.getElementById('expanded-temp-icon');
+                    if (tempIconElement) {
+                        const tempIconContainer = document.getElementById('temp-icon-container');
+                        if (tempIconContainer) {
+                            tempIconElement.style.color = tempIconContainer.style.color;
+                        }
+                    }
                     break;
                 case 'pressure-box':
                     const pressureHPA = data.pressure_msl;
                     document.getElementById('expanded-press-val').innerText = pressureHPA !== null ? `${Math.round(pressureHPA)} hPa` : '-- hPa';
                     
-                    let expandedPressDesc = '--';
-                    let pressureTrend = '--';
+                    let expandedPressDesc = 'Sin datos de presión.';
+                    let fishingImpact = 'Sin información de tendencia.';
+
                     if (pressureHPA !== null) {
-                        if (pressureHPA <= 1009) expandedPressDesc = "BAJA";
-                        else if (pressureHPA >= 1016) expandedPressDesc = "ALTA";
-                        else expandedPressDesc = "ESTABLE";
+                        if (pressureHPA <= 1009) {
+                            expandedPressDesc = "BAJA";
+                            fishingImpact = "La baja presión a menudo se asocia con mal tiempo. Los peces pueden buscar aguas más profundas y reducir su actividad alimenticia.";
+                        } else if (pressureHPA >= 1016) {
+                            expandedPressDesc = "ALTA";
+                            fishingImpact = "La alta presión generalmente indica buen tiempo y cielos despejados. Los peces suelen estar más activos en estas condiciones, especialmente en la superficie.";
+                        } else {
+                            expandedPressDesc = "ESTABLE";
+                            fishingImpact = "La presión estable sugiere condiciones meteorológicas consistentes. Si bien no hay un efecto dramático, los peces pueden seguir patrones de alimentación regulares.";
+                        }
 
                         if (window.appPressureHistory.length >= 3) {
                             const lastThree = window.appPressureHistory.slice(-3);
-                            const avgFirstTwo = (lastThree[0].hpa + lastThree[1].hpa) / 2;
+                            const prevAverage = (lastThree[0].hpa + lastThree[1].hpa) / 2;
                             const current = lastThree[2].hpa;
-                            if (current > avgFirstTwo + 0.5) pressureTrend = "Presión SUBIENDO.";
-                            else if (current < avgFirstTwo - 0.5) pressureTrend = "Presión BAJANDO.";
-                            else pressureTrend = "Presión ESTABLE.";
+
+                            if (current > prevAverage + 0.5) {
+                                fishingImpact += " La presión está SUBIENDO, a menudo asociado con mejora del tiempo y un aumento en la actividad de los peces.";
+                            } else if (current < prevAverage - 0.5) {
+                                fishingImpact += " La presión está BAJANDO, lo que puede indicar la llegada de mal tiempo o que el pique se corte.";
+                            } else {
+                                fishingImpact += " La presión se mantiene ESTABLE, lo que significa condiciones de pesca predecibles sin grandes cambios.";
+                            }
+                        } else {
+                            fishingImpact += " Se necesitan más datos recientes para determinar una tendencia clara de la presión.";
                         }
                     }
                     document.getElementById('expanded-press-desc').innerText = expandedPressDesc;
-                    document.getElementById('pressure-trend-desc').innerText = pressureTrend;
+                    document.getElementById('pressure-trend-desc').innerText = fishingImpact;
                     break;
                 case 'wind-box':
                     const windSpeed = data.wind_speed_10m;
@@ -1641,26 +1735,27 @@
                     document.getElementById('expanded-wind-dir').innerText = expandedWindDir;
 
                     if (windSpeed !== null) {
-                        if (windSpeed < 5) windIntensityDesc = 'Calma o Brisa muy ligera. Condiciones ideales.';
-                        else if (windSpeed >= 5 && windSpeed < 20) windIntensityDesc = 'Brisa moderada. Puede influir en la línea.';
-                        else if (windSpeed >= 20 && windSpeed < 40) windIntensityDesc = 'Viento moderado a fuerte. Considerar resguardo.';
-                        else if (windSpeed >= 40) windIntensityDesc = 'Viento muy fuerte. Precaución extrema.';
+                        if (windSpeed < 5) windIntensityDesc = 'Calma o Brisa muy ligera. Condiciones ideales para casi cualquier pesca.';
+                        else if (windSpeed >= 5 && windSpeed < 20) windIntensityDesc = 'Brisa moderada. Puede influir en la línea y la deriva de la embarcación.';
+                        else if (windSpeed >= 20 && windSpeed < 40) windIntensityDesc = 'Viento moderado a fuerte. Considerar buscar resguardo o ajustar el equipo.';
+                        else if (windSpeed >= 40) windIntensityDesc = 'Viento muy fuerte. Precaución extrema, la pesca puede ser peligrosa o imposible.';
                     }
                     document.getElementById('wind-intensity-desc').innerText = windIntensityDesc;
                     break;
                 case 'moon-phase-box':
-                    document.getElementById('expanded-moon-phase-text').innerText = document.getElementById('moon-phase-text').innerText;
+                    document.getElementById('expanded-moon-phase-text').innerText = window.moonPhasePrecise.toUpperCase();
                     document.getElementById('expanded-moon-date').innerText = now.toLocaleDateString('es-AR');
+                    document.getElementById('moon-tidal-influence').innerText = getMoonInfluenceText(window.moonPhasePrecise);
                     break;
                 case 'humidity-box':
                     const humidityVal = data.relative_humidity_2m;
                     document.getElementById('expanded-humidity-val').innerText = humidityVal !== null ? `${Math.round(humidityVal)}%` : '--%';
                     let humidityComfort = '--';
                     if (humidityVal !== null) {
-                        if (humidityVal < 40) humidityComfort = 'Ambiente seco. Poca humedad en el aire.';
-                        else if (humidityVal >= 40 && humidityVal < 60) humidityComfort = 'Humedad confortable. Condiciones agradables.';
-                        else if (humidityVal >= 60 && humidityVal < 80) humidityComfort = 'Ambiente húmedo. Sensación pegajosa.';
-                        else if (humidityVal >= 80) humidityComfort = 'Muy húmedo. Posible neblina o rocío.';
+                        if (humidityVal < 40) humidityComfort = 'Ambiente seco. Poca humedad en el aire, ideal para días soleados.';
+                        else if (humidityVal >= 40 && humidityVal < 60) humidityComfort = 'Humedad confortable. Condiciones agradables para la mayoría de las actividades.';
+                        else if (humidityVal >= 60 && humidityVal < 80) humidityComfort = 'Ambiente húmedo. Sensación pegajosa, posible niebla o rocío.';
+                        else if (humidityVal >= 80) humidityComfort = 'Muy húmedo. Alta probabilidad de neblina densa, lo que reduce la visibilidad.';
                     }
                     document.getElementById('humidity-comfort-desc').innerText = humidityComfort;
                     break;
@@ -1669,10 +1764,10 @@
                     document.getElementById('expanded-clouds-val').innerText = cloudsVal !== null ? `${Math.round(cloudsVal)}%` : '--%';
                     let cloudsDesc = '--';
                     if (cloudsVal !== null) {
-                        if (cloudsVal < 10) cloudsDesc = 'Cielo DESPEJADO. Poca o ninguna nube.';
-                        else if (cloudsVal >= 10 && cloudsVal < 40) cloudsDesc = 'PARCIALMENTE nublado. Algunas nubes dispersas.';
-                        else if (cloudsVal >= 40 && cloudsVal < 80) cloudsDesc = 'NUBLADO. Mayormente cubierto de nubes.';
-                        else if (cloudsVal >= 80) cloudsDesc = 'Cielo CUBIERTO. Ideal para peces de sombra.';
+                        if (cloudsVal < 10) cloudsDesc = 'Cielo DESPEJADO. Poca o ninguna nube, día soleado.';
+                        else if (cloudsVal >= 10 && cloudsVal < 40) cloudsDesc = 'PARCIALMENTE nublado. Algunas nubes dispersas, sol y sombra.';
+                        else if (cloudsVal >= 40 && cloudsVal < 80) cloudsDesc = 'NUBLADO. Mayormente cubierto de nubes, ideal para peces que evitan la luz directa.';
+                        else if (cloudsVal >= 80) cloudsDesc = 'Cielo CUBIERTO. Muy poca luz solar directa, perfecto para depredadores de aguas bajas.';
                     }
                     document.getElementById('clouds-cover-desc').innerText = cloudsDesc;
                     break;
