@@ -4,23 +4,6 @@ import { WeatherData, GeolocationCoordinates } from './types';
 import Button from './components/Button';
 import LoadingSpinner from './components/LoadingSpinner';
 import WeatherIconDisplay from './components/WeatherIconDisplay';
-import Markdown from 'react-markdown'; // Still imported for LinkRenderer, but summary markdown is removed.
-
-// Helper component for rendering links
-interface LinkRendererProps {
-  href?: string;
-  children?: React.ReactNode;
-}
-
-const LinkRenderer: React.FC<LinkRendererProps> = ({ href, children }) => {
-  if (!href) return <>{children}</>;
-  return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className="text-indigo-500 hover:underline">
-      {children}
-    </a>
-  );
-};
-
 
 function App() {
   const [location, setLocation] = useState<string>('');
@@ -120,77 +103,60 @@ function App() {
   }, [weatherData, loading, handleFetchWeather]);
 
   return (
-    <div className="bg-white rounded-xl shadow-2xl p-6 md:p-10 max-w-lg w-full transform transition-all duration-300 hover:scale-105">
-      <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 <mb-6></mb-6> text-center mb-6">
+    <div className="w-full flex flex-col items-center p-4 md:p-8"> {/* Adjusted main container for full screen */}
+      <h1 className="text-3xl md:text-5xl font-extrabold text-white text-center mb-8 drop-shadow-lg">
         Predicción del Clima
       </h1>
 
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        <input
-          type="text"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          placeholder="Introduce una ciudad o región"
-          className="flex-grow p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-700"
-        />
-        <Button
-          onClick={() => handleFetchWeather(location)}
-          disabled={loading || !location.trim()}
-          className="w-full sm:w-auto"
-        >
-          Buscar Clima
-        </Button>
-      </div>
+      <div className="w-full max-w-xl bg-white/90 backdrop-blur-sm rounded-xl shadow-2xl p-6 md:p-10 mb-8">
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <input
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="Introduce una ciudad o región"
+            className="flex-grow p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-700"
+            aria-label="Introduce una ciudad o región"
+          />
+          <Button
+            onClick={() => handleFetchWeather(location)}
+            disabled={loading || !location.trim()}
+            className="w-full sm:w-auto"
+            aria-label="Buscar Clima"
+          >
+            Buscar Clima
+          </Button>
+        </div>
 
-      <div className="mb-8 text-center">
-        <Button
-          onClick={handleGetLocationWeather}
-          variant="secondary"
-          disabled={loading}
-          className="w-full sm:w-auto bg-blue-100 text-blue-800 hover:bg-blue-200 focus:ring-blue-500"
-        >
-          Usar mi ubicación actual
-        </Button>
+        <div className="text-center">
+          <Button
+            onClick={handleGetLocationWeather}
+            variant="secondary"
+            disabled={loading}
+            className="w-full sm:w-auto bg-blue-100 text-blue-800 hover:bg-blue-200 focus:ring-blue-500"
+            aria-label="Usar mi ubicación actual"
+          >
+            Usar mi ubicación actual
+          </Button>
+        </div>
       </div>
 
       {loading && <LoadingSpinner />}
 
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md relative mb-6" role="alert">
+        <div className="w-full max-w-xl bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md relative mb-6" role="alert">
           <strong className="font-bold">Error: </strong>
           <span className="block sm:inline">{error}</span>
         </div>
       )}
 
       {weatherData && (
-        <div className="bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg p-6 shadow-inner border border-indigo-200">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
-            Pronóstico Actual
-          </h2>
+        <div className="w-full max-w-xl bg-white/90 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-indigo-200 text-center">
           <WeatherIconDisplay condition={currentWeatherCondition} />
-          <p className="text-xl md:text-2xl font-bold text-gray-700 text-center mb-4" aria-live="polite">
+          <p className="text-3xl md:text-5xl font-extrabold text-gray-800 mb-4" aria-live="polite">
             {getDisplayConditionText(currentWeatherCondition)}
           </p>
-
-          {weatherData.sources.length > 0 && (
-            <div className="border-t border-indigo-300 pt-4 mt-4">
-              <h3 className="text-lg font-semibold text-gray-700 mb-2">Fuentes:</h3>
-              <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
-                {weatherData.sources.map((source, index) => (
-                  <li key={index}>
-                    <a
-                      href={source.uri}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-indigo-500 hover:underline break-all"
-                    >
-                      {source.title || source.uri}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {/* Removed the sources section completely */}
         </div>
       )}
     </div>
