@@ -1,7 +1,0 @@
-{
-  "name": "Predicción del Clima",
-  "description": "Una aplicación de React para obtener predicciones del clima en tiempo real utilizando la API de Gemini y Google Search.",
-  "requestFramePermissions": [
-    "geolocation"
-  ]
-}
